@@ -1,18 +1,15 @@
-﻿using Delivery.Domain.Geolocations.Entities;
+﻿using Delivery.Domain.Common.Entities;
+using Delivery.Domain.Users.Enums;
 
 namespace Delivery.Domain.Users.Entities;
 
-public sealed class User : Geolocation
+public sealed class User
 {
     public Guid Id { get; set; }
-    public int Status { get; set; }
-    public DateTime? GeoReadDate { get; set; }
-    public double? GeoLatitude { get; set; }
-    public double? GeoLongitude { get; set; }
-    public double? GeoAcuracy { get; set; }
-    public double? GeoHeading { get; set; }
-    public double? GeoSpeed { get; set; }
+    public bool IsActive { get; set; }
+    public UserRole Role { get; set; }
     public string Login { get; set; } = default!;
     public string Password { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
+    public AdvancedGeolocalization? Geolocalization { get; set; }
 }

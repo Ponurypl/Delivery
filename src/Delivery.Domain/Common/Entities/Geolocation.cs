@@ -1,6 +1,6 @@
-﻿namespace Delivery.Domain.Geolocations.Entities;
+﻿namespace Delivery.Domain.Common.Entities;
 
-public abstract class Geolocation
+public class Geolocation
 {
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }

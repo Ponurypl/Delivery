@@ -4,6 +4,6 @@ public sealed class UnitOfMeasure
 {
     public int Id { get; set; }
     public string Name { get; set; } = default!;
-    public string Unit { get; set; } = default!;
-    public string? Decription { get; set; }
+    public string Symbol { get; set; } = default!;
+    public string? Description { get; set; }
 }
