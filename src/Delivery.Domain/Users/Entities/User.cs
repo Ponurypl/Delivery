@@ -1,6 +1,8 @@
-﻿namespace Delivery.Domain.Users.Entities;
+﻿using Delivery.Domain.Geolocations.Entities;
 
-public sealed class User
+namespace Delivery.Domain.Users.Entities;
+
+public sealed class User : Geolocation
 {
     public Guid Id { get; set; }
     public int Status { get; set; }

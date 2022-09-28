@@ -1,4 +1,4 @@
-﻿using Delivery.Domain.Dictionary.Entities;
+﻿using Delivery.Domain.Dictionaries.Entities;
 
 namespace Delivery.Domain.Deliveries.Entities;
 

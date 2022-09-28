@@ -1,6 +1,6 @@
-﻿namespace Delivery.Domain.Dictionary.Entities;
+﻿namespace Delivery.Domain.Dictionaries.Entities;
 
-public class UnitOfMeasure
+public sealed class UnitOfMeasure
 {
     public int Id { get; set; }
     public string Name { get; set; } = default!;
