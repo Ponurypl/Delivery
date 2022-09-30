@@ -1,9 +1,9 @@
-﻿using Delivery.Domain.Deliveries.Entities;
-using Delivery.Domain.Common.Entities;
-using Delivery.Domain.Scans.Enums;
-using Delivery.Domain.Users.Entities;
+﻿using MultiProject.Delivery.Domain.Deliveries.Entities;
+using MultiProject.Delivery.Domain.Common.Entities;
+using MultiProject.Delivery.Domain.Scans.Enums;
+using MultiProject.Delivery.Domain.Users.Entities;
 
-namespace Delivery.Domain.Scans.Entities;
+namespace MultiProject.Delivery.Domain.Scans.Entities;
 
 public sealed class Scan
 {

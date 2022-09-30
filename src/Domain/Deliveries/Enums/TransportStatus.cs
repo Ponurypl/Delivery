@@ -1,4 +1,4 @@
-﻿namespace Delivery.Domain.Deliveries.Enums;
+﻿namespace MultiProject.Delivery.Domain.Deliveries.Enums;
 
 public enum TransportStatus
 {

@@ -1,4 +1,4 @@
-﻿namespace Delivery.Domain.Scans.Enums;
+﻿namespace MultiProject.Delivery.Domain.Scans.Enums;
 
 public enum ScanStatus
 {

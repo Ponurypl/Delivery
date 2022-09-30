@@ -1,10 +1,10 @@
-﻿using Delivery.Domain.Attachements.Enums;
-using Delivery.Domain.Deliveries.Entities;
-using Delivery.Domain.Scans.Entities;
-using Delivery.Domain.Users.Entities;
+﻿using MultiProject.Delivery.Domain.Attachements.Enums;
+using MultiProject.Delivery.Domain.Deliveries.Entities;
+using MultiProject.Delivery.Domain.Scans.Entities;
+using MultiProject.Delivery.Domain.Users.Entities;
 using System.Reflection.Metadata;
 
-namespace Delivery.Domain.Attachements.Entities;
+namespace MultiProject.Delivery.Domain.Attachements.Entities;
 
 public sealed class Attachement
 {

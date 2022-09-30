@@ -1,4 +1,4 @@
-﻿namespace Delivery.Domain.Common.Entities;
+﻿namespace MultiProject.Delivery.Domain.Common.Entities;
 
 public class Geolocation
 {

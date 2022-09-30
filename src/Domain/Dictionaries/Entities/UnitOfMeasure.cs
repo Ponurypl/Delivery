@@ -1,4 +1,4 @@
-﻿namespace Delivery.Domain.Dictionaries.Entities;
+﻿namespace MultiProject.Delivery.Domain.Dictionaries.Entities;
 
 public sealed class UnitOfMeasure
 {

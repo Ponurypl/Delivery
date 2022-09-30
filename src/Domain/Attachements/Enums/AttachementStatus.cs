@@ -1,4 +1,4 @@
-﻿namespace Delivery.Domain.Attachements.Enums;
+﻿namespace MultiProject.Delivery.Domain.Attachements.Enums;
 
 public enum AttachementStatus
 {

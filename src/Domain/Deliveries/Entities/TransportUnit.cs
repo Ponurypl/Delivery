@@ -1,6 +1,6 @@
-﻿using Delivery.Domain.Deliveries.Enums;
+﻿using MultiProject.Delivery.Domain.Deliveries.Enums;
 
-namespace Delivery.Domain.Deliveries.Entities;
+namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
 public sealed class TransportUnit
 {

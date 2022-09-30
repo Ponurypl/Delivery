@@ -1,6 +1,6 @@
-﻿using Delivery.Domain.Dictionaries.Entities;
+﻿using MultiProject.Delivery.Domain.Dictionaries.Entities;
 
-namespace Delivery.Domain.Deliveries.Entities;
+namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
 public sealed class MultiUnitDetails : UnitDetails
 {

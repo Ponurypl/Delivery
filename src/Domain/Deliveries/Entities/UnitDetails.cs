@@ -1,4 +1,4 @@
-﻿namespace Delivery.Domain.Deliveries.Entities;
+﻿namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
 public abstract class UnitDetails
 {

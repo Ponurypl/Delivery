@@ -1,7 +1,7 @@
-﻿using Delivery.Domain.Common.Entities;
-using Delivery.Domain.Users.Enums;
+﻿using MultiProject.Delivery.Domain.Common.Entities;
+using MultiProject.Delivery.Domain.Users.Enums;
 
-namespace Delivery.Domain.Users.Entities;
+namespace MultiProject.Delivery.Domain.Users.Entities;
 
 public sealed class User
 {
