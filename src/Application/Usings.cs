@@ -1,0 +1,1 @@
+﻿global using MultiProject.Delivery.Application.Common.Interfaces;
