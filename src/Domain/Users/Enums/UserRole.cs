@@ -4,5 +4,5 @@
 public enum UserRole
 {
     Deliverer = 1,
-    Menager = 2
+    Manager = 2
 }

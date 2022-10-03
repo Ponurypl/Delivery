@@ -6,6 +6,7 @@ public sealed class TransportUnit
 {
     public int Id { get; set; }
     public Transport Transport { get; set; } = null!;
+    public string Number { get; set; } = default!;
     public string Description { get; set; } = default!;
     public TransportUnitStatus Status { get; set; }
     public string? AditionalInformation { get; set; }
