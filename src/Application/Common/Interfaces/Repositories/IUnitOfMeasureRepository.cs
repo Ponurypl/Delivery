@@ -5,4 +5,5 @@ namespace MultiProject.Delivery.Application.Common.Interfaces.Repositories;
 public interface IUnitOfMeasureRepository
 {
     void Add(UnitOfMeasure unitOfMeasure);
+    Task<UnitOfMeasure> GetByIdAsync(int id);
 }
