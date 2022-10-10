@@ -7,4 +7,5 @@ public interface IUserRepository
 {
     void Add(User user);
     Task<User> GetByIdAsync(Guid id);
+    void Update(User user);
 }

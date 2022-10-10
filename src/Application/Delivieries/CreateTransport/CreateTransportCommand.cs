@@ -25,9 +25,9 @@ public sealed class CreateTransportCommand : ICommand<TransportCreatedDto>
         public string RecipientTown { get; set; } = default!;
         public string RecipientCountry { get; set; } = default!;
         public string RecipientPostCode { get; set; } = default!;
-
+        // jeśli unikatowa paczka to musi zostać podany kod kreskowy
         public string? Barcode { get; set; }
-
+        // jeśli nieunikatowa paczka to trzeba podać jednostkę miary i ilść do dostarczenia
         public int? UnitOfMeasureId { get; set; } = null!;
         public double? Amount { get; set; }
     }

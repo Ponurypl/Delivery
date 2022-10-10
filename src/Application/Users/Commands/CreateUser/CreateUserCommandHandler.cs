@@ -3,7 +3,7 @@ using MultiProject.Delivery.Domain.Users.Entities;
 
 namespace MultiProject.Delivery.Application.Users.Commands.CreateUser;
 
-public class CreateUserCommandHandler : IHandler<CreateUserCommand, UserCreatedDto>
+public sealed class CreateUserCommandHandler : IHandler<CreateUserCommand, UserCreatedDto>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
