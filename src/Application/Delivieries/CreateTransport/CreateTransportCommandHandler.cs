@@ -9,21 +9,25 @@ using MultiProject.Delivery.Domain.Users.Exceptions;
 
 namespace MultiProject.Delivery.Application.Delivieries.CreateTransport;
 
-internal class CreateTransportCommandHandler : IHandler<CreateTransportCommand, TransportCreatedDto>
+public sealed class CreateTransportCommandHandler : IHandler<CreateTransportCommand, TransportCreatedDto>
 {
     private readonly ITransportRepository _transportRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
     private readonly IDateTime _dateTime;
     private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
+    private readonly ITransportUnitRepository _transportUnitRepository;
+    private readonly ITransportUnitDetailsRepository _transportUnitDetailsRepository;
 
-    public CreateTransportCommandHandler(ITransportRepository transportRepository, IUnitOfWork unitOfWork, IUserRepository userRepository, IDateTime dateTime, IUnitOfMeasureRepository unitOfMeasureRepository)
+    public CreateTransportCommandHandler(ITransportRepository transportRepository, IUnitOfWork unitOfWork, IUserRepository userRepository, IDateTime dateTime, IUnitOfMeasureRepository unitOfMeasureRepository, ITransportUnitRepository transportUnitRepository, ITransportUnitDetailsRepository transportUnitDetailsRepository)
     {
         _transportRepository = transportRepository;
         _unitOfWork = unitOfWork;
         _userRepository = userRepository;
         _dateTime = dateTime;
         _unitOfMeasureRepository = unitOfMeasureRepository;
+        _transportUnitRepository = transportUnitRepository;
+        _transportUnitDetailsRepository = transportUnitDetailsRepository;
     }
 
     public async Task<TransportCreatedDto> Handle(CreateTransportCommand request, CancellationToken cancellationToken)
@@ -51,6 +55,7 @@ internal class CreateTransportCommandHandler : IHandler<CreateTransportCommand, 
 
         _transportRepository.Add(newTransport);
 
+
         foreach (var unit in request.TransportUnits)
         {
             if (unit.Barcode is null && (unit.Amount is null || unit.UnitOfMeasureId is null))
@@ -61,12 +66,10 @@ internal class CreateTransportCommandHandler : IHandler<CreateTransportCommand, 
             {
                 throw new TransportUnitException(unit.Number);
             }
-            if (unit.Amount is not null && unit.UnitOfMeasureId is null || unit.Amount is null && unit.UnitOfMeasureId is not null)
+            if ((unit.Amount is not null && unit.UnitOfMeasureId is null) || (unit.Amount is null && unit.UnitOfMeasureId is not null))
             {
                 throw new TransportUnitException(unit.Number);
-            }
-
-            
+            }         
 
             TransportUnit ntu = new()
             {
@@ -90,7 +93,8 @@ internal class CreateTransportCommandHandler : IHandler<CreateTransportCommand, 
                 Transport = newTransport
             };
 
-            // TODO: TransportUnit repository zapis
+            _transportUnitRepository.Add(ntu);
+
 
             UnitDetails unitDetails;
             if (unit.Barcode is not null)
@@ -105,9 +109,8 @@ internal class CreateTransportCommandHandler : IHandler<CreateTransportCommand, 
                
             }
 
-            // TODO: UnitDetails repository zapis
+            _transportUnitDetailsRepository.Add(unitDetails);
         }
-
 
         await _unitOfWork.SaveChangesAsync();
 
