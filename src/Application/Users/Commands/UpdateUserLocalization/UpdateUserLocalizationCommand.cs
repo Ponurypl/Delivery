@@ -31,11 +31,11 @@ public sealed class UpdateUserLocalizationCommandHandler : IHandler<UpdateUserLo
             GeoSpeed = request.GeoSpeed
         };
 
-        User user = await _userRepository.GetByIdAsync(request.UserId);
-        if (user is null) throw new UserNotFoundException(nameof(request.UserId));
+        User updatedUser = await _userRepository.GetByIdAsync(request.UserId);
+        if (updatedUser is null) throw new UserNotFoundException(nameof(request.UserId));
 
-        user.Geolocalization = advancedGeolocalization;
-        _userRepository.Update(user);
+        updatedUser.Geolocalization = advancedGeolocalization;
+        _userRepository.Update(updatedUser);
         await _unitOfWork.SaveChangesAsync();
 
         throw new NotImplementedException();
