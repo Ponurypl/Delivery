@@ -2,7 +2,7 @@
 
 namespace MultiProject.Delivery.Application.Delivieries.CreateScan;
 
-public sealed record CreateScanCommand : ICommand
+public sealed record CreateScanCommand : ICommand<ScanCreatedDto>
 {
     public int TransportUnitId { get; set; }
     public double? Quanitity { get; set; }
