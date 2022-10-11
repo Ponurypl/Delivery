@@ -4,22 +4,22 @@ using MultiProject.Delivery.Domain.Common.Entities;
 using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.Exceptions;
 
-namespace MultiProject.Delivery.Application.Users.Commands.UpdateUserAdvancedLocalization;
+namespace MultiProject.Delivery.Application.Users.Commands.UpdateUserLocalization;
 
-public sealed class UpdateUserAdvancedLocalizationHandler : IHandler<UpdateUserAdvancedLocalizationCommand>
+public sealed class UpdateUserLocalizationCommandHandler : IHandler<UpdateUserLocalizationCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
     private readonly IDateTime _dateTime;
 
-    public UpdateUserAdvancedLocalizationHandler(IUnitOfWork unitOfWork, IUserRepository userRepository, IDateTime dateTime)
+    public UpdateUserLocalizationCommandHandler(IUnitOfWork unitOfWork, IUserRepository userRepository, IDateTime dateTime)
     {
         _unitOfWork = unitOfWork;
         _userRepository = userRepository;
         _dateTime = dateTime;
     }
 
-    public async Task<Unit> Handle(UpdateUserAdvancedLocalizationCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateUserLocalizationCommand request, CancellationToken cancellationToken)
     {
         AdvancedGeolocalization advancedGeolocalization = new()
         {

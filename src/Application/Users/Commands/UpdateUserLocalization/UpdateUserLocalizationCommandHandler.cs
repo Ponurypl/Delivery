@@ -1,6 +1,6 @@
-﻿namespace MultiProject.Delivery.Application.Users.Commands.UpdateUserAdvancedLocalization;
+﻿namespace MultiProject.Delivery.Application.Users.Commands.UpdateUserLocalization;
 
-public sealed record UpdateUserAdvancedLocalizationCommand : ICommand
+public sealed record UpdateUserLocalizationCommand : ICommand
 {
     public Guid UserId { get; set; }
     public double Latitude { get; set; }
