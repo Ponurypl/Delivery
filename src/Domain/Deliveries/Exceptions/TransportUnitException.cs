@@ -3,7 +3,7 @@
 public sealed class TransportUnitException : Exception
 {
     public TransportUnitException(string number) 
-        : base($"Transport Unit {number} not specified properly. You should specify Barcode or UnitOfMeasure together with Amount.")
+        : base($"Transport unit number {number} not specified properly. You should specify Barcode or UnitOfMeasure together with Amount.")
     {
 
     }
