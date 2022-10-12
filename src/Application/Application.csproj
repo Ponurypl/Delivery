@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Deliveries\Commands\CreateNewTransport\" />
     <Folder Include="Users\Queries\" />
   </ItemGroup>
 

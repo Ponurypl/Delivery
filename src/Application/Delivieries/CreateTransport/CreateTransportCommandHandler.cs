@@ -1,11 +1,7 @@
 ﻿using MultiProject.Delivery.Application.Common.Interfaces.Repositories;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
-using MultiProject.Delivery.Domain.Deliveries.Enums;
-using MultiProject.Delivery.Domain.Deliveries.Exceptions;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
-using MultiProject.Delivery.Domain.Dictionaries.Exceptions;
 using MultiProject.Delivery.Domain.Users.Entities;
-using MultiProject.Delivery.Domain.Users.Exceptions;
 
 namespace MultiProject.Delivery.Application.Delivieries.CreateTransport;
 
@@ -19,7 +15,9 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
     private readonly ITransportUnitRepository _transportUnitRepository;
     private readonly ITransportUnitDetailsRepository _transportUnitDetailsRepository;
 
-    public CreateTransportCommandHandler(ITransportRepository transportRepository, IUnitOfWork unitOfWork, IUserRepository userRepository, IDateTime dateTime, IUnitOfMeasureRepository unitOfMeasureRepository, ITransportUnitRepository transportUnitRepository, ITransportUnitDetailsRepository transportUnitDetailsRepository)
+    public CreateTransportCommandHandler(ITransportRepository transportRepository, IUnitOfWork unitOfWork, IUserRepository userRepository, 
+                                        IDateTime dateTime, IUnitOfMeasureRepository unitOfMeasureRepository, 
+                                        ITransportUnitRepository transportUnitRepository, ITransportUnitDetailsRepository transportUnitDetailsRepository)
     {
         _transportRepository = transportRepository;
         _unitOfWork = unitOfWork;
@@ -33,83 +31,30 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
     public async Task<TransportCreatedDto> Handle(CreateTransportCommand request, CancellationToken cancellationToken)
     {
         User deliverer = await _userRepository.GetByIdAsync(request.DelivererId);
-        if (deliverer is null) throw new UserNotFoundException(nameof(request.DelivererId));
-        if (deliverer.Role is not Domain.Users.Enums.UserRole.Deliverer) throw new UserRoleException(nameof(request.DelivererId));
-
         User manager = await _userRepository.GetByIdAsync(request.ManagerId);
-        if (manager is null) throw new UserNotFoundException(nameof(request.ManagerId));
-        if (manager.Role is not Domain.Users.Enums.UserRole.Manager) throw new UserRoleException(nameof(request.ManagerId));
 
-
-        Transport newTransport = new()
-        {
-            Deliverer = deliverer,
-            Status = TransportStatus.New,
-            Number = request.Number,
-            AditionalInformation = request.AditionalInformation,
-            TotalWeight = request.TotalWeight,
-            CreationDate = _dateTime.Now,
-            StartDate = request.StartDate,
-            Manager = manager
-        };
-
+        Transport newTransport = Transport.Create(deliverer, request.Number, request.AditionalInformation, request.TotalWeight,
+                                                  request.StartDate, manager, _dateTime);    
+        
         _transportRepository.Add(newTransport);
 
 
         foreach (var unit in request.TransportUnits)
         {
-            if (unit.Barcode is null && (unit.Amount is null || unit.UnitOfMeasureId is null))
-            {
-                throw new TransportUnitException(unit.Number);
-            }
-            if (unit.Barcode is not null && (unit.Amount is not null || unit.UnitOfMeasureId is not null))
-            {
-                throw new TransportUnitException(unit.Number);
-            }
-            if ((unit.Amount is not null && unit.UnitOfMeasureId is null) || (unit.Amount is null && unit.UnitOfMeasureId is not null))
-            {
-                throw new TransportUnitException(unit.Number);
-            }         
+            UnitOfMeasure unitOfMeasure = await _unitOfMeasureRepository.GetByIdAsync(unit.UnitOfMeasureId!.Value);
+            //TODO: Do optymalizacji. Wyciągnąć raz cały słownik i sprawdzać w pamięci
 
-            TransportUnit ntu = new()
-            {
-                Number = unit.Number,
-                AditionalInformation = unit.AditionalInformation,
-                Description = unit.Description,
-                Status = TransportUnitStatus.New,
-                Recipient = new Recipient()
-                {
-                    CompanyName = unit.RecipientCompanyName,
-                    Country = unit.RecipientCountry,
-                    FlatNumber = unit.RecipientFlatNumber,
-                    LastName = unit.RecipientLastName,
-                    Name = unit.RecipientName,
-                    PhoneNumber = unit.RecipientPhoneNumber,
-                    PostCode = unit.RecipientPostCode,
-                    Street = unit.RecipientStreet,
-                    StreetNumber = unit.RecipientStreetNumber,
-                    Town = unit.RecipientTown
-                }, 
-                Transport = newTransport
-            };
+            var recipient = Recipient.Create(unit.RecipientCompanyName, unit.RecipientCountry, unit.RecipientFlatNumber,
+                                             unit.RecipientLastName, unit.RecipientName, unit.RecipientPhoneNumber,
+                                             unit.RecipientPostCode, unit.RecipientStreet, unit.RecipientStreetNumber, 
+                                             unit.RecipientTown);
 
-            _transportUnitRepository.Add(ntu);
-
-
-            UnitDetails unitDetails;
-            if (unit.Barcode is not null)
-            {
-                unitDetails = new UniqueUnitDetails() { Barcode = unit.Barcode, TransportUnit = ntu };
-            }
-            else
-            {
-                UnitOfMeasure unitOfMeasure = await _unitOfMeasureRepository.GetByIdAsync(unit.UnitOfMeasureId!.Value);
-                if (unitOfMeasure is null) throw new UnitOfMeasureNotFound(unit.UnitOfMeasureId!.Value);
-                unitDetails = new MultiUnitDetails() { Amount = unit.Amount!.Value, UnitOfMeasure = unitOfMeasure, TransportUnit = ntu };
-               
-            }
-
-            _transportUnitDetailsRepository.Add(unitDetails);
+            TransportUnit ntu = TransportUnit.Create(unit.Number, unit.AditionalInformation, unit.Description, recipient,
+                                                     unit.Barcode, unit.Amount, unitOfMeasure);
+            //TODO: relacja transport i transportUnit
+            // TODO: do przeróbki repozytoria
+            _transportUnitRepository.Add(ntu);            
+            _transportUnitDetailsRepository.Add(ntu.UnitDetails);
         }
 
         await _unitOfWork.SaveChangesAsync();
