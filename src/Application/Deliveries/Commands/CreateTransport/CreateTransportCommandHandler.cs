@@ -13,20 +13,15 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
     private readonly IUserRepository _userRepository;
     private readonly IDateTime _dateTime;
     private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
-    private readonly ITransportUnitRepository _transportUnitRepository;
-    private readonly ITransportUnitDetailsRepository _transportUnitDetailsRepository;
 
     public CreateTransportCommandHandler(ITransportRepository transportRepository, IUnitOfWork unitOfWork, IUserRepository userRepository, 
-                                        IDateTime dateTime, IUnitOfMeasureRepository unitOfMeasureRepository, 
-                                        ITransportUnitRepository transportUnitRepository, ITransportUnitDetailsRepository transportUnitDetailsRepository)
+                                        IDateTime dateTime, IUnitOfMeasureRepository unitOfMeasureRepository)
     {
         _transportRepository = transportRepository;
         _unitOfWork = unitOfWork;
         _userRepository = userRepository;
         _dateTime = dateTime;
         _unitOfMeasureRepository = unitOfMeasureRepository;
-        _transportUnitRepository = transportUnitRepository;
-        _transportUnitDetailsRepository = transportUnitDetailsRepository;
     }
 
     public async Task<TransportCreatedDto> Handle(CreateTransportCommand request, CancellationToken cancellationToken)
@@ -52,10 +47,7 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
 
             TransportUnit ntu = TransportUnit.Create(unit.Number, unit.AditionalInformation, unit.Description, recipient,
                                                      unit.Barcode, unit.Amount, unitOfMeasure);
-            //TODO: relacja transport i transportUnit
-            // TODO: do przeróbki repozytoria
-            _transportUnitRepository.Add(ntu);            
-            _transportUnitDetailsRepository.Add(ntu.UnitDetails);
+            //TODO: relacja transport i transportUnit            
         }
 
         await _unitOfWork.SaveChangesAsync();
