@@ -1,4 +1,4 @@
-﻿using MultiProject.Delivery.Domain.Common.Entities;
+﻿using MultiProject.Delivery.Domain.Common.ValueTypes;
 
 namespace MultiProject.Delivery.Application.Delivieries.CreateScan;
 

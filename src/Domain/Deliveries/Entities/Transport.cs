@@ -1,11 +1,12 @@
 ﻿using MultiProject.Delivery.Application.Common.Interfaces;
+using MultiProject.Delivery.Domain.Common.Interaces;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
 using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.Exceptions;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
-public sealed class Transport
+public sealed class Transport : IAggregateRoot
 {
     public int Id { get; set; }
     public User Deliverer { get; set; } = null!;

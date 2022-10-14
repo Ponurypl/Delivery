@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Domain.Attachements.Enums;
+using MultiProject.Delivery.Domain.Common.Interaces;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Scans.Entities;
 using MultiProject.Delivery.Domain.Users.Entities;
@@ -6,7 +7,7 @@ using System.Reflection.Metadata;
 
 namespace MultiProject.Delivery.Domain.Attachements.Entities;
 
-public sealed class Attachement
+public sealed class Attachement : IAggregateRoot
 {
     public int Id { get; set; }
     public User Creator { get; set; } = null!;

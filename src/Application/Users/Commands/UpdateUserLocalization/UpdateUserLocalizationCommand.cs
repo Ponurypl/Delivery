@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using MultiProject.Delivery.Application.Common.Interfaces.Repositories;
-using MultiProject.Delivery.Domain.Common.Entities;
+using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.Exceptions;
 

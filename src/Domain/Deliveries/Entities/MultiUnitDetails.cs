@@ -1,8 +1,10 @@
-﻿using MultiProject.Delivery.Domain.Dictionaries.Entities;
+﻿using MultiProject.Delivery.Domain.Common.Interaces;
+using MultiProject.Delivery.Domain.Deliveries.Abstractions;
+using MultiProject.Delivery.Domain.Dictionaries.Entities;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
-public sealed class MultiUnitDetails : UnitDetails
+public sealed class MultiUnitDetails : UnitDetails, IEntity
 {
     public UnitOfMeasure UnitOfMeasure { get; set; } = null!;
     public double Amount { get; set; }

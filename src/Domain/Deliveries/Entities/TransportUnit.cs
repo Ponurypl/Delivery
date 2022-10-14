@@ -1,11 +1,14 @@
-﻿using MultiProject.Delivery.Domain.Deliveries.Enums;
+﻿using MultiProject.Delivery.Domain.Common.Interaces;
+using MultiProject.Delivery.Domain.Deliveries.Abstractions;
+using MultiProject.Delivery.Domain.Deliveries.Enums;
 using MultiProject.Delivery.Domain.Deliveries.Exceptions;
+using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.Exceptions;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
-public sealed class TransportUnit
+public sealed class TransportUnit : IEntity
 {
     public int Id { get; set; }
     public Transport Transport { get; set; } = null!;

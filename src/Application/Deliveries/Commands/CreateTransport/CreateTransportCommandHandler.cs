@@ -1,5 +1,6 @@
 ﻿using MultiProject.Delivery.Application.Common.Interfaces.Repositories;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
+using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Users.Entities;
 
@@ -37,7 +38,7 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
                                                   request.StartDate, manager, _dateTime);    
         
         _transportRepository.Add(newTransport);
-        List<UnitOfMeasure> unitOfMeasureList = _unitOfMeasureRepository.GetAll
+        List<UnitOfMeasure> unitOfMeasureList = await _unitOfMeasureRepository.GetAllAsync();
 
         foreach (var unit in request.TransportUnits)
         {

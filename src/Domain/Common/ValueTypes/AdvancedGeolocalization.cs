@@ -1,4 +1,4 @@
-﻿namespace MultiProject.Delivery.Domain.Common.Entities;
+﻿namespace MultiProject.Delivery.Domain.Common.ValueTypes;
 
 public sealed class AdvancedGeolocalization : Geolocation
 {

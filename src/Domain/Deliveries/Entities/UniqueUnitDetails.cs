@@ -1,6 +1,9 @@
-﻿namespace MultiProject.Delivery.Domain.Deliveries.Entities;
+﻿using MultiProject.Delivery.Domain.Common.Interaces;
+using MultiProject.Delivery.Domain.Deliveries.Abstractions;
 
-public sealed class UniqueUnitDetails : UnitDetails
+namespace MultiProject.Delivery.Domain.Deliveries.Entities;
+
+public sealed class UniqueUnitDetails : UnitDetails, IEntity
 {
     public string Barcode { get; set; } = default!;
 

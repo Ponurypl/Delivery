@@ -1,6 +1,8 @@
-﻿namespace MultiProject.Delivery.Domain.Dictionaries.Entities;
+﻿using MultiProject.Delivery.Domain.Common.Interaces;
 
-public sealed class UnitOfMeasure
+namespace MultiProject.Delivery.Domain.Dictionaries.Entities;
+
+public sealed class UnitOfMeasure : IAggregateRoot
 {
     public int Id { get; set; }
     public string Name { get; set; } = default!;

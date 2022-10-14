@@ -2,7 +2,7 @@
 
 public sealed class UserRoleException : Exception
 {
-    public UserRoleException(string fieldName) : base($"Given user in {fieldName} does not meet requiered role")
+    public UserRoleException(Guid id) : base($"Given user (Id = {id}) does not meet requiered role")
     {
 
     }

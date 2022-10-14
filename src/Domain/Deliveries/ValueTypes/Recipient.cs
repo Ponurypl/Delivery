@@ -1,6 +1,6 @@
 ﻿using MultiProject.Delivery.Domain.Deliveries.Exceptions;
 
-namespace MultiProject.Delivery.Domain.Deliveries.Entities;
+namespace MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 
 public sealed class Recipient
 {
@@ -15,8 +15,8 @@ public sealed class Recipient
     public string Country { get; set; } = default!;
     public string PostCode { get; set; } = default!;
 
-    private Recipient(string? companyName, string country, string? flatNumber, string? lastName, 
-                     string? name, string phoneNumber, string postCode, string? street, 
+    private Recipient(string? companyName, string country, string? flatNumber, string? lastName,
+                     string? name, string phoneNumber, string postCode, string? street,
                      string streetNumber, string town)
     {
         CompanyName = companyName;
@@ -35,7 +35,7 @@ public sealed class Recipient
                      string? name, string phoneNumber, string postCode, string? street,
                      string streetNumber, string town)
     {
-        if(string.IsNullOrWhiteSpace(companyName) && string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(lastName)) throw new TransportUnitRecipientNoRecipientName();
+        if (string.IsNullOrWhiteSpace(companyName) && string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(lastName)) throw new TransportUnitRecipientNoRecipientName();
         if (!string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(lastName)) throw new TransportUnitRecipientNameAndLastNameNotGivenTogether(nameof(lastName));
         if (string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(lastName)) throw new TransportUnitRecipientNameAndLastNameNotGivenTogether(nameof(name));
 
