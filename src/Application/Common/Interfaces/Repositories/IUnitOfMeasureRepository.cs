@@ -6,4 +6,9 @@ public interface IUnitOfMeasureRepository
 {
     void Add(UnitOfMeasure unitOfMeasure);
     Task<UnitOfMeasure> GetByIdAsync(int id);
+    Task<List<UnitOfMeasure>> GetAllAsync()
+    {
+        List<UnitOfMeasure> unitOfMeasureList =  new List<UnitOfMeasure>();
+        return unitOfMeasureList;
+    }
 }

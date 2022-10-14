@@ -37,7 +37,7 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
                                                   request.StartDate, manager, _dateTime);    
         
         _transportRepository.Add(newTransport);
-
+        List<UnitOfMeasure> unitOfMeasureList = _unitOfMeasureRepository.GetAll
 
         foreach (var unit in request.TransportUnits)
         {
