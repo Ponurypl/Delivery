@@ -28,28 +28,34 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
     {
         User deliverer = await _userRepository.GetByIdAsync(request.DelivererId);
         User manager = await _userRepository.GetByIdAsync(request.ManagerId);
-
-        Transport newTransport = Transport.Create(deliverer, request.Number, request.AditionalInformation, request.TotalWeight,
-                                                  request.StartDate, manager, _dateTime);    
-        
-        _transportRepository.Add(newTransport);
         List<UnitOfMeasure> unitOfMeasureList = await _unitOfMeasureRepository.GetAllAsync();
 
-        foreach (var unit in request.TransportUnits)
-        {
-            UnitOfMeasure unitOfMeasure = await _unitOfMeasureRepository.GetByIdAsync(unit.UnitOfMeasureId!.Value);
-            //TODO: Do optymalizacji. Wyciągnąć raz cały słownik i sprawdzać w pamięci
+        //TODO: Mapper
+        List<NewTransportUnit> transportUnitsToCreate = request.TransportUnits.Select(u => new NewTransportUnit()
+                                            {
+                                                AditionalInformation = u.AditionalInformation,
+                                                Amount = u.Amount,
+                                                Barcode = u.Barcode,
+                                                Description = u.Description,
+                                                Number = u.Number,
+                                                RecipientCompanyName = u.RecipientCompanyName,
+                                                RecipientCountry = u.RecipientCountry,
+                                                RecipientFlatNumber = u.RecipientFlatNumber,
+                                                RecipientLastName = u.RecipientLastName,
+                                                RecipientName = u.RecipientName,
+                                                RecipientPhoneNumber = u.RecipientPhoneNumber,
+                                                RecipientPostCode = u.RecipientPostCode,
+                                                RecipientStreet = u.RecipientStreet,
+                                                RecipientStreetNumber = u.RecipientStreetNumber,
+                                                RecipientTown = u.RecipientTown,
+                                                UnitOfMeasureId = u.UnitOfMeasureId
+                                            }).ToList();
 
-            var recipient = Recipient.Create(unit.RecipientCompanyName, unit.RecipientCountry, unit.RecipientFlatNumber,
-                                             unit.RecipientLastName, unit.RecipientName, unit.RecipientPhoneNumber,
-                                             unit.RecipientPostCode, unit.RecipientStreet, unit.RecipientStreetNumber, 
-                                             unit.RecipientTown);
 
-            TransportUnit ntu = TransportUnit.Create(unit.Number, unit.AditionalInformation, unit.Description, recipient,
-                                                     unit.Barcode, unit.Amount, unitOfMeasure);
-            //TODO: relacja transport i transportUnit            
-        }
+        Transport newTransport = Transport.Create(deliverer, request.Number, request.AditionalInformation, request.TotalWeight,
+                                                  request.StartDate, manager, _dateTime, transportUnitsToCreate, unitOfMeasureList);
 
+        _transportRepository.Add(newTransport);
         await _unitOfWork.SaveChangesAsync();
 
         return new TransportCreatedDto

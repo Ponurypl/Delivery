@@ -20,19 +20,19 @@ public sealed class TransportUnit : IEntity
     public UnitDetails UnitDetails { get; set; } = null!;
 
 
-    private TransportUnit(string number, string? aditionalInformation, string description, Recipient recipient)
+    private TransportUnit(string number, string? aditionalInformation, string description, Recipient recipient, Transport transport)
     {
         Number = number;
         AditionalInformation = aditionalInformation;
         Description = description;
         Status = TransportUnitStatus.New;
         Recipient = recipient;
-        //TODO: dodać transport
+        Transport = transport;
     }
 
 
     public static TransportUnit Create(string number, string? aditionalInformation, string description, Recipient recipient, 
-                                       string? barcode, double? amount, UnitOfMeasure? unitOfMeasure)
+                                       string? barcode, double? amount, UnitOfMeasure? unitOfMeasure, Transport transport)
     {
         if (barcode is null && (amount is null || unitOfMeasure is null))
         {
@@ -47,17 +47,16 @@ public sealed class TransportUnit : IEntity
             throw new TransportUnitException(number);
         }
 
-        var newTransportUnit = new TransportUnit(number, aditionalInformation, description, recipient);
+        var newTransportUnit = new TransportUnit(number, aditionalInformation, description, recipient, transport);
         UnitDetails unitDetails;
         if (barcode is not null)
         {
             unitDetails = UniqueUnitDetails.Create(barcode, newTransportUnit);
         }
         else
-        {            
-            if (unitOfMeasure is null) throw new UnitOfMeasureNotFound(unit.UnitOfMeasureId!.Value);
+        {
+            if (unitOfMeasure is null) throw new UnitOfMeasureNotFoundException();
             unitDetails = MultiUnitDetails.Create(amount!.Value, unitOfMeasure, newTransportUnit);
-
         }
 
         newTransportUnit.UnitDetails = unitDetails;

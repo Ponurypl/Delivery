@@ -1,5 +1,4 @@
-﻿using MultiProject.Delivery.Domain.Common.Extensions;
-using MultiProject.Delivery.Domain.Deliveries.Exceptions;
+﻿using MultiProject.Delivery.Domain.Deliveries.Validators;
 
 namespace MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 
@@ -43,31 +42,9 @@ public sealed class Recipient
         var vResults = validator.Validate(recipient);
         if (!vResults.IsValid)
         {
-            var errors = vResults.Errors.GroupBy(e => e.PropertyName)
-                                        .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage)
-                                                                        .ToList());
-
-            throw new RecipientValidationException(errors);
+            throw new ValidationException(vResults.Errors);
         }
 
         return recipient;
-    }
-}
-
-public class RecipientValidator : AbstractValidator<Recipient>
-{
-    public RecipientValidator()
-    {
-        RuleFor(x => x.Town).NotEmpty();
-        RuleFor(x => x.PostCode).NotEmpty();
-        RuleFor(x => x.StreetNumber).NotEmpty();
-        RuleFor(x => x.Country).NotEmpty();
-        RuleFor(x => x.PhoneNumber).NotEmpty();
-
-        RuleFor(x => x).Must(x => string.IsNullOrWhiteSpace(x.CompanyName) && string.IsNullOrWhiteSpace(x.Name) && string.IsNullOrWhiteSpace(x.LastName))
-            .WithMessage(""); //TODO: message
-
-        RuleFor(x => x.LastName).NotEmpty().WhenNotEmpty(x => x.Name);
-        RuleFor(x => x.Name).NotEmpty().WhenNotEmpty(x => x.LastName);
     }
 }
