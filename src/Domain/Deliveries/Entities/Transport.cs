@@ -1,6 +1,8 @@
 ﻿using MultiProject.Delivery.Application.Common.Interfaces;
 using MultiProject.Delivery.Domain.Common.Interaces;
+using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
+using MultiProject.Delivery.Domain.Deliveries.Exceptions;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.Exceptions;
@@ -52,14 +54,14 @@ public sealed class Transport : IAggregateRoot
     }
 
 
-    public static Transport Create(User deliverer, string number, string? aditionalInformation, double? totalWeight, DateTime startDate,
+    public static Result<Transport> Create(User deliverer, string number, string? aditionalInformation, double? totalWeight, DateTime startDate,
         User manager, IDateTime dateTimeProvider, List<NewTransportUnit> transportUnitsToCreate, List<UnitOfMeasure> unitOfMeasureList)
     {
-        if (deliverer is null) throw new UserNotFoundException(nameof(request.DelivererId));
-        if (deliverer.Role is not Users.Enums.UserRole.Deliverer) throw new UserRoleException(deliverer.Id);
+        if (deliverer is null) return Result.Failure<Transport>(Failures.DelivererNotFound);
+        if (deliverer.Role is not Users.Enums.UserRole.Deliverer) return Result.Failure<Transport>(Failures.DelivererInsufficientRole);
 
-        if (manager is null) throw new UserNotFoundException(nameof(request.ManagerId));
-        if (manager.Role is not Users.Enums.UserRole.Manager) throw new UserRoleException(nameof(request.ManagerId));
+        if (manager is null) return Result.Failure<Transport>(Failures.ManagerNotFound);
+        if (manager.Role is not Users.Enums.UserRole.Manager) return Result.Failure<Transport>(Failures.ManagerInsufficientRole);
 
         if (transportUnitsToCreate is null || transportUnitsToCreate.Count == 0)
         {
