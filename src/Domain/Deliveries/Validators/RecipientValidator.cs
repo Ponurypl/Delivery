@@ -14,7 +14,7 @@ public class RecipientValidator : AbstractValidator<Recipient>
         RuleFor(x => x.PhoneNumber).NotEmpty();
 
         RuleFor(x => x).Must(x => string.IsNullOrWhiteSpace(x.CompanyName) && string.IsNullOrWhiteSpace(x.Name) && string.IsNullOrWhiteSpace(x.LastName))
-            .WithMessage(""); //TODO: message
+            .WithMessage("Atleast one must be given. Company name or personal name");
 
         RuleFor(x => x.LastName).NotEmpty().WhenNotEmpty(x => x.Name);
         RuleFor(x => x.Name).NotEmpty().WhenNotEmpty(x => x.LastName);

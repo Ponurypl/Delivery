@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Application.Common.Interfaces.Repositories;
+using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
@@ -52,16 +53,19 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
                                             }).ToList();
 
 
-        Transport newTransport = Transport.Create(deliverer, request.Number, request.AditionalInformation, request.TotalWeight,
+        Result<Transport> newTransportResult = Transport.Create(deliverer, request.Number, request.AditionalInformation, request.TotalWeight,
                                                   request.StartDate, manager, _dateTime, transportUnitsToCreate, unitOfMeasureList);
-
-        _transportRepository.Add(newTransport);
-        await _unitOfWork.SaveChangesAsync();
-
-        return new TransportCreatedDto
+        if (newTransportResult.IsSuccess)
         {
-            Id = newTransport.Id,
-            TransportUnits = newTransport.TransportUnits.Select(u => new TransportUnitCreatedDto() { Id = u.Id, Number = u.Number }).ToList()
-        };
+            _transportRepository.Add(newTransportResult.Value);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new TransportCreatedDto
+            {
+                Id = newTransportResult.Value.Id,
+                TransportUnits = newTransportResult.Value.TransportUnits.Select(u => new TransportUnitCreatedDto() { Id = u.Id, Number = u.Number }).ToList()
+            };
+        }
+        else throw new Exception("Transport creation error" + newTransportResult.Error);
     }
 }

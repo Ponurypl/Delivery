@@ -7,7 +7,6 @@ using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.Exceptions;
 using MultiProject.Delivery.Domain.Users.Entities;
-using MultiProject.Delivery.Domain.Users.Exceptions;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
@@ -73,7 +72,7 @@ public sealed class Transport : IAggregateRoot
         
         var newTransport = new Transport(deliverer, number, aditionalInformation, totalWeight, startDate, manager, dateTimeProvider);
 
-        foreach (var unit in transportUnitsToCreate)
+        foreach (var unit in transportUnitsToCreate!)
         {
             UnitOfMeasure? unitOfMeasure = unitOfMeasureList.FirstOrDefault(u => u.Id == unit.UnitOfMeasureId);
 
