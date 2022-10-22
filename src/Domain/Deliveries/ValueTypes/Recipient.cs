@@ -35,8 +35,8 @@ public sealed class Recipient
                      string? name, string phoneNumber, string postCode, string? street,
                      string streetNumber, string town)
     {
-        var recipient = new Recipient(companyName, country, flatNumber, lastName, name, phoneNumber, postCode, street, streetNumber, town);
-        var validator = new RecipientValidator();
+        Recipient recipient = new(companyName, country, flatNumber, lastName, name, phoneNumber, postCode, street, streetNumber, town);
+        RecipientValidator validator = new();
 
         var vResults = validator.Validate(recipient);
         if (!vResults.IsValid)

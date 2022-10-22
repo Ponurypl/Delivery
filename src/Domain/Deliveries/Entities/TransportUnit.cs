@@ -34,6 +34,7 @@ public sealed class TransportUnit : IEntity
     public static TransportUnit Create(string number, string? aditionalInformation, string description, Recipient recipient, 
                                        string? barcode, double? amount, UnitOfMeasure? unitOfMeasure, Transport transport)
     {
+        /*
         if (barcode is null && (amount is null || unitOfMeasure is null))
         {
             throw new TransportUnitException(number);
@@ -46,8 +47,9 @@ public sealed class TransportUnit : IEntity
         {
             throw new TransportUnitException(number);
         }
+        */
 
-        var newTransportUnit = new TransportUnit(number, aditionalInformation, description, recipient, transport);
+        TransportUnit newTransportUnit = new(number, aditionalInformation, description, recipient, transport);
         UnitDetails unitDetails;
         if (barcode is not null)
         {

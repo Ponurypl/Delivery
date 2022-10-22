@@ -1,8 +1,10 @@
-﻿using MultiProject.Delivery.Application.Common.Interfaces;
+﻿using FluentValidation;
+using MultiProject.Delivery.Application.Common.Interfaces;
 using MultiProject.Delivery.Domain.Common.Interaces;
 using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
 using MultiProject.Delivery.Domain.Deliveries.Exceptions;
+using MultiProject.Delivery.Domain.Deliveries.Validators;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.Exceptions;
@@ -56,6 +58,10 @@ public sealed class Transport : IAggregateRoot
     public static Result<Transport> Create(User deliverer, string number, string? aditionalInformation, double? totalWeight, DateTime startDate,
         User manager, IDateTime dateTimeProvider, List<NewTransportUnit> transportUnitsToCreate, List<UnitOfMeasure> unitOfMeasureList)
     {
+        TransportValidator validator = new();
+       
+
+        /*
         if (deliverer is null) return Result.Failure<Transport>(Failures.DelivererNotFound);
         if (deliverer.Role is not Users.Enums.UserRole.Deliverer) return Result.Failure<Transport>(Failures.DelivererInsufficientRole);
 
@@ -66,11 +72,13 @@ public sealed class Transport : IAggregateRoot
         {
             //TODO: throw brak transportunitów
         }
+        */
+
 
         if (unitOfMeasureList is null) throw new ArgumentNullException(nameof(unitOfMeasureList));
-        
-        
-        var newTransport = new Transport(deliverer, number, aditionalInformation, totalWeight, startDate, manager, dateTimeProvider);
+
+
+        Transport newTransport = new(deliverer, number, aditionalInformation, totalWeight, startDate, manager, dateTimeProvider);
 
         foreach (var unit in transportUnitsToCreate!)
         {
@@ -89,6 +97,13 @@ public sealed class Transport : IAggregateRoot
                 ex.Data.Add("UnitOfMeasureId", unit.UnitOfMeasureId);
                 throw;
             }            
+        }
+
+
+        var vResults = validator.Validate(newTransport);
+        if (!vResults.IsValid)
+        {
+            throw new ValidationException(vResults.Errors);
         }
 
         return newTransport;
