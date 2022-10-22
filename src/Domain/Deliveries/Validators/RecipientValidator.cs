@@ -3,7 +3,7 @@ using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Validators;
 
-public class RecipientValidator : AbstractValidator<Recipient>
+public sealed class RecipientValidator : AbstractValidator<Recipient>
 {
     public RecipientValidator()
     {
@@ -14,7 +14,7 @@ public class RecipientValidator : AbstractValidator<Recipient>
         RuleFor(x => x.PhoneNumber).NotEmpty();
 
         RuleFor(x => x).Must(x => string.IsNullOrWhiteSpace(x.CompanyName) && string.IsNullOrWhiteSpace(x.Name) && string.IsNullOrWhiteSpace(x.LastName))
-            .WithMessage("Atleast one must be given. Company name or personal name");
+            .WithMessage("Atleast one recipient name must be given. Company name or personal name");
 
         RuleFor(x => x.LastName).NotEmpty().WhenNotEmpty(x => x.Name);
         RuleFor(x => x.Name).NotEmpty().WhenNotEmpty(x => x.LastName);
