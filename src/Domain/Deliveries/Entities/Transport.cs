@@ -1,9 +1,7 @@
-﻿using FluentValidation;
-using MultiProject.Delivery.Application.Common.Interfaces;
+﻿using MultiProject.Delivery.Application.Common.Interfaces;
 using MultiProject.Delivery.Domain.Common.Interaces;
 using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
-using MultiProject.Delivery.Domain.Deliveries.Exceptions;
 using MultiProject.Delivery.Domain.Deliveries.Validators;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
@@ -46,7 +44,7 @@ public sealed class Transport : IAggregateRoot
                                     string streetNumber, string town, string number, string? aditionalInformation,
                                     string description, string? barcode, double? amount, UnitOfMeasure? unitOfMeasure)
     {
-        var recipient = Recipient.Create(companyName, country, flatNumber, lastName, name, phoneNumber,
+        Recipient recipient = Recipient.Create(companyName, country, flatNumber, lastName, name, phoneNumber,
                                          postCode, street, streetNumber, town);
 
         TransportUnit ntu = TransportUnit.Create(number, aditionalInformation, description, recipient,
@@ -59,28 +57,12 @@ public sealed class Transport : IAggregateRoot
         User manager, IDateTime dateTimeProvider, List<NewTransportUnit> transportUnitsToCreate, List<UnitOfMeasure> unitOfMeasureList)
     {
         TransportValidator validator = new();
-       
-
-        /*
-        if (deliverer is null) return Result.Failure<Transport>(Failures.DelivererNotFound);
-        if (deliverer.Role is not Users.Enums.UserRole.Deliverer) return Result.Failure<Transport>(Failures.DelivererInsufficientRole);
-
-        if (manager is null) return Result.Failure<Transport>(Failures.ManagerNotFound);
-        if (manager.Role is not Users.Enums.UserRole.Manager) return Result.Failure<Transport>(Failures.ManagerInsufficientRole);
-
-        if (transportUnitsToCreate is null || transportUnitsToCreate.Count == 0)
-        {
-            //TODO: throw brak transportunitów
-        }
-        */
-
-
         if (unitOfMeasureList is null) throw new ArgumentNullException(nameof(unitOfMeasureList));
-
+        if (transportUnitsToCreate is null) throw new ArgumentNullException(nameof(transportUnitsToCreate));
 
         Transport newTransport = new(deliverer, number, aditionalInformation, totalWeight, startDate, manager, dateTimeProvider);
 
-        foreach (var unit in transportUnitsToCreate!)
+        foreach (var unit in transportUnitsToCreate)
         {
             UnitOfMeasure? unitOfMeasure = unitOfMeasureList.FirstOrDefault(u => u.Id == unit.UnitOfMeasureId);
 
