@@ -17,7 +17,7 @@ public class NewTransportUnit
     public string RecipientPostCode { get; set; } = default!;
     // jeśli unikatowa paczka to musi zostać podany kod kreskowy
     public string? Barcode { get; set; }
-    // jeśli nieunikatowa paczka to trzeba podać jednostkę miary i ilść do dostarczenia
+    // jeśli nieunikatowa paczka to trzeba podać jednostkę miary i ilość do dostarczenia
     public int? UnitOfMeasureId { get; set; } = null!;
     public double? Amount { get; set; }
 }

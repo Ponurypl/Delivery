@@ -10,6 +10,7 @@ public sealed class CreateTransportCommand : ICommand<TransportCreatedDto>
     public Guid ManagerId { get; set; }
     public List<TransportUnit> TransportUnits { get; set; } = new();
 
+    //TODO: Czy to nie powinniśmy zamienić czasem z ovverride TransportUnit-a na NewTransportUnit??
     public sealed class TransportUnit 
     {
         public string Description { get; set; } = default!;

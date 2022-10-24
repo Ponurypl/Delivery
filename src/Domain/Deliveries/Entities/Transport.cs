@@ -57,6 +57,7 @@ public sealed class Transport : IAggregateRoot
         User manager, IDateTime dateTimeProvider, List<NewTransportUnit> transportUnitsToCreate, List<UnitOfMeasure> unitOfMeasureList)
     {
         TransportValidator validator = new();
+        //TODO: skoro mamy to w validatorze to chyba te dwa wyjątki są do wyrzucenia?
         if (unitOfMeasureList is null) throw new ArgumentNullException(nameof(unitOfMeasureList));
         if (transportUnitsToCreate is null) throw new ArgumentNullException(nameof(transportUnitsToCreate));
 
