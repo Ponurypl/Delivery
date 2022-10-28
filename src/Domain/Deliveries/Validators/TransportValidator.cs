@@ -6,10 +6,8 @@ public sealed class TransportValidator : AbstractValidator<Transport>
 {
     public TransportValidator()
     {
-        RuleFor(x => x.Deliverer).NotEmpty();
-        RuleFor(x => x.Deliverer.Role).Equal(Users.Enums.UserRole.Deliverer);
-        RuleFor(x => x.Manager).NotEmpty();
-        RuleFor(x => x.Manager.Role).Equal(Users.Enums.UserRole.Manager);
+        RuleFor(x => x.DelivererId).NotEmpty();
+        RuleFor(x => x.ManagerId).NotEmpty();
         RuleFor(x => x.TransportUnits).NotEmpty();
 
     }

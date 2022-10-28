@@ -6,7 +6,6 @@ using MultiProject.Delivery.Domain.Deliveries.Validators;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.Exceptions;
-using MultiProject.Delivery.Domain.Users.Entities;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
@@ -15,28 +14,28 @@ public sealed class Transport : IAggregateRoot
     private readonly List<TransportUnit> _transportUnits = new();
 
     public int Id { get; set; }
-    public User Deliverer { get; set; } = null!;
+    public Guid DelivererId { get; set; }
     public TransportStatus Status { get; set; }
     public string Number { get; set; } = default!;
     public string? AditionalInformation { get; set; }
     public double? TotalWeight { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime StartDate { get; set; }
-    public User Manager { get; set; } = null!;
+    public Guid ManagerId { get; set; }
     public IReadOnlyList<TransportUnit> TransportUnits  => _transportUnits; 
 
 
-    private Transport(User deliverer, string number, string? aditionalInformation, double? totalWeight, DateTime startDate,
-                      User manager, IDateTime dateTimeProvider)
+    private Transport(Guid delivererId, string number, string? aditionalInformation, double? totalWeight, DateTime startDate,
+                      Guid managerId, IDateTime dateTimeProvider)
     {
-        Deliverer = deliverer;
+        DelivererId = delivererId;
         Status = TransportStatus.New;
         Number = number;
         AditionalInformation = aditionalInformation;
         TotalWeight = totalWeight;
         CreationDate = dateTimeProvider.Now;
         StartDate = startDate;
-        Manager = manager;
+        ManagerId = managerId;
     }
 
     private void CreateTransportUnit(string? companyName, string country, string? flatNumber, string? lastName,
@@ -53,15 +52,15 @@ public sealed class Transport : IAggregateRoot
     }
 
 
-    public static Result<Transport> Create(User deliverer, string number, string? aditionalInformation, double? totalWeight, DateTime startDate,
-        User manager, IDateTime dateTimeProvider, List<NewTransportUnit> transportUnitsToCreate, List<UnitOfMeasure> unitOfMeasureList)
+    public static Result<Transport> Create(Guid delivererId, string number, string? aditionalInformation, double? totalWeight, 
+        DateTime startDate, Guid managerId, IDateTime dateTimeProvider, 
+        List<NewTransportUnit> transportUnitsToCreate, List<UnitOfMeasure> unitOfMeasureList)
     {
-        TransportValidator validator = new();
-        //TODO: skoro mamy to w validatorze to chyba te dwa wyjątki są do wyrzucenia?
         if (unitOfMeasureList is null) throw new ArgumentNullException(nameof(unitOfMeasureList));
         if (transportUnitsToCreate is null) throw new ArgumentNullException(nameof(transportUnitsToCreate));
 
-        Transport newTransport = new(deliverer, number, aditionalInformation, totalWeight, startDate, manager, dateTimeProvider);
+        TransportValidator validator = new();
+        Transport newTransport = new(delivererId, number, aditionalInformation, totalWeight, startDate, managerId, dateTimeProvider);
 
         foreach (var unit in transportUnitsToCreate)
         {

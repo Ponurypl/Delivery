@@ -1,9 +1,9 @@
 ﻿using MultiProject.Delivery.Application.Common.Interfaces.Repositories;
+using MultiProject.Delivery.Application.Users.Services;
 using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
-using MultiProject.Delivery.Domain.Users.Entities;
 
 namespace MultiProject.Delivery.Application.Delivieries.CreateTransport;
 
@@ -11,24 +11,33 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
 {
     private readonly ITransportRepository _transportRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IUserRepository _userRepository;
+    private readonly IUserRoleService _userRoleService;
     private readonly IDateTime _dateTime;
     private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
 
-    public CreateTransportCommandHandler(ITransportRepository transportRepository, IUnitOfWork unitOfWork, IUserRepository userRepository, 
-                                        IDateTime dateTime, IUnitOfMeasureRepository unitOfMeasureRepository)
+    public CreateTransportCommandHandler(ITransportRepository transportRepository, IUnitOfWork unitOfWork,
+                                        IDateTime dateTime, IUnitOfMeasureRepository unitOfMeasureRepository, 
+                                        IUserRoleService userRoleService)
     {
         _transportRepository = transportRepository;
         _unitOfWork = unitOfWork;
-        _userRepository = userRepository;
         _dateTime = dateTime;
         _unitOfMeasureRepository = unitOfMeasureRepository;
+        _userRoleService = userRoleService;
     }
 
     public async Task<TransportCreatedDto> Handle(CreateTransportCommand request, CancellationToken cancellationToken)
     {
-        User deliverer = await _userRepository.GetByIdAsync(request.DelivererId);
-        User manager = await _userRepository.GetByIdAsync(request.ManagerId);
+        if (await _userRoleService.CheckIfUserIsDelivererAsync(request.DelivererId) == false)
+        {
+            //TODO: Error o nie spełnionej roli
+        }
+        if (await _userRoleService.CheckIfUserIsManagerAsync(request.ManagerId) == false)
+        {
+            //TODO: Error o nie spełnionej roli
+        }
+
+        //TODO: ???
         List<UnitOfMeasure> unitOfMeasureList = await _unitOfMeasureRepository.GetAllAsync();
 
         //TODO: Mapper
@@ -53,8 +62,8 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
                                             }).ToList();
 
 
-        Result<Transport> newTransportResult = Transport.Create(deliverer, request.Number, request.AditionalInformation, request.TotalWeight,
-                                                  request.StartDate, manager, _dateTime, transportUnitsToCreate, unitOfMeasureList);
+        Result<Transport> newTransportResult = Transport.Create(request.DelivererId, request.Number, request.AditionalInformation, request.TotalWeight,
+                                                  request.StartDate, request.ManagerId, _dateTime, transportUnitsToCreate, unitOfMeasureList);
         if (newTransportResult.IsSuccess)
         {
             _transportRepository.Add(newTransportResult.Value);
