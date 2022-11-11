@@ -1,7 +1,7 @@
-﻿namespace MultiProject.Delivery.Application.Delivieries.CreateTransport;
+﻿namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateTransport;
 
 public sealed record TransportCreatedDto
 {
-    public int Id { get; set; }
-    public List<TransportUnitCreatedDto> TransportUnits { get; set; } = new();
+    public int Id { get; init; }
+    public List<TransportUnitCreatedDto> TransportUnits { get; init; } = new();
 }

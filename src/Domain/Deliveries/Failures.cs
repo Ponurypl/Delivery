@@ -1,11 +1,13 @@
-﻿using MultiProject.Delivery.Domain.Common.ValueTypes;
-
-namespace MultiProject.Delivery.Domain.Deliveries.Exceptions;
+﻿namespace MultiProject.Delivery.Domain.Deliveries;
 
 internal static class Failures
 {
-    public static Error DelivererNotFound => new Error("UserNotFound", "Deliverer not found");
-    public static Error ManagerNotFound => new Error("UserNotFound", "Manager not found");
-    public static Error DelivererInsufficientRole => new Error("UserInsufficientRole", "Deliverer has insufficient role"); 
-    public static Error ManagerInsufficientRole => new Error("UserInsufficientRole", "Manager has insufficient role");
+
+    public static Error InvalidUnitBarcode => Error.Validation(nameof(InvalidUnitBarcode));
+    public static Error MissingParent => Error.Validation(nameof(MissingParent));
+    public static Error InvalidUnitAmount => Error.Validation(nameof(InvalidUnitAmount));
+    public static Error InvalidTransportUnitInput => Error.Validation(nameof(InvalidTransportUnitInput));
+    public static Error InvalidTransportUnitDetails => Error.Validation(nameof(InvalidTransportUnitDetails));
+    public static Error InvalidTransportInput => Error.Validation(nameof(InvalidTransportInput));
+    public static Error InvalidRecipientInput => Error.Validation(nameof(InvalidRecipientInput));
 }

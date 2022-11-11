@@ -1,10 +1,10 @@
-﻿using MediatR;
-using MultiProject.Delivery.Application.Common.Interfaces.Repositories;
+﻿using MultiProject.Delivery.Application.Common.Persistence;
+using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 
 namespace MultiProject.Delivery.Application.Dictionaries.Commands.CreateUnitOfMeasure;
 
-public sealed class CreateUnitOfMeasureCommandHandler : IHandler<CreateUnitOfMeasureCommand>
+public sealed class CreateUnitOfMeasureCommandHandler : ICommandHandler<CreateUnitOfMeasureCommand>
 {
     private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -15,8 +15,10 @@ public sealed class CreateUnitOfMeasureCommandHandler : IHandler<CreateUnitOfMea
         _unitOfMeasureRepository = unitOfMeasureRepository;
     }
 
-    public async Task<Unit> Handle(CreateUnitOfMeasureCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> Handle(CreateUnitOfMeasureCommand request, CancellationToken cancellationToken)
     {
+        //TODO: UnitOfMeasure jest agregatem, nie pozwalamy go tworzyć z zewnątrz. Do przerobienia na metodę statyczną Create.
+        
         UnitOfMeasure newUnitOfMeasure = new()
         {
             Name = request.Name,
@@ -27,6 +29,6 @@ public sealed class CreateUnitOfMeasureCommandHandler : IHandler<CreateUnitOfMea
         _unitOfMeasureRepository.Add(newUnitOfMeasure);
         await _unitOfWork.SaveChangesAsync();        
 
-        return Unit.Value;
+        return Result.Success;
     }
 }

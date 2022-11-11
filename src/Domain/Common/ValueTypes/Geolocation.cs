@@ -2,7 +2,24 @@
 
 public class Geolocation
 {
-    public double? Latitude { get; set; }
-    public double? Longitude { get; set; }
-    public double? Accuracy { get; set; }
+    public double Latitude { get; private set; }
+    public double Longitude { get; private set; }
+    public double Accuracy { get; private set; }
+
+    protected Geolocation(double latitude, double longitude, double accuracy)
+    {
+        Latitude = latitude;
+        Longitude = longitude;
+        Accuracy = accuracy;
+    }
+
+    public static ErrorOr<Geolocation> Create(double latitude, double longitude, double accuracy)
+    {
+        if (accuracy <= 0)
+        {
+            return Failures.InvalidGeolocation;
+        }
+
+        return new Geolocation(latitude, longitude, accuracy);
+    }
 }

@@ -1,10 +1,10 @@
-﻿namespace MultiProject.Delivery.Domain.Deliveries.ValueTypes;
+﻿namespace MultiProject.Delivery.Domain.Deliveries.DTO;
 
-public class NewTransportUnit
+public sealed record NewTransportUnit
 {
     public string Description { get; set; } = default!;
     public string Number { get; set; } = default!;
-    public string? AditionalInformation { get; set; }
+    public string? AdditionalInformation { get; set; }
     public string? RecipientCompanyName { get; set; }
     public string? RecipientName { get; set; }
     public string? RecipientLastName { get; set; }

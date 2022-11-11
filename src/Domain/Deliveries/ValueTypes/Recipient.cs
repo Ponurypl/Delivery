@@ -1,23 +1,21 @@
-﻿using MultiProject.Delivery.Domain.Deliveries.Validators;
-
-namespace MultiProject.Delivery.Domain.Deliveries.ValueTypes;
+﻿namespace MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 
 public sealed class Recipient
 {
-    public string? CompanyName { get; set; }
-    public string? Name { get; set; }
-    public string? LastName { get; set; }
-    public string PhoneNumber { get; set; } = default!;
-    public string? FlatNumber { get; set; }
-    public string StreetNumber { get; set; } = default!;
-    public string? Street { get; set; }
-    public string Town { get; set; } = default!;
-    public string Country { get; set; } = default!;
-    public string PostCode { get; set; } = default!;
+    public string? CompanyName { get; private set; }
+    public string? Name { get; private set; }
+    public string? LastName { get; private set; }
+    public string PhoneNumber { get; private set; }
+    public string? FlatNumber { get; private set; }
+    public string StreetNumber { get; private set; }
+    public string? Street { get; private set; }
+    public string Town { get; private set; }
+    public string Country { get; private set; }
+    public string PostCode { get; private set; }
 
     private Recipient(string? companyName, string country, string? flatNumber, string? lastName,
-                     string? name, string phoneNumber, string postCode, string? street,
-                     string streetNumber, string town)
+                      string? name, string phoneNumber, string postCode, string? street,
+                      string streetNumber, string town)
     {
         CompanyName = companyName;
         Country = country;
@@ -31,19 +29,30 @@ public sealed class Recipient
         Town = town;
     }
 
-    public static Recipient Create(string? companyName, string country, string? flatNumber, string? lastName,
-                     string? name, string phoneNumber, string postCode, string? street,
-                     string streetNumber, string town)
+    public static ErrorOr<Recipient> Create(string? companyName, string country, string? flatNumber, string? lastName,
+                                            string? name, string phoneNumber, string postCode, string? street,
+                                            string streetNumber, string town)
     {
-        Recipient recipient = new(companyName, country, flatNumber, lastName, name, phoneNumber, postCode, street, streetNumber, town);
-        RecipientValidator validator = new();
-
-        var vResults = validator.Validate(recipient);
-        if (!vResults.IsValid)
+        if (string.IsNullOrWhiteSpace(town) || string.IsNullOrWhiteSpace(postCode) ||
+            string.IsNullOrWhiteSpace(streetNumber) || string.IsNullOrWhiteSpace(country) ||
+            string.IsNullOrWhiteSpace(phoneNumber))
         {
-            throw new ValidationException(vResults.Errors);
+            return Failures.InvalidRecipientInput;
         }
 
-        return recipient;
+        if (string.IsNullOrWhiteSpace(companyName) && string.IsNullOrWhiteSpace(name) &&
+            string.IsNullOrWhiteSpace(lastName))
+        {
+            return Failures.InvalidRecipientInput;
+        }
+
+        if (string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(lastName) ||
+            !string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(lastName))
+        {
+            return Failures.InvalidRecipientInput;
+        }
+
+        return new Recipient(companyName, country, flatNumber, lastName, name, phoneNumber, postCode, street,
+                             streetNumber, town);
     }
 }

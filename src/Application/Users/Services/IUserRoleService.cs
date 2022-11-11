@@ -1,8 +1,7 @@
-﻿namespace MultiProject.Delivery.Application.Users.Services
+﻿namespace MultiProject.Delivery.Application.Users.Services;
+
+public interface IUserRoleService
 {
-    public interface IUserRoleService
-    {
-        Task<bool> CheckIfUserIsDelivererAsync(Guid id);
-        Task<bool> CheckIfUserIsManagerAsync(Guid id);
-    }
+    Task<bool> CheckIfUserIsDelivererAsync(Guid id);
+    Task<bool> CheckIfUserIsManagerAsync(Guid id);
 }

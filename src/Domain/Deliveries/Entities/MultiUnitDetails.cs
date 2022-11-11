@@ -1,4 +1,4 @@
-﻿using MultiProject.Delivery.Domain.Common.Interaces;
+﻿using MultiProject.Delivery.Domain.Common.Interfaces;
 using MultiProject.Delivery.Domain.Deliveries.Abstractions;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
@@ -15,10 +15,10 @@ public sealed class MultiUnitDetails : UnitDetails, IEntity
         TransportUnit = transportUnit;
     }
 
-    public static MultiUnitDetails Create(double amount, int unitOfMeasureId, TransportUnit transportUnit)
+    public static ErrorOr<MultiUnitDetails> Create(double amount, int unitOfMeasureId, TransportUnit transportUnit)
     {
-        if (transportUnit is null) throw new ArgumentNullException(nameof(transportUnit));
-        if (amount <= 0) throw new ArgumentOutOfRangeException(nameof(amount));
+        if (transportUnit is null) return Failures.MissingParent;
+        if (amount <= 0) return Failures.InvalidUnitAmount;
 
         return new MultiUnitDetails(amount, unitOfMeasureId, transportUnit);
     }

@@ -1,13 +1,14 @@
-﻿using MultiProject.Delivery.Application.Common.Interfaces.Repositories;
+﻿using MultiProject.Delivery.Application.Common.Persistence;
+using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Application.Users.Services;
-using MultiProject.Delivery.Domain.Common.ValueTypes;
+using MultiProject.Delivery.Domain.Common.DateTimeProvider;
+using MultiProject.Delivery.Domain.Deliveries.DTO;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
-using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 
-namespace MultiProject.Delivery.Application.Delivieries.CreateTransport;
+namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateTransport;
 
-public sealed class CreateTransportCommandHandler : IHandler<CreateTransportCommand, TransportCreatedDto>
+public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransportCommand, TransportCreatedDto>
 {
     private readonly ITransportRepository _transportRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -26,55 +27,67 @@ public sealed class CreateTransportCommandHandler : IHandler<CreateTransportComm
         _userRoleService = userRoleService;
     }
 
-    public async Task<TransportCreatedDto> Handle(CreateTransportCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<TransportCreatedDto>> Handle(CreateTransportCommand request, CancellationToken cancellationToken)
     {
         if (await _userRoleService.CheckIfUserIsDelivererAsync(request.DelivererId) == false)
         {
             //TODO: Error o nie spełnionej roli
         }
+
         if (await _userRoleService.CheckIfUserIsManagerAsync(request.ManagerId) == false)
         {
             //TODO: Error o nie spełnionej roli
         }
 
-        //TODO: ???
+        //TODO: Jeżeli już tu sprawdzimy czy dla każdego elementu request.TransportUnits jego UnitOfMeasureId istneje w słowniku
+        //to do wnętrza Transport.Create nie będziemy musieli spuszczać całej listy
         List<UnitOfMeasure> unitOfMeasureList = await _unitOfMeasureRepository.GetAllAsync();
 
-        //TODO: Mapper
+        //TODO: Mapper - jego zostawiasz tym się zajmiemy później
         List<NewTransportUnit> transportUnitsToCreate = request.TransportUnits.Select(u => new NewTransportUnit()
-                                            {
-                                                AditionalInformation = u.AditionalInformation,
-                                                Amount = u.Amount,
-                                                Barcode = u.Barcode,
-                                                Description = u.Description,
-                                                Number = u.Number,
-                                                RecipientCompanyName = u.RecipientCompanyName,
-                                                RecipientCountry = u.RecipientCountry,
-                                                RecipientFlatNumber = u.RecipientFlatNumber,
-                                                RecipientLastName = u.RecipientLastName,
-                                                RecipientName = u.RecipientName,
-                                                RecipientPhoneNumber = u.RecipientPhoneNumber,
-                                                RecipientPostCode = u.RecipientPostCode,
-                                                RecipientStreet = u.RecipientStreet,
-                                                RecipientStreetNumber = u.RecipientStreetNumber,
-                                                RecipientTown = u.RecipientTown,
-                                                UnitOfMeasureId = u.UnitOfMeasureId
-                                            }).ToList();
+                                                                   {
+                                                                       AdditionalInformation = u.AdditionalInformation,
+                                                                       Amount = u.Amount,
+                                                                       Barcode = u.Barcode,
+                                                                       Description = u.Description,
+                                                                       Number = u.Number,
+                                                                       RecipientCompanyName = u.RecipientCompanyName,
+                                                                       RecipientCountry = u.RecipientCountry,
+                                                                       RecipientFlatNumber = u.RecipientFlatNumber,
+                                                                       RecipientLastName = u.RecipientLastName,
+                                                                       RecipientName = u.RecipientName,
+                                                                       RecipientPhoneNumber = u.RecipientPhoneNumber,
+                                                                       RecipientPostCode = u.RecipientPostCode,
+                                                                       RecipientStreet = u.RecipientStreet,
+                                                                       RecipientStreetNumber = u.RecipientStreetNumber,
+                                                                       RecipientTown = u.RecipientTown,
+                                                                       UnitOfMeasureId = u.UnitOfMeasureId
+                                                                   })
+                                                               .ToList();
 
 
-        Result<Transport> newTransportResult = Transport.Create(request.DelivererId, request.Number, request.AditionalInformation, request.TotalWeight,
-                                                  request.StartDate, request.ManagerId, _dateTime, transportUnitsToCreate, unitOfMeasureList);
-        if (newTransportResult.IsSuccess)
+        var newTransportResult = Transport.Create(request.DelivererId, request.Number, request.AdditionalInformation,
+                                                  request.TotalWeight,
+                                                  request.StartDate, request.ManagerId, _dateTime,
+                                                  transportUnitsToCreate, unitOfMeasureList);
+        if (newTransportResult.IsError)
         {
-            _transportRepository.Add(newTransportResult.Value);
-            await _unitOfWork.SaveChangesAsync();
-
-            return new TransportCreatedDto
-            {
-                Id = newTransportResult.Value.Id,
-                TransportUnits = newTransportResult.Value.TransportUnits.Select(u => new TransportUnitCreatedDto() { Id = u.Id, Number = u.Number }).ToList()
-            };
+            return newTransportResult.Errors;
         }
-        else throw new Exception("Transport creation error" + newTransportResult.Error);
+
+        _transportRepository.Add(newTransportResult.Value);
+        await _unitOfWork.SaveChangesAsync();
+
+        return new TransportCreatedDto
+               {
+                   Id = newTransportResult.Value.Id,
+                   TransportUnits = newTransportResult.Value.TransportUnits
+                                                      .Select(u => new TransportUnitCreatedDto()
+                                                                   {
+                                                                       Id = u.Id, Number = u.Number
+                                                                   })
+                                                      .ToList()
+               };
+
     }
 }

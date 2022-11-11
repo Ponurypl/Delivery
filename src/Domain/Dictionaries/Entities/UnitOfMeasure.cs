@@ -1,4 +1,4 @@
-﻿using MultiProject.Delivery.Domain.Common.Interaces;
+﻿using MultiProject.Delivery.Domain.Common.Interfaces;
 
 namespace MultiProject.Delivery.Domain.Dictionaries.Entities;
 

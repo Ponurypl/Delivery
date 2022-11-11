@@ -1,1 +1,2 @@
-﻿global using MultiProject.Delivery.Application.Common.Interfaces;
+﻿global using MultiProject.Delivery.Application.Common.Messaging;
+global using ErrorOr;

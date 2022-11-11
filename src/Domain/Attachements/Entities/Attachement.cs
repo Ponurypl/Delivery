@@ -1,5 +1,5 @@
 ﻿using MultiProject.Delivery.Domain.Attachements.Enums;
-using MultiProject.Delivery.Domain.Common.Interaces;
+using MultiProject.Delivery.Domain.Common.Interfaces;
 using System.Reflection.Metadata;
 
 namespace MultiProject.Delivery.Domain.Attachements.Entities;

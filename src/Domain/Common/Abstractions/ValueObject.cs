@@ -19,10 +19,10 @@ public abstract class ValueObject : IEquatable<ValueObject>
 
     public static bool operator !=(ValueObject a, ValueObject b) => !(a == b);
 
-    public bool Equals(ValueObject other) =>
+    public bool Equals(ValueObject? other) =>
         !(other is null) && GetAtomicValues().SequenceEqual(other.GetAtomicValues());
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj == null)
         {

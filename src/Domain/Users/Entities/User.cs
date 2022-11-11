@@ -1,21 +1,20 @@
-﻿using MultiProject.Delivery.Domain.Common.Interaces;
+﻿using MultiProject.Delivery.Domain.Common.Interfaces;
 using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Users.Enums;
-using MultiProject.Delivery.Domain.Users.Validators;
 
 namespace MultiProject.Delivery.Domain.Users.Entities;
 
 public sealed class User : IAggregateRoot
 {
-    public Guid Id { get; set; }
-    public bool IsActive { get; set; }
-    public UserRole Role { get; set; }
-    public string Login { get; set; } = default!;
-    public string Password { get; set; } = default!;
-    public string PhoneNumber { get; set; } = default!;
-    public AdvancedGeolocalization? Geolocalization { get; set; }
+    public Guid Id { get; private set; }
+    public bool IsActive { get; private set; }
+    public UserRole Role { get; private set; }
+    public string Login { get; private set; } 
+    public string Password { get; private set; }
+    public string PhoneNumber { get; private set; } 
+    public AdvancedGeolocation? Location { get; private set; }
 
-    private User(Guid id, bool isActive, UserRole role, string login, string password, string phoneNumber, AdvancedGeolocalization? geolocalization)
+    private User(Guid id, bool isActive, UserRole role, string login, string password, string phoneNumber)
     {
         Id = id;
         IsActive = isActive;
@@ -23,22 +22,32 @@ public sealed class User : IAggregateRoot
         Login = login;
         Password = password;
         PhoneNumber = phoneNumber;
-        Geolocalization = geolocalization;
     }
 
-    public static Result<User> Create(UserRole role, string login, string password, string phoneNumber)
+    public static ErrorOr<User> Create(UserRole role, string login, string password, string phoneNumber)
     {
-        UserValidator validator = new();
-        Guid id = Guid.NewGuid();
-        bool isActive = true;
-        User newUser = new(id, isActive, role, login, password, phoneNumber, null);
-
-        var vResults = validator.Validate(newUser);
-        if(!vResults.IsValid)
+        if (login == password)
         {
-            throw new ValidationException(vResults.Errors);
+            return Failures.LoginSameAsPassword;
         }
-         
-        return newUser;
+
+        //TODO: Regex na numer telefonu
+
+        return new User(Guid.NewGuid(), true, role, login, password, phoneNumber);
+    }
+
+    public ErrorOr<Updated> UpdateGeolocation(double latitude, double longitude, double accuracy, double heading,
+                                              double speed, DateTime readDateTime)
+    {
+        var geolocation = AdvancedGeolocation.Create(latitude, longitude, accuracy, readDateTime,
+                                                     heading, speed);
+
+        if (geolocation.IsError)
+        {
+            return geolocation.Errors;
+        }
+
+        Location = geolocation.Value;
+        return Result.Updated;
     }
 }

@@ -1,8 +1,7 @@
 ﻿using MultiProject.Delivery.Domain.Scans.Enums;
 using MultiProject.Delivery.Domain.Common.ValueTypes;
-using MultiProject.Delivery.Domain.Common.Interaces;
-using MultiProject.Delivery.Application.Common.Interfaces;
-using MultiProject.Delivery.Domain.Scans.Validators;
+using MultiProject.Delivery.Domain.Common.DateTimeProvider;
+using MultiProject.Delivery.Domain.Common.Interfaces;
 
 namespace MultiProject.Delivery.Domain.Scans.Entities;
 
@@ -12,33 +11,43 @@ public sealed class Scan : IAggregateRoot
     public int TransportUnitId { get; private set; }
     public ScanStatus Status { get; private set; }
     public DateTime LastUpdateDate { get; private set; }
-    public double? Quanitity { get; private set; }
     public Guid DelivererId { get; private set; }
-    public Geolocation? Geolocalization { get; private set; }
+    public double? Quantity { get; private set; }
+    public Geolocation? Location { get; private set; }
 
-    private Scan(int transportUnitId, double? quanitity, Guid delivererId, Geolocation? geolocalization,
-                 DateTime lastUpdateDate, ScanStatus scanStatus)
+    private Scan(int transportUnitId, Guid delivererId, DateTime lastUpdateDate, ScanStatus scanStatus)
     {
         TransportUnitId = transportUnitId;
         Status = scanStatus;
         LastUpdateDate = lastUpdateDate;
-        Quanitity = quanitity;
         DelivererId = delivererId;
-        Geolocalization = geolocalization;
     }
 
-    public static Result<Scan> Create(int transportUnitId, double? quanitity, Guid delivererId, 
-                                      Geolocation? geolocation, IDateTime dateTimeProvider)
+    public static ErrorOr<Scan> Create(int transportUnitId, Guid delivererId, IDateTime dateTimeProvider)
     {
-        ScanValidator validator = new();
+        return new Scan(transportUnitId, delivererId, dateTimeProvider.Now, ScanStatus.Valid);
+    }
 
-        Scan newScan = new(transportUnitId, quanitity, delivererId, geolocation, dateTimeProvider.Now, ScanStatus.Valid);
-
-        var vResults = validator.Validate(newScan);
-        if(!vResults.IsValid)
+    public ErrorOr<Updated> AddGeolocation(double latitude, double longitude, double accuracy)
+    {
+        var geolocation = Geolocation.Create(latitude, latitude, accuracy);
+        if (geolocation.IsError)
         {
-            throw new ValidationException(vResults.Errors);
+            return geolocation.Errors;
         }
-        return newScan;
+
+        Location = geolocation.Value;
+        return Result.Updated;
+    }
+
+    public ErrorOr<Updated> AddQuantity(double quantity)
+    {
+        if (quantity <= 0)
+        {
+            return Failures.InvalidQuantity;
+        }
+
+        Quantity = quantity;
+        return Result.Updated;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using MultiProject.Delivery.Domain.Scans.Entities;
 
-namespace MultiProject.Delivery.Application.Common.Interfaces.Repositories;
+namespace MultiProject.Delivery.Application.Common.Persistence.Repositories;
 
 public interface IScanRepository
 {

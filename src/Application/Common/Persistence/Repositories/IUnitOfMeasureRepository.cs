@@ -1,6 +1,6 @@
 ﻿using MultiProject.Delivery.Domain.Dictionaries.Entities;
 
-namespace MultiProject.Delivery.Application.Common.Interfaces.Repositories;
+namespace MultiProject.Delivery.Application.Common.Persistence.Repositories;
 
 public interface IUnitOfMeasureRepository
 {

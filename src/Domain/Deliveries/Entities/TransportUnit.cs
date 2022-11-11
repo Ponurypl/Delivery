@@ -1,31 +1,27 @@
-﻿using FluentValidation;
-using MultiProject.Delivery.Domain.Common.Interaces;
+﻿using MultiProject.Delivery.Domain.Common.Interfaces;
 using MultiProject.Delivery.Domain.Deliveries.Abstractions;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
-using MultiProject.Delivery.Domain.Deliveries.Validators;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
-using MultiProject.Delivery.Domain.Dictionaries.Entities;
-using MultiProject.Delivery.Domain.Dictionaries.Exceptions;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
 public sealed class TransportUnit : IEntity
 {
-    public int Id { get; set; }
-    public Transport Transport { get; set; } = null!;
-    public string Number { get; set; } = default!;
-    public string Description { get; set; } = default!;
-    public TransportUnitStatus Status { get; set; }
-    public string? AditionalInformation { get; set; }
-    public Recipient Recipient { get; set; } = null!;
-    public UnitDetails UnitDetails { get; set; } = null!;
+    public int Id { get; private set; }
+    public Transport Transport { get; private set; }
+    public string Number { get; private set; }
+    public string Description { get; private set; }
+    public TransportUnitStatus Status { get; private set; }
+    public string? AdditionalInformation { get; private set; }
+    public Recipient Recipient { get; private set; }
+    public UnitDetails UnitDetails { get; private set; } = null!;
 
 
-    private TransportUnit(string number, string? aditionalInformation, string description, Recipient recipient, 
+    private TransportUnit(string number, string? additionalInformation, string description, Recipient recipient, 
                           Transport transport, TransportUnitStatus status)
     {
         Number = number;
-        AditionalInformation = aditionalInformation;
+        AdditionalInformation = additionalInformation;
         Description = description;
         Status = status;
         Recipient = recipient;
@@ -33,21 +29,48 @@ public sealed class TransportUnit : IEntity
     }
 
 
-    public static TransportUnit Create(string number, string? aditionalInformation, string description, Recipient recipient, 
+    public static ErrorOr<TransportUnit> Create(string number, string? additionalInformation, string description, Recipient recipient, 
                                        string? barcode, double? amount, int? unitOfMeasureId, Transport transport)
     {
-        TransportUnit newTransportUnit = new(number, aditionalInformation, description, recipient, transport, TransportUnitStatus.New);
-        UnitDetails unitDetails;
+        if (string.IsNullOrWhiteSpace(number) || string.IsNullOrWhiteSpace(description) || recipient is null)
+        {
+            return Failures.InvalidTransportUnitInput;
+        }
+
+        if (transport is null) return Failures.MissingParent;
+
+        if (string.IsNullOrWhiteSpace(barcode) && (amount is null or <= 0 || unitOfMeasureId is null))
+        {
+            return Failures.InvalidTransportUnitDetails;
+        }
+
+        if(!string.IsNullOrWhiteSpace(barcode) && (amount is not null || unitOfMeasureId is not null)) 
+        {
+            return Failures.InvalidTransportUnitDetails;
+        }
+        
+        TransportUnit newTransportUnit = new(number, additionalInformation, description, recipient, transport, TransportUnitStatus.New);
+        
         if (barcode is not null)
         {
-            unitDetails = UniqueUnitDetails.Create(barcode, newTransportUnit);
+            var result = UniqueUnitDetails.Create(barcode, newTransportUnit);
+            if (result.IsError)
+            {
+                return result.Errors;
+            }
+
+            newTransportUnit.UnitDetails = result.Value;
         }
         else
         {
-            unitDetails = MultiUnitDetails.Create(amount!.Value, unitOfMeasureId!.Value, newTransportUnit);
-        }
+            var result = MultiUnitDetails.Create(amount!.Value, unitOfMeasureId!.Value, newTransportUnit);
+            if (result.IsError)
+            {
+                return result.Errors;
+            }
 
-        newTransportUnit.UnitDetails = unitDetails;
+            newTransportUnit.UnitDetails = result.Value;
+        }
 
         return newTransportUnit;
     }
