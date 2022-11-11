@@ -1,6 +1,4 @@
-﻿using MultiProject.Delivery.Domain.Deliveries.Entities;
-using MultiProject.Delivery.Domain.Scans.Enums;
-using MultiProject.Delivery.Domain.Users.Entities;
+﻿using MultiProject.Delivery.Domain.Scans.Enums;
 using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Common.Interaces;
 using MultiProject.Delivery.Application.Common.Interfaces;
@@ -10,29 +8,31 @@ namespace MultiProject.Delivery.Domain.Scans.Entities;
 
 public sealed class Scan : IAggregateRoot
 {
-    public int Id { get; set; }
-    public TransportUnit TransportUnit { get; set; } = null!;
-    public ScanStatus Status { get; set; }
-    public DateTime LastUpdateDate { get; set; }
-    public double? Quanitity { get; set; }
-    public User Deliverer { get; set; } = null!;
-    public Geolocation? Geolocalization { get; set; }
+    public int Id { get; private set; }
+    public int TransportUnitId { get; private set; }
+    public ScanStatus Status { get; private set; }
+    public DateTime LastUpdateDate { get; private set; }
+    public double? Quanitity { get; private set; }
+    public Guid DelivererId { get; private set; }
+    public Geolocation? Geolocalization { get; private set; }
 
-    private Scan(TransportUnit transportUnit, double? quanitity, User deliverer, Geolocation? geolocalization, IDateTime dateTimeProvider)
+    private Scan(int transportUnitId, double? quanitity, Guid delivererId, Geolocation? geolocalization,
+                 DateTime lastUpdateDate, ScanStatus scanStatus)
     {
-        TransportUnit = transportUnit;
-        Status = ScanStatus.Valid;
-        LastUpdateDate = dateTimeProvider.Now;
+        TransportUnitId = transportUnitId;
+        Status = scanStatus;
+        LastUpdateDate = lastUpdateDate;
         Quanitity = quanitity;
-        Deliverer = deliverer;
+        DelivererId = delivererId;
         Geolocalization = geolocalization;
     }
 
-    public static Result<Scan> Create(TransportUnit transportUnit, double? quanitity, User deliverer, Geolocation? geolocation, IDateTime dateTimeProvider)
+    public static Result<Scan> Create(int transportUnitId, double? quanitity, Guid delivererId, 
+                                      Geolocation? geolocation, IDateTime dateTimeProvider)
     {
         ScanValidator validator = new();
 
-        Scan newScan = new(transportUnit, quanitity, deliverer, geolocation, dateTimeProvider);
+        Scan newScan = new(transportUnitId, quanitity, delivererId, geolocation, dateTimeProvider.Now, ScanStatus.Valid);
 
         var vResults = validator.Validate(newScan);
         if(!vResults.IsValid)

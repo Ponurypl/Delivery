@@ -1,26 +1,25 @@
 ﻿using MultiProject.Delivery.Domain.Common.Interaces;
 using MultiProject.Delivery.Domain.Deliveries.Abstractions;
-using MultiProject.Delivery.Domain.Dictionaries.Entities;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
 public sealed class MultiUnitDetails : UnitDetails, IEntity
 {
-    public UnitOfMeasure UnitOfMeasure { get; set; } = null!;
-    public double Amount { get; set; }
+    public int UnitOfMeasureId { get; private set; }
+    public double Amount { get; private set; }
 
-    private MultiUnitDetails(double amount, UnitOfMeasure unitOfMeasure, TransportUnit transportUnit)
+    private MultiUnitDetails(double amount, int unitOfMeasureId, TransportUnit transportUnit)
     {
         Amount = amount;
-        UnitOfMeasure = unitOfMeasure;
+        UnitOfMeasureId = unitOfMeasureId;
         TransportUnit = transportUnit;
     }
 
-    public static MultiUnitDetails Create(double amount, UnitOfMeasure unitOfMeasure, TransportUnit transportUnit)
+    public static MultiUnitDetails Create(double amount, int unitOfMeasureId, TransportUnit transportUnit)
     {
-        if (unitOfMeasure is null) throw new ArgumentNullException(nameof(unitOfMeasure));
         if (transportUnit is null) throw new ArgumentNullException(nameof(transportUnit));
+        if (amount <= 0) throw new ArgumentOutOfRangeException(nameof(amount));
 
-        return new MultiUnitDetails(amount, unitOfMeasure, transportUnit);
+        return new MultiUnitDetails(amount, unitOfMeasureId, transportUnit);
     }
 }

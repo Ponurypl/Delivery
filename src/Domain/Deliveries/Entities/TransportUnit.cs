@@ -1,7 +1,8 @@
-﻿using MultiProject.Delivery.Domain.Common.Interaces;
+﻿using FluentValidation;
+using MultiProject.Delivery.Domain.Common.Interaces;
 using MultiProject.Delivery.Domain.Deliveries.Abstractions;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
-using MultiProject.Delivery.Domain.Deliveries.Exceptions;
+using MultiProject.Delivery.Domain.Deliveries.Validators;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.Exceptions;
@@ -20,36 +21,22 @@ public sealed class TransportUnit : IEntity
     public UnitDetails UnitDetails { get; set; } = null!;
 
 
-    private TransportUnit(string number, string? aditionalInformation, string description, Recipient recipient, Transport transport)
+    private TransportUnit(string number, string? aditionalInformation, string description, Recipient recipient, 
+                          Transport transport, TransportUnitStatus status)
     {
         Number = number;
         AditionalInformation = aditionalInformation;
         Description = description;
-        Status = TransportUnitStatus.New;
+        Status = status;
         Recipient = recipient;
         Transport = transport;
     }
 
 
     public static TransportUnit Create(string number, string? aditionalInformation, string description, Recipient recipient, 
-                                       string? barcode, double? amount, UnitOfMeasure? unitOfMeasure, Transport transport)
+                                       string? barcode, double? amount, int? unitOfMeasureId, Transport transport)
     {
-        /*
-        if (barcode is null && (amount is null || unitOfMeasure is null))
-        {
-            throw new TransportUnitException(number);
-        }
-        if (barcode is not null && (amount is not null || unitOfMeasure is not null))
-        {
-            throw new TransportUnitException(number);
-        }
-        if ((amount is not null && unitOfMeasure is null) || (amount is null && unitOfMeasure is not null))
-        {
-            throw new TransportUnitException(number);
-        }
-        */
-
-        TransportUnit newTransportUnit = new(number, aditionalInformation, description, recipient, transport);
+        TransportUnit newTransportUnit = new(number, aditionalInformation, description, recipient, transport, TransportUnitStatus.New);
         UnitDetails unitDetails;
         if (barcode is not null)
         {
@@ -57,8 +44,7 @@ public sealed class TransportUnit : IEntity
         }
         else
         {
-            if (unitOfMeasure is null) throw new UnitOfMeasureNotFoundException();
-            unitDetails = MultiUnitDetails.Create(amount!.Value, unitOfMeasure, newTransportUnit);
+            unitDetails = MultiUnitDetails.Create(amount!.Value, unitOfMeasureId!.Value, newTransportUnit);
         }
 
         newTransportUnit.UnitDetails = unitDetails;

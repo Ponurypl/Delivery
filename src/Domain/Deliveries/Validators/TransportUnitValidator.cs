@@ -1,5 +1,7 @@
 ﻿using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
-using MultiProject.Delivery.Domain.Common.Extensions;
+using System.Linq;
+
+using FluentValidation;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Validators
 {
@@ -7,25 +9,27 @@ namespace MultiProject.Delivery.Domain.Deliveries.Validators
     {
         public TransportUnitValidator()
         {
-            //TODO: Aktualnie może sypnąć tym samym błędem X razy, a alternatywa jest... nieczytelna
-            RuleFor(x => x).Must(x => string.IsNullOrWhiteSpace(x.Barcode) && (x.Amount is null || x.UnitOfMeasureId is null || x.Amount == 0 || x.UnitOfMeasureId == 0))
-                           .WithMessage(x => $"Transport unit (Number: {x.Number}) not specified properly. You should specify Barcode or UnitOfMeasure together with Amount");
-            RuleFor(x => x).Must(x => !string.IsNullOrWhiteSpace(x.Barcode) && (x.Amount is not null || x.UnitOfMeasureId is not null))
-                           .WithMessage(x => $"Transport unit (Number: {x.Number}) not specified properly. You should specify Barcode or UnitOfMeasure together with Amount");
-            RuleFor(x => x.Amount).NotEmpty().When(x => x.UnitOfMeasureId is null)
-                           .WithMessage(x => $"Transport unit (Number: {x.Number}) not specified properly. You should specify Barcode or UnitOfMeasure together with Amount");
-            RuleFor(x => x.UnitOfMeasureId).NotEmpty().When(x => x.UnitOfMeasureId is null)
-                           .WithMessage(x => $"Transport unit (Number: {x.Number}) not specified properly. You should specify Barcode or UnitOfMeasure together with Amount");
+            //TODO: Usunąć powielenie komunikatu. Dane testowe - podany tylko Amount.
+            var message = $"Transport unit not specified properly. You should specify Barcode or UnitOfMeasure together with Amount";
 
-            /* Alternatywa?... nieczytelna
+            When(x => x.UnitOfMeasureId is null || x.Amount is null, () =>
+            {
+                RuleFor(x => x.Barcode).NotEmpty().WithMessage(message);
+            }).Otherwise(() =>
+            {
+                RuleFor(x => x.Barcode).Empty().WithMessage(message);
+            });
 
-            RuleFor(x => x).Must(x => (string.IsNullOrWhiteSpace(x.Barcode) 
-                                       && (x.Amount is null || x.UnitOfMeasureId is null || x.Amount == 0 || x.UnitOfMeasureId == 0))
-                                  && (!string.IsNullOrWhiteSpace(x.Barcode) && (x.Amount is not null || x.UnitOfMeasureId is not null))
-                                  && ((x.Amount != 0 && x.Amount is not null) || (x.UnitOfMeasureId is not null && x.UnitOfMeasureId != 0)))
-                           .WithMessage(x => $"Transport unit (Number: {x.Number}) not specified properly. You should specify Barcode or UnitOfMeasure together with Amount");
-            */
+            RuleFor(x => x.UnitOfMeasureId).NotEmpty().When(x => x.Amount is not null).WithMessage(message);
+            RuleFor(x => x.Amount).GreaterThan(0).When(x => x.UnitOfMeasureId is not null);
+        }
+    }
 
+    internal class TransportUnitCollectionValidator : AbstractValidator<List<NewTransportUnit>>
+    {
+        public TransportUnitCollectionValidator()
+        {
+            RuleForEach(x => x).SetValidator(new TransportUnitValidator());
         }
     }
 }
