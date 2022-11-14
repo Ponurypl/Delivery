@@ -42,7 +42,6 @@ public sealed class Scan : IAggregateRoot
 
     public ErrorOr<Updated> AddQuantity(double quantity)
     {
-        //TODO: można wskanować ilość nawet jeśli jest to  transport unit typu unique/barcode??
         if (quantity <= 0)
         {
             return Failures.InvalidQuantity;

@@ -17,8 +17,6 @@ public sealed class CreateUnitOfMeasureCommandHandler : ICommandHandler<CreateUn
 
     public async Task<ErrorOr<Success>> Handle(CreateUnitOfMeasureCommand request, CancellationToken cancellationToken)
     {
-        //TODO: UnitOfMeasure jest agregatem, nie pozwalamy go tworzyć z zewnątrz. Do przerobienia na metodę statyczną Create.
-
         var newUnitOfMeasure = UnitOfMeasure.Create(request.Name, request.Symbol, request.Description);
 
         if (newUnitOfMeasure.IsError) return newUnitOfMeasure.Errors;

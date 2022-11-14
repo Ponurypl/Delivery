@@ -50,4 +50,15 @@ public sealed class User : IAggregateRoot
         Location = geolocation.Value;
         return Result.Updated;
     }
+
+    public ErrorOr<Success> CheckIfUserIsDeliverer()
+    {
+        return Role is UserRole.Deliverer ? Result.Success : Failures.UserDoesNotMeetRole;
+    }
+
+
+    public ErrorOr<Success> CheckIfUserIsManager()
+    {
+        return Role is UserRole.Manager ? Result.Success : Failures.UserDoesNotMeetRole;
+    }
 }

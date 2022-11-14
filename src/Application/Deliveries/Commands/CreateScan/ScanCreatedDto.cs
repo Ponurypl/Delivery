@@ -1,4 +1,4 @@
-﻿namespace MultiProject.Delivery.Application.Delivieries.CreateScan;
+﻿namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
 
 public sealed record ScanCreatedDto
 {

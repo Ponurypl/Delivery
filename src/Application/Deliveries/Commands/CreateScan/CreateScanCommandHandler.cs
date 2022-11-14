@@ -1,6 +1,5 @@
 ﻿using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
-using MultiProject.Delivery.Application.Delivieries.CreateScan;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Scans.Entities;
 
@@ -29,7 +28,8 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
         }
 
         var scan = scanCreateResult.Value;
-
+        
+        //TODO: do wyciągnięcia transport na podstawie Id i weryfikacja czy jest w nim multi unit o podanym Id, jak nie jest to failure
         if (request.Quantity is not null)
         {
             var result = scan.AddQuantity(request.Quantity.Value);
@@ -39,10 +39,11 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
             }
         }
 
-        if (request.Location is not null)
+        if (request.LocationAccuracy is not null && request.LocationLatitude is not null &&
+            request.LocationLongitude is not null)
         {
-            var result = scan.AddGeolocation(request.Location.Latitude, request.Location.Longitude,
-                                             request.Location.Accuracy);
+            var result = scan.AddGeolocation(request.LocationLatitude.Value, request.LocationLongitude.Value,
+                                             request.LocationAccuracy.Value);
             if (result.IsError)
             {
                 return result.Errors;

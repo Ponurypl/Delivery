@@ -1,10 +1,9 @@
-﻿using MultiProject.Delivery.Application.Common.Persistence;
+﻿using MultiProject.Delivery.Application.Common.Failures;
+using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
-using MultiProject.Delivery.Application.Users.Services;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.DTO;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
-using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 
 namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateTransport;
@@ -13,36 +12,47 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
 {
     private readonly ITransportRepository _transportRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IUserRoleService _userRoleService;
     private readonly IDateTime _dateTime;
     private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
+    private readonly IUserRepository _userRepository;
 
     public CreateTransportCommandHandler(ITransportRepository transportRepository, IUnitOfWork unitOfWork,
                                         IDateTime dateTime, IUnitOfMeasureRepository unitOfMeasureRepository, 
-                                        IUserRoleService userRoleService)
+                                        IUserRepository userRepository)
     {
         _transportRepository = transportRepository;
         _unitOfWork = unitOfWork;
         _dateTime = dateTime;
         _unitOfMeasureRepository = unitOfMeasureRepository;
-        _userRoleService = userRoleService;
+        _userRepository = userRepository;
     }
 
     public async Task<ErrorOr<TransportCreatedDto>> Handle(CreateTransportCommand request, CancellationToken cancellationToken)
     {
-        if (await _userRoleService.CheckIfUserIsDelivererAsync(request.DelivererId) == false)
+        var deliverer = await _userRepository.GetByIdAsync(request.DelivererId);
+        if (deliverer is null)
         {
-            return Failures.UserDoesNotMeetRequieredRole;//TODO: Error o nie spełnionej roli
-          
+            return Failure.UserNotExists;
         }
 
-        if (await _userRoleService.CheckIfUserIsManagerAsync(request.ManagerId) == false)
+        var delivererRoleCheck = deliverer.CheckIfUserIsDeliverer();
+        if(delivererRoleCheck.IsError)
         {
-            return Failures.UserDoesNotMeetRequieredRole;//TODO: Error o nie spełnionej roli
+            return delivererRoleCheck.Errors;
         }
 
-        //TODO: Jeżeli już tu sprawdzimy czy dla każdego elementu request.TransportUnits jego UnitOfMeasureId istneje w słowniku
-        //to do wnętrza Transport.Create nie będziemy musieli spuszczać całej listy
+        var manager = await _userRepository.GetByIdAsync(request.ManagerId);
+        if (manager is null)
+        {
+            return Failure.UserNotExists;
+        }
+
+        var managerRoleCheck = manager.CheckIfUserIsManager();
+        if (managerRoleCheck.IsError)
+        { 
+            return managerRoleCheck.Errors;
+        }
+        
         List<UnitOfMeasure> unitOfMeasureList = await _unitOfMeasureRepository.GetAllAsync();
 
         //TODO: Mapper - jego zostawiasz tym się zajmiemy później
@@ -70,16 +80,16 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
 
         foreach (var unit in transportUnitsToCreate)
         {
-            UnitOfMeasure? unitOfMeasure = unitOfMeasureList.FirstOrDefault(u => u.Id == unit.UnitOfMeasureId);
-
-            if (string.IsNullOrWhiteSpace(unit.Barcode) && (unit.Amount is null or <= 0 || unitOfMeasure is null))
+            if (string.IsNullOrWhiteSpace(unit.Barcode) &&
+                (unit.Amount is null or <= 0 ||
+                 unit.UnitOfMeasureId is null || unitOfMeasureList.Exists(u => u.Id == unit.UnitOfMeasureId)))
             {
-                return Failures.InvalidTransportUnitDetails;
+                return Failure.InvalidTransportUnitDetails;
             }
 
             if (!string.IsNullOrWhiteSpace(unit.Barcode) && (unit.Amount is not null || unit.UnitOfMeasureId is not null))
             {
-                return Failures.InvalidTransportUnitDetails;
+                return Failure.InvalidTransportUnitDetails;
             }
         }
 

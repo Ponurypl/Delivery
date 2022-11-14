@@ -46,7 +46,6 @@ public sealed class Transport : IAggregateRoot
         {
             return Failures.InvalidTransportUnitInput;
         }
-        // TODO: nie sprawdzamy czy user spełnia rolę? teoretycznie ktoś może nam tu wlepić użytkownika który nie ma prawa tu być
         
         Transport newTransport = new(delivererId, number, additionalInformation, totalWeight, startDate, managerId,
                                      TransportStatus.New, dateTimeProvider.Now);
