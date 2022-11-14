@@ -30,7 +30,8 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
 
     public async Task<ErrorOr<TransportCreatedDto>> Handle(CreateTransportCommand request, CancellationToken cancellationToken)
     {
-        var deliverer = await _userRepository.GetByIdAsync(new UserId(request.DelivererId));
+        var delivererId = new UserId(request.DelivererId);
+        var deliverer = await _userRepository.GetByIdAsync(delivererId);
         if (deliverer is null)
         {
             return Failure.UserNotExists;
@@ -42,7 +43,8 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
             return delivererRoleCheck.Errors;
         }
 
-        var manager = await _userRepository.GetByIdAsync(new UserId(request.ManagerId));
+        var managerId = new UserId(request.ManagerId);
+        var manager = await _userRepository.GetByIdAsync(managerId);
         if (manager is null)
         {
             return Failure.UserNotExists;
@@ -94,9 +96,9 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
             }
         }
 
-        var newTransportResult = Transport.Create(request.DelivererId, request.Number, request.AdditionalInformation,
+        var newTransportResult = Transport.Create(delivererId, request.Number, request.AdditionalInformation,
                                                   request.TotalWeight,
-                                                  request.StartDate, request.ManagerId, _dateTime,
+                                                  request.StartDate, managerId, _dateTime,
                                                   transportUnitsToCreate);
         if (newTransportResult.IsError)
         {
@@ -108,11 +110,11 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
 
         return new TransportCreatedDto
                {
-                   Id = newTransportResult.Value.Id,
+                   Id = newTransportResult.Value.Id.Value,
                    TransportUnits = newTransportResult.Value.TransportUnits
                                                       .Select(u => new TransportUnitCreatedDto()
                                                                    {
-                                                                       Id = u.Id, Number = u.Number
+                                                                       Id = u.Id.Value, Number = u.Number
                                                                    })
                                                       .ToList()
                };

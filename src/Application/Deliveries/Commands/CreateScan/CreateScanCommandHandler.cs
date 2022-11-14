@@ -52,6 +52,6 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
 
         _scanRepository.Add(scan);
         await _unitOfWork.SaveChangesAsync();
-        return new ScanCreatedDto { Id = scan.Id };
+        return new ScanCreatedDto { Id = scan.Id.Value };
     }
 }

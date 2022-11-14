@@ -1,24 +1,24 @@
-﻿using MultiProject.Delivery.Domain.Common.Interfaces;
-using MultiProject.Delivery.Domain.Deliveries.Abstractions;
+﻿using MultiProject.Delivery.Domain.Common.Abstractions;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
+using MultiProject.Delivery.Domain.Deliveries.Interfaces;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
+using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
-public sealed class TransportUnit : IEntity
+public sealed class TransportUnit : Entity<TransportUnitId>
 {
-    public int Id { get; private set; }
     public Transport Transport { get; private set; }
     public string Number { get; private set; }
     public string Description { get; private set; }
     public TransportUnitStatus Status { get; private set; }
     public string? AdditionalInformation { get; private set; }
     public Recipient Recipient { get; private set; }
-    public UnitDetails UnitDetails { get; private set; } = null!;
+    public IUnitDetails UnitDetails { get; private set; } = null!;
 
 
-    private TransportUnit(string number, string? additionalInformation, string description, Recipient recipient, 
-                          Transport transport, TransportUnitStatus status)
+    private TransportUnit(TransportUnitId id, string number, string? additionalInformation, string description, Recipient recipient, 
+                          Transport transport, TransportUnitStatus status) : base(id)
     {
         Number = number;
         AdditionalInformation = additionalInformation;
@@ -30,7 +30,7 @@ public sealed class TransportUnit : IEntity
 
 
     public static ErrorOr<TransportUnit> Create(string number, string? additionalInformation, string description, Recipient recipient, 
-                                       string? barcode, double? amount, int? unitOfMeasureId, Transport transport)
+                                       string? barcode, double? amount, UnitOfMeasureId? unitOfMeasureId, Transport transport)
     {
         if (string.IsNullOrWhiteSpace(number) || string.IsNullOrWhiteSpace(description) || recipient is null)
         {
@@ -49,7 +49,7 @@ public sealed class TransportUnit : IEntity
             return Failures.InvalidTransportUnitDetails;
         }
         
-        TransportUnit newTransportUnit = new(number, additionalInformation, description, recipient, transport, TransportUnitStatus.New);
+        TransportUnit newTransportUnit = new(TransportUnitId.Empty, number, additionalInformation, description, recipient, transport, TransportUnitStatus.New);
         
         if (barcode is not null)
         {

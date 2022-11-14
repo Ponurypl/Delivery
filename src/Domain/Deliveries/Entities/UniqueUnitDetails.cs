@@ -1,13 +1,15 @@
-﻿using MultiProject.Delivery.Domain.Common.Interfaces;
-using MultiProject.Delivery.Domain.Deliveries.Abstractions;
+﻿using MultiProject.Delivery.Domain.Common.Abstractions;
+using MultiProject.Delivery.Domain.Deliveries.Interfaces;
+using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
-public sealed class UniqueUnitDetails : UnitDetails, IEntity
+public sealed class UniqueUnitDetails : Entity<UniqueUnitDetailsId>, IUnitDetails
 {
     public string Barcode { get; private set; }
+    public TransportUnit TransportUnit { get ; private set ; }
 
-    private UniqueUnitDetails(string barcode, TransportUnit transportUnit)
+    private UniqueUnitDetails(UniqueUnitDetailsId id,string barcode, TransportUnit transportUnit) :base(id)
     {
         Barcode = barcode;
         TransportUnit = transportUnit;
@@ -18,6 +20,6 @@ public sealed class UniqueUnitDetails : UnitDetails, IEntity
         if (string.IsNullOrWhiteSpace(barcode)) return Failures.InvalidUnitBarcode;
         if (transportUnit is null) return Failures.MissingParent;
 
-        return new UniqueUnitDetails(barcode, transportUnit);
+        return new UniqueUnitDetails(UniqueUnitDetailsId.Empty, barcode, transportUnit);
     }
 }
