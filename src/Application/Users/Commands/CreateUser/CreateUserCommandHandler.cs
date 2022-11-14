@@ -21,9 +21,10 @@ public sealed class CreateUserCommandCommandHandler : ICommandHandler<CreateUser
 
         if (newUserResult.IsError) return newUserResult.Errors;
 
-        _userRepository.Add(newUserResult.Value);
+        var user = newUserResult.Value;
+        _userRepository.Add(user);
         await _unitOfWork.SaveChangesAsync();
 
-        return new UserCreatedDto { Id = newUserResult.Value.Id };
+        return new UserCreatedDto { Id = user.Id.Value };
     }
 }

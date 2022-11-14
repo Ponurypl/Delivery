@@ -1,12 +1,12 @@
-﻿using MultiProject.Delivery.Domain.Common.Interfaces;
+﻿using MultiProject.Delivery.Domain.Common.Abstractions;
 using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Users.Enums;
+using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Users.Entities;
 
-public sealed class User : IAggregateRoot
+public sealed class User : AggregateRoot<UserId>
 {
-    public Guid Id { get; private set; }
     public bool IsActive { get; private set; }
     public UserRole Role { get; private set; }
     public string Login { get; private set; } 
@@ -14,9 +14,9 @@ public sealed class User : IAggregateRoot
     public string PhoneNumber { get; private set; } 
     public AdvancedGeolocation? Location { get; private set; }
 
-    private User(Guid id, bool isActive, UserRole role, string login, string password, string phoneNumber)
+    private User(UserId id, bool isActive, UserRole role, string login, string password, string phoneNumber)
+        : base(id)
     {
-        Id = id;
         IsActive = isActive;
         Role = role;
         Login = login;
@@ -33,7 +33,7 @@ public sealed class User : IAggregateRoot
 
         //TODO: Regex na numer telefonu
 
-        return new User(Guid.NewGuid(), true, role, login, password, phoneNumber);
+        return new User(UserId.New(), true, role, login, password, phoneNumber);
     }
 
     public ErrorOr<Updated> UpdateGeolocation(double latitude, double longitude, double accuracy, double heading,
@@ -46,7 +46,7 @@ public sealed class User : IAggregateRoot
         {
             return geolocation.Errors;
         }
-
+        
         Location = geolocation.Value;
         return Result.Updated;
     }

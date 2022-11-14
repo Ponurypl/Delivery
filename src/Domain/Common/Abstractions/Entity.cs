@@ -1,7 +1,7 @@
 ﻿namespace MultiProject.Delivery.Domain.Common.Abstractions;
 
 public abstract class Entity<TId> : IEquatable<Entity<TId>>
-    where TId : class
+    where TId : notnull
 {
     public TId Id { get; private set; }
 

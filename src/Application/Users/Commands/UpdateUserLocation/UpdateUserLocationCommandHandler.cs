@@ -2,6 +2,7 @@
 using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
+using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Application.Users.Commands.UpdateUserLocation;
 
@@ -20,7 +21,7 @@ public sealed class UpdateUserLocationCommandHandler : ICommandHandler<UpdateUse
 
     public async Task<ErrorOr<Success>> Handle(UpdateUserLocationCommand request, CancellationToken cancellationToken)
     {
-        var updatedUser = await _userRepository.GetByIdAsync(request.UserId);
+        var updatedUser = await _userRepository.GetByIdAsync(new UserId(request.UserId));
         if (updatedUser is null) return Failure.UserNotExists;
 
         updatedUser.UpdateGeolocation(request.Latitude, request.Longitude, request.Accuracy, request.Heading,

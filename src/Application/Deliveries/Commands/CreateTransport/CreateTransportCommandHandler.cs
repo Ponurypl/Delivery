@@ -5,6 +5,7 @@ using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.DTO;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
+using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateTransport;
 
@@ -29,7 +30,7 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
 
     public async Task<ErrorOr<TransportCreatedDto>> Handle(CreateTransportCommand request, CancellationToken cancellationToken)
     {
-        var deliverer = await _userRepository.GetByIdAsync(request.DelivererId);
+        var deliverer = await _userRepository.GetByIdAsync(new UserId(request.DelivererId));
         if (deliverer is null)
         {
             return Failure.UserNotExists;
@@ -41,7 +42,7 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
             return delivererRoleCheck.Errors;
         }
 
-        var manager = await _userRepository.GetByIdAsync(request.ManagerId);
+        var manager = await _userRepository.GetByIdAsync(new UserId(request.ManagerId));
         if (manager is null)
         {
             return Failure.UserNotExists;
@@ -82,7 +83,7 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
         {
             if (string.IsNullOrWhiteSpace(unit.Barcode) &&
                 (unit.Amount is null or <= 0 ||
-                 unit.UnitOfMeasureId is null || unitOfMeasureList.Exists(u => u.Id == unit.UnitOfMeasureId)))
+                 unit.UnitOfMeasureId is null || unitOfMeasureList.Exists(u => u.Id.Value == unit.UnitOfMeasureId)))
             {
                 return Failure.InvalidTransportUnitDetails;
             }
