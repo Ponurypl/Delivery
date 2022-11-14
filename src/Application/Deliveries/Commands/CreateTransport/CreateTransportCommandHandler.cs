@@ -31,12 +31,13 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
     {
         if (await _userRoleService.CheckIfUserIsDelivererAsync(request.DelivererId) == false)
         {
-            //TODO: Error o nie spełnionej roli
+            return Failures.UserDoesNotMeetRequieredRole;//TODO: Error o nie spełnionej roli
+          
         }
 
         if (await _userRoleService.CheckIfUserIsManagerAsync(request.ManagerId) == false)
         {
-            //TODO: Error o nie spełnionej roli
+            return Failures.UserDoesNotMeetRequieredRole;//TODO: Error o nie spełnionej roli
         }
 
         //TODO: Jeżeli już tu sprawdzimy czy dla każdego elementu request.TransportUnits jego UnitOfMeasureId istneje w słowniku
