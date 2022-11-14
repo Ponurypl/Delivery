@@ -38,11 +38,10 @@ public sealed class Transport : IAggregateRoot
 
     public static ErrorOr<Transport> Create(Guid delivererId, string number, string? additionalInformation, double? totalWeight,
         DateTime startDate, Guid managerId, IDateTime dateTimeProvider,
-        List<NewTransportUnit> transportUnitsToCreate, List<UnitOfMeasure> unitOfMeasureList)
+        List<NewTransportUnit> transportUnitsToCreate)
     {
         if (string.IsNullOrWhiteSpace(number)) return Failures.InvalidTransportUnitInput;
         if (dateTimeProvider is null) return Failures.InvalidTransportUnitInput;
-        if (unitOfMeasureList is null || unitOfMeasureList.Count == 0) return Failures.InvalidTransportInput; // ????????
         if (transportUnitsToCreate is null || transportUnitsToCreate.Count == 0)
         {
             return Failures.InvalidTransportUnitInput;
@@ -54,7 +53,6 @@ public sealed class Transport : IAggregateRoot
 
         foreach (var unit in transportUnitsToCreate)
         {
-            UnitOfMeasure? unitOfMeasure = unitOfMeasureList.FirstOrDefault(u => u.Id == unit.UnitOfMeasureId);
 
             var tu = newTransport.CreateTransportUnit(unit.RecipientCompanyName, unit.RecipientCountry,
                                                       unit.RecipientFlatNumber,
@@ -64,7 +62,7 @@ public sealed class Transport : IAggregateRoot
                                                       unit.RecipientStreetNumber,
                                                       unit.RecipientTown, unit.Number, unit.AdditionalInformation,
                                                       unit.Description,
-                                                      unit.Barcode, unit.Amount, unitOfMeasure?.Id);
+                                                      unit.Barcode, unit.Amount, unit.UnitOfMeasureId);
             if (tu.IsError)
             {
                 return tu.Errors;

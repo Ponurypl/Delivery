@@ -4,6 +4,7 @@ using MultiProject.Delivery.Application.Users.Services;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.DTO;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
+using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 
 namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateTransport;
@@ -67,10 +68,25 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
                                                                .ToList();
 
 
+        foreach (var unit in transportUnitsToCreate)
+        {
+            UnitOfMeasure? unitOfMeasure = unitOfMeasureList.FirstOrDefault(u => u.Id == unit.UnitOfMeasureId);
+
+            if (string.IsNullOrWhiteSpace(unit.Barcode) && (unit.Amount is null or <= 0 || unitOfMeasure is null))
+            {
+                return Failures.InvalidTransportUnitDetails;
+            }
+
+            if (!string.IsNullOrWhiteSpace(unit.Barcode) && (unit.Amount is not null || unit.UnitOfMeasureId is not null))
+            {
+                return Failures.InvalidTransportUnitDetails;
+            }
+        }
+
         var newTransportResult = Transport.Create(request.DelivererId, request.Number, request.AdditionalInformation,
                                                   request.TotalWeight,
                                                   request.StartDate, request.ManagerId, _dateTime,
-                                                  transportUnitsToCreate, unitOfMeasureList);
+                                                  transportUnitsToCreate);
         if (newTransportResult.IsError)
         {
             return newTransportResult.Errors;
