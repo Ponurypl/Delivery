@@ -9,31 +9,32 @@ public sealed class User : AggregateRoot<UserId>
 {
     public bool IsActive { get; private set; }
     public UserRole Role { get; private set; }
-    public string Login { get; private set; } 
+    public string Username { get; private set; } 
     public string Password { get; private set; }
     public string PhoneNumber { get; private set; } 
     public AdvancedGeolocation? Location { get; private set; }
 
-    private User(UserId id, bool isActive, UserRole role, string login, string password, string phoneNumber)
+    private User(UserId id, bool isActive, UserRole role, string username, string password, string phoneNumber)
         : base(id)
     {
         IsActive = isActive;
         Role = role;
-        Login = login;
+        Username = username;
         Password = password;
         PhoneNumber = phoneNumber;
     }
 
-    public static ErrorOr<User> Create(UserRole role, string login, string password, string phoneNumber)
+    public static ErrorOr<User> Create(UserRole role, string username, string password, string phoneNumber)
     {
-        if (login == password)
+        //TODO: Do wyciągnięcia poziom wyżej
+        if (username == password)
         {
             return Failures.LoginSameAsPassword;
         }
 
         //TODO: Regex na numer telefonu
 
-        return new User(UserId.New(), true, role, login, password, phoneNumber);
+        return new User(UserId.New(), true, role, username, password, phoneNumber);
     }
 
     public ErrorOr<Updated> UpdateGeolocation(double latitude, double longitude, double accuracy, double heading,

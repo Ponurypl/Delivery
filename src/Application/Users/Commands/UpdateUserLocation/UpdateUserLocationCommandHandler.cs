@@ -21,7 +21,7 @@ public sealed class UpdateUserLocationCommandHandler : ICommandHandler<UpdateUse
 
     public async Task<ErrorOr<Success>> Handle(UpdateUserLocationCommand request, CancellationToken cancellationToken)
     {
-        var updatedUser = await _userRepository.GetByIdAsync(new UserId(request.UserId));
+        var updatedUser = await _userRepository.GetByIdAsync(new UserId(request.UserId), cancellationToken);
         if (updatedUser is null) return Failure.UserNotExists;
 
         updatedUser.UpdateGeolocation(request.Latitude, request.Longitude, request.Accuracy, request.Heading,

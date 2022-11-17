@@ -10,7 +10,9 @@
 
   <ItemGroup>
     <PackageReference Include="ErrorOr" Version="1.0.1" />
+    <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="MediatR" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Users\Queries\" />
+    <Folder Include="Common\Cryptography\" />
+    <Folder Include="Users\Queries\GetUser\" />
+    <Folder Include="Users\Queries\VerifyUser\" />
   </ItemGroup>
 
 </Project>

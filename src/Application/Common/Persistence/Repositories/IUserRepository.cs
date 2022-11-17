@@ -5,7 +5,7 @@ namespace MultiProject.Delivery.Application.Common.Persistence.Repositories;
 
 public interface IUserRepository
 {
+    Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken = default);
+    Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default);
     void Add(User user);
-    Task<User?> GetByIdAsync(UserId id);
-    void Update(User user);
 }

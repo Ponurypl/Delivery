@@ -16,22 +16,24 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
     private readonly IDateTime _dateTime;
     private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
     public CreateTransportCommandHandler(ITransportRepository transportRepository, IUnitOfWork unitOfWork,
                                         IDateTime dateTime, IUnitOfMeasureRepository unitOfMeasureRepository, 
-                                        IUserRepository userRepository)
+                                        IUserRepository userRepository, IMapper mapper)
     {
         _transportRepository = transportRepository;
         _unitOfWork = unitOfWork;
         _dateTime = dateTime;
         _unitOfMeasureRepository = unitOfMeasureRepository;
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
     public async Task<ErrorOr<TransportCreatedDto>> Handle(CreateTransportCommand request, CancellationToken cancellationToken)
     {
         var delivererId = new UserId(request.DelivererId);
-        var deliverer = await _userRepository.GetByIdAsync(delivererId);
+        var deliverer = await _userRepository.GetByIdAsync(delivererId, cancellationToken);
         if (deliverer is null)
         {
             return Failure.UserNotExists;
@@ -44,7 +46,7 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
         }
 
         var managerId = new UserId(request.ManagerId);
-        var manager = await _userRepository.GetByIdAsync(managerId);
+        var manager = await _userRepository.GetByIdAsync(managerId, cancellationToken);
         if (manager is null)
         {
             return Failure.UserNotExists;
@@ -57,29 +59,7 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
         }
         
         List<UnitOfMeasure> unitOfMeasureList = await _unitOfMeasureRepository.GetAllAsync();
-
-        //TODO: Mapper - jego zostawiasz tym się zajmiemy później
-        List<NewTransportUnit> transportUnitsToCreate = request.TransportUnits.Select(u => new NewTransportUnit()
-                                                                   {
-                                                                       AdditionalInformation = u.AdditionalInformation,
-                                                                       Amount = u.Amount,
-                                                                       Barcode = u.Barcode,
-                                                                       Description = u.Description,
-                                                                       Number = u.Number,
-                                                                       RecipientCompanyName = u.RecipientCompanyName,
-                                                                       RecipientCountry = u.RecipientCountry,
-                                                                       RecipientFlatNumber = u.RecipientFlatNumber,
-                                                                       RecipientLastName = u.RecipientLastName,
-                                                                       RecipientName = u.RecipientName,
-                                                                       RecipientPhoneNumber = u.RecipientPhoneNumber,
-                                                                       RecipientPostCode = u.RecipientPostCode,
-                                                                       RecipientStreet = u.RecipientStreet,
-                                                                       RecipientStreetNumber = u.RecipientStreetNumber,
-                                                                       RecipientTown = u.RecipientTown,
-                                                                       UnitOfMeasureId = u.UnitOfMeasureId
-                                                                   })
-                                                               .ToList();
-
+        List<NewTransportUnit> transportUnitsToCreate = _mapper.Map<List<NewTransportUnit>>(request.TransportUnits);
 
         foreach (var unit in transportUnitsToCreate)
         {

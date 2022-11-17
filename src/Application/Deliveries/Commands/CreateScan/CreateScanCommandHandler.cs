@@ -1,6 +1,7 @@
 ﻿using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
+using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.Entities;
 
 namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
@@ -20,7 +21,7 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
 
     public async Task<ErrorOr<ScanCreatedDto>> Handle(CreateScanCommand request, CancellationToken cancellationToken)
     {
-        var scanCreateResult = Scan.Create(request.TransportUnitId, request.DelivererId, _dateTime);
+        var scanCreateResult = Scan.Create(new TransportUnitId(request.TransportUnitId), request.DelivererId, _dateTime);
         
         if (scanCreateResult.IsError)
         {
