@@ -2,20 +2,21 @@
 using MultiProject.Delivery.Domain.Scans.Enums;
 using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
+using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Scans.Entities;
 
 public sealed class Scan : AggregateRoot<ScanId>
 {
-    public int TransportUnitId { get; private set; }
+    public TransportUnitId TransportUnitId { get; private set; }
     public ScanStatus Status { get; private set; }
     public DateTime LastUpdateDate { get; private set; }
     public Guid DelivererId { get; private set; }
     public double? Quantity { get; private set; }
     public Geolocation? Location { get; private set; }
 
-    private Scan(ScanId id, int transportUnitId, Guid delivererId, DateTime lastUpdateDate, ScanStatus scanStatus) 
+    private Scan(ScanId id, TransportUnitId transportUnitId, Guid delivererId, DateTime lastUpdateDate, ScanStatus scanStatus) 
         : base(id)
     {
         TransportUnitId = transportUnitId;
@@ -24,7 +25,7 @@ public sealed class Scan : AggregateRoot<ScanId>
         DelivererId = delivererId;
     }
 
-    public static ErrorOr<Scan> Create(int transportUnitId, Guid delivererId, IDateTime dateTimeProvider)
+    public static ErrorOr<Scan> Create(TransportUnitId transportUnitId, Guid delivererId, IDateTime dateTimeProvider)
     {
         return new Scan(ScanId.Empty, transportUnitId, delivererId, dateTimeProvider.Now, ScanStatus.Valid);
     }
