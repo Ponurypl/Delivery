@@ -32,7 +32,7 @@ public sealed class CreateUserCommandCommandHandler : ICommandHandler<CreateUser
 
         var user = newUserResult.Value;
         _userRepository.Add(user);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new UserCreatedDto { Id = user.Id.Value };
     }

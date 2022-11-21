@@ -26,7 +26,7 @@ public sealed class UpdateUserLocationCommandHandler : ICommandHandler<UpdateUse
 
         updatedUser.UpdateGeolocation(request.Latitude, request.Longitude, request.Accuracy, request.Heading,
                                       request.Speed, _dateTime.Now);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success;
     }
 }

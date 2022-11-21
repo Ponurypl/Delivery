@@ -5,6 +5,7 @@ using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.Entities;
+using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
 
@@ -14,13 +15,16 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
     private readonly IDateTime _dateTime;
     private readonly IScanRepository _scanRepository;
     private readonly ITransportRepository _transportRepository;
+    private readonly IUserRepository _userRepository;
 
-    public CreateScanCommandHandler(IUnitOfWork unitOfWork, IDateTime dateTime, IScanRepository scanRepository, ITransportRepository transportRepository)
+    public CreateScanCommandHandler(IUnitOfWork unitOfWork, IDateTime dateTime, IScanRepository scanRepository,
+                                    ITransportRepository transportRepository, IUserRepository userRepository)
     {
         _unitOfWork = unitOfWork;
         _dateTime = dateTime;
         _scanRepository = scanRepository;
         _transportRepository = transportRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<ErrorOr<ScanCreatedDto>> Handle(CreateScanCommand request, CancellationToken cancellationToken)
@@ -39,8 +43,14 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
             return Failure.TransportUnitNotExists;
         }
 
+        var delivererId = new UserId(request.DelivererId);
+        var deliverer = await _userRepository.GetByIdAsync(delivererId, cancellationToken);
+        if (deliverer is null)
+        {
+            return Failure.UserNotExists;
+        }
 
-        var scanCreateResult = Scan.Create(transportUnitId, request.DelivererId, _dateTime);
+        var scanCreateResult = Scan.Create(transportUnitId, deliverer.Id , _dateTime);
         
         if (scanCreateResult.IsError)
         {
@@ -48,15 +58,14 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
         }
 
         var scan = scanCreateResult.Value;
-        
-        //TODO: do wyciągnięcia transport na podstawie Id i weryfikacja czy jest w nim multi unit o podanym Id, jak nie jest to failure
-        //szczerze to nie wiem czy dobrze. UnitDetalis w transportUnit to IUnitDetalis, więc nie mogę sprawdzić czy Amount > 0.
-        if (request.Quantity is not null)
+
+        if (transportUnit.UnitDetails is MultiUnitDetails mtd)
         {
-            if(transportUnit.UnitDetails is not MultiUnitDetails)
+            if (request.Quantity is null or <= 0)
             {
                 return Failure.InvalidScanInput;
             }
+
             var result = scan.AddQuantity(request.Quantity.Value);
             if (result.IsError)
             {
@@ -64,6 +73,7 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
             }
         }
 
+        //TODO: Do Pawła z przyszłości - wiesz co? no to zrób, zaczyna się na v
         if (request.LocationAccuracy is not null && request.LocationLatitude is not null &&
             request.LocationLongitude is not null)
         {
@@ -76,7 +86,7 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
         }
 
         _scanRepository.Add(scan);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return new ScanCreatedDto { Id = scan.Id.Value };
     }
 }

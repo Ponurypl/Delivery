@@ -58,7 +58,7 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
             return managerRoleCheck.Errors;
         }
         
-        List<UnitOfMeasure> unitOfMeasureList = await _unitOfMeasureRepository.GetAllAsync();
+        List<UnitOfMeasure> unitOfMeasureList = await _unitOfMeasureRepository.GetAllAsync(cancellationToken);
         List<NewTransportUnit> transportUnitsToCreate = _mapper.Map<List<NewTransportUnit>>(request.TransportUnits);
 
         foreach (var unit in transportUnitsToCreate)
@@ -86,7 +86,7 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
         }
 
         _transportRepository.Add(newTransportResult.Value);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new TransportCreatedDto
                {

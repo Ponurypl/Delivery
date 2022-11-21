@@ -22,7 +22,7 @@ public sealed class CreateUnitOfMeasureCommandHandler : ICommandHandler<CreateUn
         if (newUnitOfMeasure.IsError) return newUnitOfMeasure.Errors;
 
         _unitOfMeasureRepository.Add(newUnitOfMeasure.Value);
-        await _unitOfWork.SaveChangesAsync();        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);        
 
         return Result.Success;
     }
