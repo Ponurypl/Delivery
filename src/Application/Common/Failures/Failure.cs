@@ -11,4 +11,5 @@ public static class Failure
     public static Error ScanNotExists => Error.NotFound(nameof(ScanNotExists));
     public static Error TransportUnitNotExists => Error.NotFound(nameof(TransportUnitNotExists));
     public static Error PasswordEqualsLogin => Error.Validation(nameof(PasswordEqualsLogin));
+    public static Error InvalidScanInput => Error.Validation(nameof(InvalidScanInput));
 }

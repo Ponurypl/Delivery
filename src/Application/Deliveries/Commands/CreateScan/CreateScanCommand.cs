@@ -3,6 +3,7 @@
 public sealed record CreateScanCommand : ICommand<ScanCreatedDto>
 {
     //TODO: Dodajemy TransportId
+    public required int TransportId { get; set; }
     public required int TransportUnitId { get; init; }
     public required Guid DelivererId { get; init; }
     public double? Quantity { get; init; }
