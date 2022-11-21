@@ -10,6 +10,7 @@ using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Application.Attachments.Commands.CreateAttachment;
+
 internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachmentCommand, AttachmentCratedDto>
 {
     private readonly IUserRepository _userRepository;
@@ -45,12 +46,6 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
         if (transport is null)
         {
             return Failure.TransportNotExists;
-        }
-
-        //TODO: Dla Pawła z przyszłości - validator
-        if (request.Payload is null && string.IsNullOrWhiteSpace(request.AdditionalInformation))
-        {
-            return Failure.InvalidAttachmentInput;
         }
 
         //TODO: Przerabiamy na 3 metody Create - z obydwoma wymaganymi dodatkami, tylko z payloadem oraz taką tylko z komentarzem

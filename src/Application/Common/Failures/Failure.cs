@@ -13,4 +13,5 @@ public static class Failure
     public static Error PasswordEqualsLogin => Error.Validation(nameof(PasswordEqualsLogin));
     public static Error InvalidScanInput => Error.Validation(nameof(InvalidScanInput));
     public static Error InvalidAttachmentInput => Error.Validation(nameof(InvalidAttachmentInput));
+    public static Error InvalidMessage => Error.Validation(nameof(InvalidMessage));
 }
