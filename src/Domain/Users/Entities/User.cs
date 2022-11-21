@@ -26,11 +26,6 @@ public sealed class User : AggregateRoot<UserId>
 
     public static ErrorOr<User> Create(UserRole role, string username, string password, string phoneNumber)
     {
-        //TODO: Do wyciągnięcia poziom wyżej
-        if (username == password)
-        {
-            return Failures.LoginSameAsPassword;
-        }
 
         //TODO: Regex na numer telefonu
 

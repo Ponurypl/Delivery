@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Application.Common.Cryptography;
+using MultiProject.Delivery.Application.Common.Failures;
 using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Domain.Users.Entities;
@@ -20,6 +21,11 @@ public sealed class CreateUserCommandCommandHandler : ICommandHandler<CreateUser
 
     public async Task<ErrorOr<UserCreatedDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
+        if (request.Username == request.Password)
+        {
+            return Failure.PasswordEqualsLogin;
+        }
+
         var newUserResult = User.Create(request.Role, request.Username, _hashService.Hash(request.Password), request.PhoneNumber);
 
         if (newUserResult.IsError) return newUserResult.Errors;
