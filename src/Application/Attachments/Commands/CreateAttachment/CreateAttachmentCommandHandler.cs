@@ -18,16 +18,14 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
     private readonly IScanRepository _scanRepository;
     private readonly ITransportRepository _transportRepository;
     private readonly IAttachmentRepository _attachmentRepository;
-    private readonly IMapper _mapper;
 
-    public CreateAttachmentCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IDateTime dateTime, IScanRepository scanRepository, ITransportRepository transportRepository, IMapper mapper, IAttachmentRepository attachmentRepository)
+    public CreateAttachmentCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IDateTime dateTime, IScanRepository scanRepository, ITransportRepository transportRepository, IAttachmentRepository attachmentRepository)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _dateTime = dateTime;
         _scanRepository = scanRepository;
         _transportRepository = transportRepository;
-        _mapper = mapper;
         _attachmentRepository = attachmentRepository;
     }
 
@@ -47,34 +45,47 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
             return Failure.TransportNotExists;
         }
 
-        //TODO: potrzbuję scanId i transportUnitId później, jak to dobrze zadeklarować?
-        ScanId scanId;
+        if (request.Payload is null && string.IsNullOrWhiteSpace(request.AdditionalInformation))
+        {
+            return Failure.InvalidAttachmentInput;
+        }
+
+        //TODO: czy payload i additionalinformation powinno być osobną metodą podobnie jak scanid i transportunitid dla spójności?
+        var newAttachmentResult = Attachment.Create(creatorId, transportID, request.Payload, request.AdditionalInformation, _dateTime, cancellationToken);
+        if (newAttachmentResult.IsError) 
+        {
+            return newAttachmentResult.Errors;
+        }
+        var attachment = newAttachmentResult.Value;
+
         if (request.ScanId is not null)
         {
-            scanId = new ScanId(request!.ScanId.Value);
+            var scanId = new ScanId(request!.ScanId.Value);
             var Scan = _scanRepository.GetByIdAndTransportIdAsync(scanId, transportID, cancellationToken);
             if (Scan is null)
             {
                 return Failure.ScanNotExists;
             }
+            var result = attachment.AddScanId(scanId);
+            if (result.IsError)
+            {
+                return result.Errors;
+            }
         }
 
-        TransportUnitId transportUnitId;
         if (request.TransportUnitId is not null)
         {
-            transportUnitId = new TransportUnitId(request!.TransportUnitId.Value);
+            var transportUnitId = new TransportUnitId(request!.TransportUnitId.Value);
             var transportUnit = transport.TransportUnits.FirstOrDefault(t => t.Id == transportUnitId);
             if (transportUnit is null)
             {
                 return Failure.TransportUnitNotExists;
             }
-        }
-
-
-        var newAttachmentResult = Attachment.Create(creatorId, transportID, scanId, transportUnitId, request.Payload, request.AdditionalInformation, _dateTime, cancellationToken);
-        if (newAttachmentResult.IsError) 
-        {
-            return newAttachmentResult.Errors;
+            var result = attachment.AddTransportUnitId(transportUnitId);
+            if (result.IsError)
+            {
+                return result.Errors;
+            }
         }
 
         _attachmentRepository.Add(newAttachmentResult.Value);
@@ -84,6 +95,8 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
         {
             Id = newAttachmentResult.Value.Id.Value
         };
+
+        
 
     }
 }
