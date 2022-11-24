@@ -1,5 +1,6 @@
 ﻿namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateTransport;
 
+//TODO:Dodać Validator
 public sealed record CreateTransportCommand : ICommand<TransportCreatedDto>
 {
     public required Guid DelivererId { get; init; }

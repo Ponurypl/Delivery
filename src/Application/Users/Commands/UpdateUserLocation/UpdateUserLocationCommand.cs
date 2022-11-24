@@ -1,5 +1,6 @@
 ﻿namespace MultiProject.Delivery.Application.Users.Commands.UpdateUserLocation;
 
+//TODO:Dodać Validator
 public sealed record UpdateUserLocationCommand : ICommand
 {
     public required Guid UserId { get; init; }

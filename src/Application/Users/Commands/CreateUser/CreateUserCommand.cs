@@ -2,6 +2,7 @@
 
 namespace MultiProject.Delivery.Application.Users.Commands.CreateUser;
 
+//TODO:Dodać Validator
 public sealed record CreateUserCommand : ICommand<UserCreatedDto>
 {
     public required UserRole Role { get; init; }
