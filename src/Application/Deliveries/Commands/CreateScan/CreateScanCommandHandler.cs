@@ -73,7 +73,7 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
             }
         }
 
-        //TODO: Done? Do Pawła z przyszłości - wiesz co? no to zrób, zaczyna się na v
+        //TODO: Podejmij decyzje czy chcesz zagnieżdżone Location? czy tak jak jest
         if (request.LocationAccuracy is not null && request.LocationLatitude is not null &&
             request.LocationLongitude is not null)
         {

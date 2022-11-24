@@ -49,54 +49,40 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
             return Failure.TransportNotExists;
         }
 
-        Attachment attachment;
-        //TODO: Done? Przerabiamy na 3 metody Create - z obydwoma wymaganymi dodatkami, tylko z payloadem oraz taką tylko z komentarzem
-        switch (request.Payload)
+        ErrorOr<Attachment> attachmentResult;
+        if (request.Payload != null && request.AdditionalInformation is not null)
         {
-            case not null when request.AdditionalInformation is not null:
-                {
-                    var newAttachmentResult = Attachment.Create(creatorId, transportId, request.Payload, request.AdditionalInformation, _dateTime);
-                    if (newAttachmentResult.IsError)
-                    {
-                        return newAttachmentResult.Errors;
-                    }
-                    attachment = newAttachmentResult.Value;
-                    break;
-                }
-
-            case null when request.AdditionalInformation is not null:
-                {
-                    var newAttachmentResult = Attachment.Create(creatorId, transportId, request.AdditionalInformation, _dateTime);
-                    if (newAttachmentResult.IsError)
-                    {
-                        return newAttachmentResult.Errors;
-                    }
-                    attachment = newAttachmentResult.Value;
-                    break;
-                }
-
-            case not null when request.AdditionalInformation is null:
-                {
-                    var newAttachmentResult = Attachment.Create(creatorId, transportId, request.Payload, _dateTime);
-                    if (newAttachmentResult.IsError)
-                    {
-                        return newAttachmentResult.Errors;
-                    }
-                    attachment = newAttachmentResult.Value;
-                    break;
-                }
-            default: return Failure.InvalidAttachmentInput;
+            attachmentResult = Attachment.Create(creatorId, transportId, request.Payload, request.AdditionalInformation, _dateTime);
         }
+        else if (request.Payload != null && request.AdditionalInformation is null)
+        {
+            attachmentResult = Attachment.Create(creatorId, transportId, request.Payload, _dateTime);
+        }
+        else if (request.Payload == null && request.AdditionalInformation is not null)
+        {
+            attachmentResult = Attachment.Create(creatorId, transportId, request.AdditionalInformation, _dateTime);
+        }
+        else
+        {
+            return Failure.InvalidAttachmentInput;
+        }
+
+        if (attachmentResult.IsError)
+        {
+            return attachmentResult.Errors;
+        }
+
+        Attachment attachment = attachmentResult.Value;
 
         if (request.TransportUnitId is not null)
         {
-            var transportUnitId = new TransportUnitId(request.TransportUnitId.Value);
+            TransportUnitId transportUnitId = new(request.TransportUnitId.Value);
             var transportUnit = transport.TransportUnits.FirstOrDefault(t => t.Id == transportUnitId);
             if (transportUnit is null)
             {
                 return Failure.TransportUnitNotExists;
             }
-            //TODO: Done. transportUnitId z obiektu transportUnit z bazy a nie z danych wejściowych
+
             var transportUnitResult = attachment.AddTransportUnitId(transportUnit.Id);
             if (transportUnitResult.IsError)
             {
@@ -105,19 +91,18 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
 
             if (request.ScanId is not null)
             {
-                var scanId = new ScanId(request.ScanId.Value);
-                //TODO: Done? zmienne lokalne z małej litery, repozytorium tylko po kluczu głównym a transportId ora creatorId sprawdzamy tutaj w handlerzu, i awaicik
+                ScanId scanId = new(request.ScanId.Value);
                 Scan? scan = await _scanRepository.GetByIdAsync(scanId, cancellationToken);
                 if (scan is null)
                 {
                     return Failure.ScanNotExists;
                 }
-                // użytkownik dodający attachment musi być tym który go stworzył
-                if (scan.DelivererId != creator.Id) 
+
+                if (scan.DelivererId != creator.Id || scan.TransportUnitId != transportUnit.Id) 
                 {
                     return Failure.InvalidAttachmentInput;
                 }
-                //TODO: Done. scanId z obiektu scan z bazy a nie z danych wejściowych
+
                 var scanResult = attachment.AddScanId(scan.Id);
                 if (scanResult.IsError)
                 {

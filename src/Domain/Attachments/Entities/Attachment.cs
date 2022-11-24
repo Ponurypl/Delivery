@@ -10,60 +10,53 @@ namespace MultiProject.Delivery.Domain.Attachments.Entities;
 
 public sealed class Attachment : AggregateRoot<AttachmentId>
 {
-    public UserId CreatorId { get; set; }
-    public TransportId TransportId { get; set; }
-    public ScanId? ScanId { get; set; }
-    public TransportUnitId? TransportUnitId { get; set; }
-    public AttachmentStatus Status { get; set; }
-    public DateTime LastUpdateDate { get; set; }
-    public byte[]? Payload { get; set; }
-    public string? AdditionalInformation { get; set; }
+    public UserId CreatorId { get; private set; }
+    public TransportId TransportId { get; private set; }
+    public ScanId? ScanId { get; private set; }
+    public TransportUnitId? TransportUnitId { get; private set; }
+    public AttachmentStatus Status { get; private set; }
+    public DateTime LastUpdateDate { get; private set; }
+    public byte[]? Payload { get; private set; }
+    public string? AdditionalInformation { get; private set; }
 
-    private Attachment(AttachmentId id, UserId creatorId, TransportId transportId, AttachmentStatus status, DateTime lastUpdateDate,
-                       byte[]? payload = null, string? additionalInformation = null) : base(id)
+    private Attachment(AttachmentId id, UserId creatorId, TransportId transportId, AttachmentStatus status, 
+                       DateTime lastUpdateDate) : base(id)
     {
         CreatorId = creatorId;
         TransportId = transportId;
         Status = status;
         LastUpdateDate = lastUpdateDate;
-        Payload = payload;
-        AdditionalInformation = additionalInformation;
-}
+    }
 
-    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, byte[]? payload,
-                                             string? additionalInformation, IDateTime dateTimeProvider)
+    private static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, IDateTime dateTimeProvider,
+                                             byte[]? payload = null, string? additionalInformation = null)
     {
-        //TODO: Done. Zmienić na unexpected
-        if (dateTimeProvider is null) return Failures.NoServiceProvided;
+        if (dateTimeProvider is null) return Failures.MissingRequiredDependency;
 
         Attachment newAttachment = new(AttachmentId.Empty, creatorId, transportId, AttachmentStatus.Valid,
-                                       dateTimeProvider.Now, payload, additionalInformation);
+                                       dateTimeProvider.Now)
+                                   {
+                                       Payload = payload, AdditionalInformation = additionalInformation
+                                   };
 
         return newAttachment;
     }
-    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId,
-                                             string? additionalInformation, IDateTime dateTimeProvider)
-    {
-        //TODO: Done. Zmienić na unexpected
-        if (dateTimeProvider is null) return Failures.NoServiceProvided;
 
-        Attachment newAttachment = new(AttachmentId.Empty, creatorId, transportId, AttachmentStatus.Valid,
-                                       dateTimeProvider.Now, additionalInformation: additionalInformation);
-
-        return newAttachment;
-    }
-    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, byte[] payload,
+    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, string additionalInformation, 
                                              IDateTime dateTimeProvider)
     {
-        //TODO: Done. Zmienić na unexpected
-        if (dateTimeProvider is null) return Failures.NoServiceProvided;
-
-        Attachment newAttachment = new(AttachmentId.Empty, creatorId, transportId, AttachmentStatus.Valid,
-                                       dateTimeProvider.Now, payload: payload);
-
-        return newAttachment;
+        return Create(creatorId, transportId, dateTimeProvider, additionalInformation: additionalInformation);
     }
-    
+    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, byte[] payload, IDateTime dateTimeProvider)
+    {
+        return Create(creatorId, transportId, dateTimeProvider, payload);
+    }
+
+    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, byte[] payload, string additionalInformation, 
+                                             IDateTime dateTimeProvider)
+    {
+        return Create(creatorId, transportId, dateTimeProvider, payload, additionalInformation);
+    }
 
     public ErrorOr<Updated> AddScanId(ScanId scanId)
     {
