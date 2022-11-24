@@ -12,7 +12,7 @@ using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Application.Attachments.Commands.CreateAttachment;
 
-internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachmentCommand, AttachmentCratedDto>
+internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachmentCommand, AttachmentCreatedDto>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -33,7 +33,7 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
         _attachmentRepository = attachmentRepository;
     }
 
-    public async Task<ErrorOr<AttachmentCratedDto>> Handle(CreateAttachmentCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<AttachmentCreatedDto>> Handle(CreateAttachmentCommand request, CancellationToken cancellationToken)
     {
         UserId creatorId = new(request.CreatorId);
         User? creator = await _userRepository.GetByIdAsync(creatorId, cancellationToken);
@@ -49,15 +49,44 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
             return Failure.TransportNotExists;
         }
 
-        //TODO: Przerabiamy na 3 metody Create - z obydwoma wymaganymi dodatkami, tylko z payloadem oraz taką tylko z komentarzem
-        var newAttachmentResult = Attachment.Create(creatorId, transportId, request.Payload, request.AdditionalInformation, _dateTime);
-        if (newAttachmentResult.IsError) 
+        Attachment attachment;
+        //TODO: Done? Przerabiamy na 3 metody Create - z obydwoma wymaganymi dodatkami, tylko z payloadem oraz taką tylko z komentarzem
+        switch (request.Payload)
         {
-            return newAttachmentResult.Errors;
+            case not null when request.AdditionalInformation is not null:
+                {
+                    var newAttachmentResult = Attachment.Create(creatorId, transportId, request.Payload, request.AdditionalInformation, _dateTime);
+                    if (newAttachmentResult.IsError)
+                    {
+                        return newAttachmentResult.Errors;
+                    }
+                    attachment = newAttachmentResult.Value;
+                    break;
+                }
+
+            case null when request.AdditionalInformation is not null:
+                {
+                    var newAttachmentResult = Attachment.Create(creatorId, transportId, request.AdditionalInformation, _dateTime);
+                    if (newAttachmentResult.IsError)
+                    {
+                        return newAttachmentResult.Errors;
+                    }
+                    attachment = newAttachmentResult.Value;
+                    break;
+                }
+
+            case not null when request.AdditionalInformation is null:
+                {
+                    var newAttachmentResult = Attachment.Create(creatorId, transportId, request.Payload, _dateTime);
+                    if (newAttachmentResult.IsError)
+                    {
+                        return newAttachmentResult.Errors;
+                    }
+                    attachment = newAttachmentResult.Value;
+                    break;
+                }
+            default: return Failure.InvalidAttachmentInput;
         }
-        var attachment = newAttachmentResult.Value;
-
-
 
         if (request.TransportUnitId is not null)
         {
@@ -97,12 +126,12 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
             }
         }
 
-        _attachmentRepository.Add(newAttachmentResult.Value);
+        _attachmentRepository.Add(attachment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new AttachmentCratedDto
+        return new AttachmentCreatedDto
         {
-            Id = newAttachmentResult.Value.Id.Value
+            Id = attachment.Id.Value
         };
 
         

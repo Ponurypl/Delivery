@@ -20,7 +20,7 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
     public string? AdditionalInformation { get; set; }
 
     private Attachment(AttachmentId id, UserId creatorId, TransportId transportId, AttachmentStatus status, DateTime lastUpdateDate,
-                       byte[]? payload, string? additionalInformation) : base(id)
+                       byte[]? payload = null, string? additionalInformation = null) : base(id)
     {
         CreatorId = creatorId;
         TransportId = transportId;
@@ -41,6 +41,29 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
 
         return newAttachment;
     }
+    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId,
+                                             string? additionalInformation, IDateTime dateTimeProvider)
+    {
+        //TODO: Done. Zmienić na unexpected
+        if (dateTimeProvider is null) return Failures.NoServiceProvided;
+
+        Attachment newAttachment = new(AttachmentId.Empty, creatorId, transportId, AttachmentStatus.Valid,
+                                       dateTimeProvider.Now, additionalInformation: additionalInformation);
+
+        return newAttachment;
+    }
+    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, byte[] payload,
+                                             IDateTime dateTimeProvider)
+    {
+        //TODO: Done. Zmienić na unexpected
+        if (dateTimeProvider is null) return Failures.NoServiceProvided;
+
+        Attachment newAttachment = new(AttachmentId.Empty, creatorId, transportId, AttachmentStatus.Valid,
+                                       dateTimeProvider.Now, payload: payload);
+
+        return newAttachment;
+    }
+    
 
     public ErrorOr<Updated> AddScanId(ScanId scanId)
     {

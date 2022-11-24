@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.Application.Attachments.Commands.CreateAttachment;
 
-public sealed record CreateAttachmentCommand : ICommand<AttachmentCratedDto>
+public sealed record CreateAttachmentCommand : ICommand<AttachmentCreatedDto>
 {
     public required Guid CreatorId { get; init; }
     public required int TransportId { get; init; }
