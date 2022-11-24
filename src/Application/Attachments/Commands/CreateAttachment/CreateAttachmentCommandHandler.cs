@@ -5,6 +5,7 @@ using MultiProject.Delivery.Domain.Attachments.Entities;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
+using MultiProject.Delivery.Domain.Scans.Entities;
 using MultiProject.Delivery.Domain.Scans.ValueTypes;
 using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
@@ -56,22 +57,7 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
         }
         var attachment = newAttachmentResult.Value;
 
-        if (request.ScanId is not null)
-        {
-            var scanId = new ScanId(request.ScanId.Value);
-            //TODO: zmienne lokalne z małej litery, repozytorium tylko po kluczu głównym a transportId ora creatorId sprawdzamy tutaj w handlerzu, i awaicik
-            var Scan = _scanRepository.GetByIdAndTransportIdAsync(scanId, transportId, cancellationToken);
-            if (Scan is null)
-            {
-                return Failure.ScanNotExists;
-            }
-            //TODO: scanId z obiektu scan z bazy a nie z danych wejściowych
-            var result = attachment.AddScanId(scanId);
-            if (result.IsError)
-            {
-                return result.Errors;
-            }
-        }
+
 
         if (request.TransportUnitId is not null)
         {
@@ -81,11 +67,33 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
             {
                 return Failure.TransportUnitNotExists;
             }
-            //TODO: transportUnitId z obiektu transportUnit z bazy a nie z danych wejściowych
-            var result = attachment.AddTransportUnitId(transportUnitId);
-            if (result.IsError)
+            //TODO: Done. transportUnitId z obiektu transportUnit z bazy a nie z danych wejściowych
+            var transportUnitResult = attachment.AddTransportUnitId(transportUnit.Id);
+            if (transportUnitResult.IsError)
             {
-                return result.Errors;
+                return transportUnitResult.Errors;
+            }
+
+            if (request.ScanId is not null)
+            {
+                var scanId = new ScanId(request.ScanId.Value);
+                //TODO: Done? zmienne lokalne z małej litery, repozytorium tylko po kluczu głównym a transportId ora creatorId sprawdzamy tutaj w handlerzu, i awaicik
+                Scan? scan = await _scanRepository.GetByIdAsync(scanId, cancellationToken);
+                if (scan is null)
+                {
+                    return Failure.ScanNotExists;
+                }
+                // użytkownik dodający attachment musi być tym który go stworzył
+                if (scan.DelivererId != creator.Id) 
+                {
+                    return Failure.InvalidAttachmentInput;
+                }
+                //TODO: Done. scanId z obiektu scan z bazy a nie z danych wejściowych
+                var scanResult = attachment.AddScanId(scan.Id);
+                if (scanResult.IsError)
+                {
+                    return scanResult.Errors;
+                }
             }
         }
 
