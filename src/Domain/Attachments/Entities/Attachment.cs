@@ -33,8 +33,8 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
     public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, byte[]? payload,
                                              string? additionalInformation, IDateTime dateTimeProvider)
     {
-        //TODO: Zmienić na unexpected
-        if (dateTimeProvider is null) return Failures.InvalidAttachmentInput;
+        //TODO: Done. Zmienić na unexpected
+        if (dateTimeProvider is null) return Failures.NoServiceProvided;
 
         Attachment newAttachment = new(AttachmentId.Empty, creatorId, transportId, AttachmentStatus.Valid,
                                        dateTimeProvider.Now, payload, additionalInformation);
