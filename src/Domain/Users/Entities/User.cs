@@ -35,7 +35,7 @@ public sealed class User : AggregateRoot<UserId>
     public ErrorOr<Updated> UpdateGeolocation(double latitude, double longitude, double accuracy, double heading,
                                               double speed, DateTime readDateTime)
     {
-        var geolocation = AdvancedGeolocation.Create(latitude, longitude, accuracy, readDateTime,
+        ErrorOr<AdvancedGeolocation> geolocation = AdvancedGeolocation.Create(latitude, longitude, accuracy, readDateTime,
                                                      heading, speed);
 
         if (geolocation.IsError)

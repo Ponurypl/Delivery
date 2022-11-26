@@ -73,12 +73,12 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
             }
         }
 
-        //TODO: Podejmij decyzje czy chcesz zagnieżdżone Location? czy tak jak jest
-        if (request.LocationAccuracy is not null && request.LocationLatitude is not null &&
-            request.LocationLongitude is not null)
+        //TODO: Done.Podejmij decyzje czy chcesz zagnieżdżone Location? czy tak jak jest
+        // od strony domeny jest troszkę prościej niech będzie zagnieżdżone
+        if (request.Location is not null)
         {
-            var result = scan.AddGeolocation(request.LocationLatitude.Value, request.LocationLongitude.Value,
-                                             request.LocationAccuracy.Value);
+            var result = scan.AddGeolocation(request.Location.Latitude, request.Location.Longitude,
+                                             request.Location.Accuracy);
             if (result.IsError)
             {
                 return result.Errors;

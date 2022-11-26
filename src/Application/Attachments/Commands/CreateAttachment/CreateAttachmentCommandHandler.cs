@@ -77,13 +77,13 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
         if (request.TransportUnitId is not null)
         {
             TransportUnitId transportUnitId = new(request.TransportUnitId.Value);
-            var transportUnit = transport.TransportUnits.FirstOrDefault(t => t.Id == transportUnitId);
+            TransportUnit? transportUnit = transport.TransportUnits.FirstOrDefault(t => t.Id == transportUnitId);
             if (transportUnit is null)
             {
                 return Failure.TransportUnitNotExists;
             }
 
-            var transportUnitResult = attachment.AddTransportUnitId(transportUnit.Id);
+            ErrorOr<Updated> transportUnitResult = attachment.AddTransportUnitId(transportUnit.Id);
             if (transportUnitResult.IsError)
             {
                 return transportUnitResult.Errors;
@@ -103,7 +103,7 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
                     return Failure.InvalidAttachmentInput;
                 }
 
-                var scanResult = attachment.AddScanId(scan.Id);
+                ErrorOr<Updated> scanResult = attachment.AddScanId(scan.Id);
                 if (scanResult.IsError)
                 {
                     return scanResult.Errors;
