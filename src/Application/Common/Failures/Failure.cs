@@ -1,6 +1,4 @@
-﻿using MultiProject.Delivery.Application.Attachments.Commands.CreateAttachment;
-
-namespace MultiProject.Delivery.Application.Common.Failures;
+﻿namespace MultiProject.Delivery.Application.Common.Failures;
 
 public static class Failure
 {
@@ -14,4 +12,5 @@ public static class Failure
     public static Error InvalidScanInput => Error.Validation(nameof(InvalidScanInput));
     public static Error InvalidAttachmentInput => Error.Validation(nameof(InvalidAttachmentInput));
     public static Error InvalidMessage => Error.Validation(nameof(InvalidMessage));
+    public static Error AttachmentNotExists => Error.Validation(nameof(AttachmentNotExists));
 }
