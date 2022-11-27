@@ -4,7 +4,7 @@ using MultiProject.Delivery.Domain.Attachments.Entities;
 using MultiProject.Delivery.Domain.Attachments.ValueTypes;
 
 namespace MultiProject.Delivery.Application.Attachments.Queries.GetAttachment;
-internal class GetAttachmentQueryHandler : IQueryHandler<GetAttachmentQuery, AttachmentDto>
+public sealed class GetAttachmentQueryHandler : IQueryHandler<GetAttachmentQuery, AttachmentDto>
 {
     private readonly IAttachmentRepository _attachmentRepository;
     private readonly IMapper _mapper;

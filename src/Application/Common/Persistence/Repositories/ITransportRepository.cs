@@ -8,5 +8,4 @@ public interface ITransportRepository
     void Add(Transport transport);
     Task<List<Transport>> GetListByDateAsync(DateTime dateFrom, DateTime dateTo, CancellationToken cancellationToken = default);
     Task<Transport?> GetByIdAsync(TransportId id, CancellationToken cancellationToken = default);
-    Task<List<TransportId>> GetIdListByDateAsync(DateTime dateFrom, DateTime dateTo, CancellationToken cancellationToken);
 }
