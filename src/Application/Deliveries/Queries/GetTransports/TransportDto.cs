@@ -1,4 +1,4 @@
-﻿namespace MultiProject.Delivery.Application.Deliveries.Queries.GetTransport;
+﻿namespace MultiProject.Delivery.Application.Deliveries.Queries.GetTransports;
 
 public sealed record TransportDto
 {
