@@ -8,5 +8,5 @@ public interface IScanRepository
 {
     void Add(Scan scan);
     Task<Scan?> GetByIdAsync(ScanId id, CancellationToken cancellationToken = default);
-    Task<List<Scan>> GetAllByTransportIdAsync(TransportId transportId, CancellationToken cancellationToken = default);
+    Task<List<Scan>> GetAllByTransportUnitIdAsync(TransportUnitId transportUnitId, CancellationToken cancellationToken = default);
 }
