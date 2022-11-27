@@ -31,7 +31,7 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
     private static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, IDateTime dateTimeProvider,
                                              byte[]? payload = null, string? additionalInformation = null)
     {
-        if (dateTimeProvider is null) return Failures.MissingRequiredDependency;
+        if (dateTimeProvider is null) return DomainFailures.Common.MissingRequiredDependency;
 
         Attachment newAttachment = new(AttachmentId.Empty, creatorId, transportId, AttachmentStatus.Valid,
                                        dateTimeProvider.Now)

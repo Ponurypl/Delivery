@@ -19,8 +19,8 @@ public sealed class UnitOfMeasure : IAggregateRoot
 
     public static ErrorOr<UnitOfMeasure> Create(string name, string symbol, string? description)
     {
-        if (string.IsNullOrWhiteSpace(name)) return Failures.InvalidUnitOfMeasureInput;
-        if (string.IsNullOrWhiteSpace(symbol)) return Failures.InvalidUnitOfMeasureInput;
+        if (string.IsNullOrWhiteSpace(name)) return DomainFailures.Dictionaries.InvalidUnitOfMeasure;
+        if (string.IsNullOrWhiteSpace(symbol)) return DomainFailures.Dictionaries.InvalidUnitOfMeasure;
 
         UnitOfMeasure newUnitOfMeasure = new(name, symbol, description);
 

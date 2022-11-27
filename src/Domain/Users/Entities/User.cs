@@ -49,12 +49,12 @@ public sealed class User : AggregateRoot<UserId>
 
     public ErrorOr<Success> CheckIfUserIsDeliverer()
     {
-        return Role is UserRole.Deliverer ? Result.Success : Failures.UserDoesNotMeetRole;
+        return Role is UserRole.Deliverer ? Result.Success : DomainFailures.Users.UserDoesNotMeetRole;
     }
 
 
     public ErrorOr<Success> CheckIfUserIsManager()
     {
-        return Role is UserRole.Manager ? Result.Success : Failures.UserDoesNotMeetRole;
+        return Role is UserRole.Manager ? Result.Success : DomainFailures.Users.UserDoesNotMeetRole;
     }
 }

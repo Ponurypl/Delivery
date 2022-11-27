@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.Application.Deliveries.Queries.GetTransport;
 
-public sealed record GetTransportHeaderListQuery : IQuery<List<TransportDto>>
+public sealed record GetTransportQuery : IQuery<List<TransportDto>>
 {
     //TODO: Validator
     public required DateTime DateFrom { get; init; }

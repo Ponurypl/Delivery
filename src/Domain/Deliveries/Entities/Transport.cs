@@ -40,11 +40,11 @@ public sealed class Transport : AggregateRoot<TransportId>
         DateTime startDate, UserId managerId, IDateTime dateTimeProvider,
         List<NewTransportUnit> transportUnitsToCreate)
     {
-        if (string.IsNullOrWhiteSpace(number)) return Failures.InvalidTransportUnitInput;
-        if (dateTimeProvider is null) return Failures.InvalidTransportUnitInput;
+        if (dateTimeProvider is null) return DomainFailures.Common.MissingRequiredDependency;
+        if (string.IsNullOrWhiteSpace(number)) return DomainFailures.Deliveries.InvalidTransportUnit;
         if (transportUnitsToCreate is null || transportUnitsToCreate.Count == 0)
         {
-            return Failures.InvalidTransportUnitInput;
+            return DomainFailures.Deliveries.InvalidTransportUnit;
         }
         
         Transport newTransport = new(TransportId.Empty, delivererId, number, additionalInformation, totalWeight, startDate, managerId,

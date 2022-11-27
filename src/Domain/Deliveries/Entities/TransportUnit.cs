@@ -34,19 +34,19 @@ public sealed class TransportUnit : Entity<TransportUnitId>
     {
         if (string.IsNullOrWhiteSpace(number) || string.IsNullOrWhiteSpace(description) || recipient is null)
         {
-            return Failures.InvalidTransportUnitInput;
+            return DomainFailures.Deliveries.InvalidTransportUnit;
         }
 
-        if (transport is null) return Failures.MissingParent;
+        if (transport is null) return DomainFailures.Common.MissingParentObject;
 
         if (string.IsNullOrWhiteSpace(barcode) && (amount is null or <= 0 || unitOfMeasureId is null))
         {
-            return Failures.InvalidTransportUnitDetails;
+            return DomainFailures.Deliveries.InvalidTransportUnitDetails;
         }
 
         if(!string.IsNullOrWhiteSpace(barcode) && (amount is not null || unitOfMeasureId is not null)) 
         {
-            return Failures.InvalidTransportUnitDetails;
+            return DomainFailures.Deliveries.InvalidTransportUnitDetails;
         }
         
         TransportUnit newTransportUnit = new(TransportUnitId.Empty, number, additionalInformation, description, recipient, transport, TransportUnitStatus.New);

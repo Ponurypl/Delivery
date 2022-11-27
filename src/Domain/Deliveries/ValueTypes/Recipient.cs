@@ -37,19 +37,19 @@ public sealed class Recipient
             string.IsNullOrWhiteSpace(streetNumber) || string.IsNullOrWhiteSpace(country) ||
             string.IsNullOrWhiteSpace(phoneNumber))
         {
-            return Failures.InvalidRecipientInput;
+            return DomainFailures.Deliveries.InvalidRecipient;
         }
 
         if (string.IsNullOrWhiteSpace(companyName) && string.IsNullOrWhiteSpace(name) &&
             string.IsNullOrWhiteSpace(lastName))
         {
-            return Failures.InvalidRecipientInput;
+            return DomainFailures.Deliveries.InvalidRecipient;
         }
 
         if (string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(lastName) ||
             !string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(lastName))
         {
-            return Failures.InvalidRecipientInput;
+            return DomainFailures.Deliveries.InvalidRecipient;
         }
 
         return new Recipient(companyName, country, flatNumber, lastName, name, phoneNumber, postCode, street,

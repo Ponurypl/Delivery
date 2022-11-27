@@ -1,6 +1,6 @@
 ﻿using MultiProject.Delivery.Domain.Deliveries.Entities;
 
-namespace MultiProject.Delivery.Application.Deliveries.Queries.GetTransportHeaderList;
+namespace MultiProject.Delivery.Application.Deliveries.Queries.GetTransport;
 
 public sealed class Mapper : IRegister
 {

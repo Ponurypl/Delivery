@@ -17,7 +17,7 @@ public class Geolocation
     {
         if (accuracy <= 0)
         {
-            return Failures.InvalidGeolocation;
+            return DomainFailures.Geolocations.InvalidGeolocation;
         }
 
         return new Geolocation(latitude, longitude, accuracy);

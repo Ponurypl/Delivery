@@ -20,7 +20,7 @@ public sealed class AdvancedGeolocation : Geolocation
     {
         if (heading < 0 || speed < 0)
         {
-            return Failures.InvalidAdvancedGeolocation;
+            return DomainFailures.Geolocations.InvalidAdvancedGeolocation;
         }
 
         return new AdvancedGeolocation(latitude, longitude, accuracy, readDate,
