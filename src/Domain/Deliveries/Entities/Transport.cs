@@ -48,7 +48,7 @@ public sealed class Transport : AggregateRoot<TransportId>
         }
         
         Transport newTransport = new(TransportId.Empty, delivererId, number, additionalInformation, totalWeight, startDate, managerId,
-                                     TransportStatus.New, dateTimeProvider.Now);
+                                     TransportStatus.New, dateTimeProvider.UtcNow);
 
         foreach (var unit in transportUnitsToCreate)
         {

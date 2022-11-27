@@ -3,5 +3,5 @@
 public interface IHashService
 {
     string Hash(string plainText);
-    string Hash(string plainText, string salt);
+    bool Verify(string plainText, string password);
 }

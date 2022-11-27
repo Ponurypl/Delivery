@@ -22,15 +22,14 @@ public sealed class VerifyUserQueryHandler : IQueryHandler<VerifyUserQuery, Veri
         {
             return Failure.WrongUserOrPassword;
         }
+        
+        var verification = _hashService.Verify(request.Password, user.Password);
 
-        var passwordParts = user.Password.Split(":");
-        var hash = _hashService.Hash(request.Password, passwordParts[1]);
-
-        if (hash != passwordParts[0])
+        if (verification)
         {
-            return Failure.WrongUserOrPassword;
+            return new VerifiedUserDto { Id = user.Id.Value, Username = user.Username };
         }
 
-        return new VerifiedUserDto { Id = user.Id.Value, Username = user.Username };
+        return Failure.WrongUserOrPassword;
     }
 }

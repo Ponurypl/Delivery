@@ -29,7 +29,7 @@ public sealed class Scan : AggregateRoot<ScanId>
 
     public static ErrorOr<Scan> Create(TransportUnitId transportUnitId, UserId delivererId, IDateTime dateTimeProvider)
     {
-        return new Scan(ScanId.Empty, transportUnitId, delivererId, dateTimeProvider.Now, ScanStatus.Valid);
+        return new Scan(ScanId.Empty, transportUnitId, delivererId, dateTimeProvider.UtcNow, ScanStatus.Valid);
     }
 
     public ErrorOr<Updated> AddGeolocation(double latitude, double longitude, double accuracy)

@@ -34,7 +34,7 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
         if (dateTimeProvider is null) return DomainFailures.Common.MissingRequiredDependency;
 
         Attachment newAttachment = new(AttachmentId.Empty, creatorId, transportId, AttachmentStatus.Valid,
-                                       dateTimeProvider.Now)
+                                       dateTimeProvider.UtcNow)
                                    {
                                        Payload = payload, AdditionalInformation = additionalInformation
                                    };

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace MultiProject.Delivery.Application.Common.Behaviors;
 
-public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, ErrorOr<TResponse>>
+internal sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, ErrorOr<TResponse>>
     where TRequest : IRequest<ErrorOr<TResponse>>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
