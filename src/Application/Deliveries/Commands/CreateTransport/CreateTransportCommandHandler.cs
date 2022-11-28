@@ -61,19 +61,22 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
         List<UnitOfMeasure> unitOfMeasureList = await _unitOfMeasureRepository.GetAllAsync(cancellationToken);
         List<NewTransportUnit> transportUnitsToCreate = _mapper.Map<List<NewTransportUnit>>(request.TransportUnits);
 
+        //Todo: Done. wcześniej mieliśmy zły warunek, tak czy siak zostaje ten foreach, bo trzeba zweryfikować, 
+        //      czy dostarczony w command UnitOfMeasureId istnieje w repozytorium UnitOfMeasure
         foreach (var unit in transportUnitsToCreate)
         {
-            if (string.IsNullOrWhiteSpace(unit.Barcode) &&
-                (unit.Amount is null or <= 0 ||
-                 unit.UnitOfMeasureId is null || unitOfMeasureList.Exists(u => u.Id.Value == unit.UnitOfMeasureId)))
+            if (unit.UnitOfMeasureId is not null)
             {
-                return Failure.InvalidTransportUnitDetails;
+                if (!unitOfMeasureList.Exists(u => u.Id.Value == unit.UnitOfMeasureId))
+                {
+                    return Failure.InvalidTransportUnitDetails;
+                }
             }
-
-            if (!string.IsNullOrWhiteSpace(unit.Barcode) && (unit.Amount is not null || unit.UnitOfMeasureId is not null))
-            {
-                return Failure.InvalidTransportUnitDetails;
-            }
+        }
+        //chciałem ten check dodać w validatorze, ale na razie jest tu.
+        if (request.StartDate < _dateTime.UtcNow)
+        {
+            return Failure.InvalidTransportUnitDetails;
         }
 
         var newTransportResult = Transport.Create(delivererId, request.Number, request.AdditionalInformation,
