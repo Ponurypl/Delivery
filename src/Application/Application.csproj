@@ -22,10 +22,4 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Common\Cryptography\" />
-    <Folder Include="Users\Queries\GetUser\" />
-    <Folder Include="Users\Queries\VerifyUser\" />
-  </ItemGroup>
-
 </Project>
