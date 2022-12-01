@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 
 namespace MultiProject.Delivery.Application.Deliveries.Queries.GetTransports;
-public sealed class GetTransportQueryValidator : AbstractValidator<GetTransportsQuery>
+public sealed class GetTransportsQueryValidator : AbstractValidator<GetTransportsQuery>
 {
-    public GetTransportQueryValidator()
+    public GetTransportsQueryValidator()
     {
         RuleFor(x => x.DateFrom).NotEmpty();
         RuleFor(x => x.DateTo).NotEmpty();

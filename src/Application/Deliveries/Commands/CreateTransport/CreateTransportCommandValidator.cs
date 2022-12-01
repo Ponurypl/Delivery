@@ -11,7 +11,7 @@ public sealed class CreateTransportCommandValidator : AbstractValidator<CreateTr
         RuleFor(x => x.StartDate).NotEmpty();
         RuleFor(x => x.Number).NotEmpty();
 
-        RuleFor(x => x.TransportUnits).NotEmpty().Must(x => x.Count > 0).WithMessage("At least One TransportUnit must be specified in delivery");
+        RuleFor(x => x.TransportUnits).NotEmpty().WithMessage("At least One TransportUnit must be specified in delivery");
         RuleForEach(x => x.TransportUnits).SetValidator(new TransportUnitToCreateValidator());
 
         RuleFor(x => x.TotalWeight).GreaterThan(0).When(x => x.TotalWeight is not null);

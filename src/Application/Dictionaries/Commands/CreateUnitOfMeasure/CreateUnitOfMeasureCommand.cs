@@ -1,6 +1,5 @@
 ﻿namespace MultiProject.Delivery.Application.Dictionaries.Commands.CreateUnitOfMeasure;
 
-//TODO: Done. Dodać Validator
 public sealed record CreateUnitOfMeasureCommand : ICommand
 {    
     public required string Name { get; init; }

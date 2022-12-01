@@ -20,7 +20,8 @@ public sealed class CreateUserCommandCommandHandler : ICommandHandler<CreateUser
 
     public async Task<ErrorOr<UserCreatedDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        var newUserResult = User.Create(request.Role, request.Username, _hashService.Hash(request.Password), request.PhoneNumber);
+        //TODO: do przemapowania rola cast na dole nie działa 
+        var newUserResult = User.Create((Domain.Users.Enums.UserRole)request.Role, request.Username, _hashService.Hash(request.Password), request.PhoneNumber);
 
         if (newUserResult.IsError) return newUserResult.Errors;
 
