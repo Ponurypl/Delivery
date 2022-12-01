@@ -1,16 +1,16 @@
-﻿using MultiProject.Delivery.Domain.Common.Interfaces;
+﻿using MultiProject.Delivery.Domain.Common.Abstractions;
 using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Dictionaries.Entities;
 
-public sealed class UnitOfMeasure : IAggregateRoot
+public sealed class UnitOfMeasure : AggregateRoot<UnitOfMeasureId>
 {
-    public UnitOfMeasureId Id { get; set; }
     public string Name { get; set; } = default!;
     public string Symbol { get; set; } = default!;
     public string? Description { get; set; }
 
-    private UnitOfMeasure(string name, string symbol, string? description)
+    private UnitOfMeasure(UnitOfMeasureId id, string name, string symbol, string? description) 
+        : base(id)
     {
         Name = name;
         Symbol = symbol;
@@ -22,7 +22,7 @@ public sealed class UnitOfMeasure : IAggregateRoot
         if (string.IsNullOrWhiteSpace(name)) return DomainFailures.Dictionaries.InvalidUnitOfMeasure;
         if (string.IsNullOrWhiteSpace(symbol)) return DomainFailures.Dictionaries.InvalidUnitOfMeasure;
 
-        UnitOfMeasure newUnitOfMeasure = new(name, symbol, description);
+        UnitOfMeasure newUnitOfMeasure = new(UnitOfMeasureId.Empty, name, symbol, description);
 
         return newUnitOfMeasure;
     }

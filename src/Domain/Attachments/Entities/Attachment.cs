@@ -58,6 +58,7 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
         return Create(creatorId, transportId, dateTimeProvider, payload, additionalInformation);
     }
 
+    //TODO: Do przemyślenia kiedy dodajemy dodatkowe id
     public ErrorOr<Updated> AddScanId(ScanId scanId)
     {
         ScanId = scanId;
