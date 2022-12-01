@@ -9,6 +9,6 @@ public interface IAttachmentRepository
     void Add(Attachment attachment);
     Task<Attachment?> GetByIdAsync(AttachmentId id, CancellationToken cancellationToken = default);
     Task<List<Attachment>> GetAllByTransportIdAsync(TransportId transportId, CancellationToken cancellationToken = default);
-    Task<List<Attachment>> GetAllByScanIdAsync(ScanId id, CancellationToken cancellationToken = default);
+    Task<List<Attachment>> GetAllByScanIdAsync(ScanId scanId, CancellationToken cancellationToken = default);
 
 }
