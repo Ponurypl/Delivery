@@ -2,7 +2,7 @@
 
 namespace MultiProject.Delivery.Application.Users.Commands.CreateUser;
 
-//TODO:Dodać Validator
+//TODO: Done. ALE UserRole tu mamy, a to chyba nie dobrze ? Dodać Validator
 public sealed record CreateUserCommand : ICommand<UserCreatedDto>
 {
     public required UserRole Role { get; init; }
