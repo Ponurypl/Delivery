@@ -25,6 +25,6 @@ internal sealed class TransportRepository : ITransportRepository
 
     public async Task<List<Transport>> GetListByDateAsync(DateTime dateFrom, DateTime dateTo, CancellationToken cancellationToken = default)
     {
-        return await _transports.Where(t => dateFrom < t.CreationDate && t.CreationDate < dateTo).ToListAsync(cancellationToken);
+        return await _transports.Where(t => dateFrom <= t.CreationDate && t.CreationDate <= dateTo).ToListAsync(cancellationToken);
     }
 }
