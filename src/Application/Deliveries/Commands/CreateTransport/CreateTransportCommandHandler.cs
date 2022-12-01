@@ -61,19 +61,21 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
         List<UnitOfMeasure> unitOfMeasureList = await _unitOfMeasureRepository.GetAllAsync(cancellationToken);
         List<NewTransportUnit> transportUnitsToCreate = _mapper.Map<List<NewTransportUnit>>(request.TransportUnits);
 
-        //Todo: Done. wcześniej mieliśmy zły warunek, tak czy siak zostaje ten foreach, bo trzeba zweryfikować, 
-        //      czy dostarczony w command UnitOfMeasureId istnieje w repozytorium UnitOfMeasure
+        //TODO: Benchmark wydajności pomiędzy pełną listą a listą już ograniczoną
         foreach (var unit in transportUnitsToCreate)
         {
-            if (unit.UnitOfMeasureId is not null)
+            if (unit.UnitOfMeasureId is null)
             {
-                if (!unitOfMeasureList.Exists(u => u.Id.Value == unit.UnitOfMeasureId))
-                {
-                    return Failure.InvalidTransportUnitDetails;
-                }
+                continue;
+            }
+
+            if (!unitOfMeasureList.Exists(u => u.Id.Value == unit.UnitOfMeasureId))
+            {
+                return Failure.InvalidTransportUnitDetails;
             }
         }
-        //chciałem ten check dodać w validatorze, ale na razie jest tu.
+
+        //TODO: do wdrożenia albo logowanie albo osobne pole w bazie
         if (request.StartDate < _dateTime.UtcNow)
         {
             return Failure.InvalidTransportUnitDetails;
