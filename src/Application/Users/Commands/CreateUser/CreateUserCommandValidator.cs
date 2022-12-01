@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 
 namespace MultiProject.Delivery.Application.Users.Commands.CreateUser;
-internal class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
     public CreateUserCommandValidator()
     {

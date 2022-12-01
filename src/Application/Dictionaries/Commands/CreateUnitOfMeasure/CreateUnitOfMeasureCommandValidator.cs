@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 
 namespace MultiProject.Delivery.Application.Dictionaries.Commands.CreateUnitOfMeasure;
-internal class CreateUnitOfMeasureCommandValidator : AbstractValidator<CreateUnitOfMeasureCommand>
+public sealed class CreateUnitOfMeasureCommandValidator : AbstractValidator<CreateUnitOfMeasureCommand>
 {
     public CreateUnitOfMeasureCommandValidator()
     {
