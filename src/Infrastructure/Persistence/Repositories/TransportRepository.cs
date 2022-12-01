@@ -15,16 +15,17 @@ internal sealed class TransportRepository : ITransportRepository
     public void Add(Transport transport)
     {
         _transports.Add(transport);
-        //To chyba nie będzie tak proste?
     }
 
     public async Task<Transport?> GetByIdAsync(TransportId id, CancellationToken cancellationToken = default)
     {
-        return await _transports.FirstAsync(t => t.Id == id, cancellationToken);
+        return await _transports.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
     public async Task<List<Transport>> GetListByDateAsync(DateTime dateFrom, DateTime dateTo, CancellationToken cancellationToken = default)
     {
-        return await _transports.Where(t => dateFrom <= t.CreationDate && t.CreationDate <= dateTo).ToListAsync(cancellationToken);
+        return await _transports.AsNoTracking()
+                                .Where(t => dateFrom <= t.CreationDate && t.CreationDate <= dateTo)
+                                .ToListAsync(cancellationToken);
     }
 }

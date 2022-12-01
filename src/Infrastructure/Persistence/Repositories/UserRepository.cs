@@ -24,6 +24,6 @@ internal sealed class UserRepository : IUserRepository
 
     public async Task<User?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default)
     {
-        return await _users.FirstOrDefaultAsync(u => u.Username == username,cancellationToken);
+        return await _users.AsNoTracking().FirstOrDefaultAsync(u => u.Username == username,cancellationToken);
     }
 }

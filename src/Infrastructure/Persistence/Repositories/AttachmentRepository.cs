@@ -28,11 +28,15 @@ internal sealed class AttachmentRepository : IAttachmentRepository
 
     public async Task<List<Attachment>> GetAllByTransportIdAsync(TransportId transportId, CancellationToken cancellationToken = default)
     {
-        return await _attachments.Where(a => a.TransportId == transportId).ToListAsync(cancellationToken);
+        return await _attachments.AsNoTracking()
+                                 .Where(a => a.TransportId == transportId)
+                                 .ToListAsync(cancellationToken);
     }
 
     public async Task<List<Attachment>> GetAllByScanIdAsync(ScanId scanId, CancellationToken cancellationToken = default)
     {
-        return await _attachments.Where(a => a.ScanId == scanId).ToListAsync(cancellationToken);
+        return await _attachments.AsNoTracking()
+                                 .Where(a => a.ScanId == scanId)
+                                 .ToListAsync(cancellationToken);
     }
 }

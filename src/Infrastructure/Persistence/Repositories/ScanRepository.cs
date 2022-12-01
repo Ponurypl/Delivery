@@ -21,7 +21,9 @@ internal sealed class ScanRepository : IScanRepository
 
     public async Task<List<Scan>> GetAllByTransportUnitIdAsync(TransportUnitId transportUnitId, CancellationToken cancellationToken = default)
     {
-        return await _scans.Where(s => s.TransportUnitId== transportUnitId).ToListAsync(cancellationToken);
+        return await _scans.AsNoTracking()
+                           .Where(s => s.TransportUnitId == transportUnitId)
+                           .ToListAsync(cancellationToken);
     }
 
     public async Task<Scan?> GetByIdAsync(ScanId id, CancellationToken cancellationToken = default)
