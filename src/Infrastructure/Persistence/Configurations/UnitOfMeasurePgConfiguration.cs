@@ -11,9 +11,17 @@ internal sealed class UnitOfMeasurePgConfiguration : IEntityTypeConfiguration<Un
     {
         builder.ToTable("units_of_measure");
 
-        builder.Property(x => x.Id).IsRequired().HasColumnName("uom_id").UseIdentityColumn().HasConversion<UnitOfMeasureId.EfCoreValueConverter>();
+        builder.Property(x => x.Id)
+               .IsRequired()
+               .HasColumnName("unit_of_measure_id")
+               .UseIdentityColumn()
+               .HasConversion<UnitOfMeasureId.EfCoreValueConverter>();
         builder.Property(x => x.Name).IsRequired().HasColumnName("name").HasMaxLength(50);
-        builder.Property(x => x.Symbol).IsRequired().HasColumnName("symbol").HasMaxLength(5);
+        builder.Property(x => x.Symbol)
+               .IsRequired()
+               .HasColumnName("symbol")
+               .HasMaxLength(5)
+               .HasComment("symbol that will be presented to users eg. Kg");
         builder.Property(x => x.Description).HasColumnName("description").HasMaxLength(200);
 
         builder.HasKey(x => x.Id);
