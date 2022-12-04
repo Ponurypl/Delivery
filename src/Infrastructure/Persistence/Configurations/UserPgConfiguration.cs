@@ -21,6 +21,8 @@ internal sealed class UserPgConfiguration : IEntityTypeConfiguration<User>
                .HasColumnName("is_active")
                .HasComment("Is user active or inactive, inactive users cannot log in, and be assinged to new deliveries.");
         //TODO: do zweryfikowania czy nieaktywny użytkownik na pewno nie może być przypisany i zalogować się
+        // no i pytanie jak to zrobić dobrze, dodawanie w każdym miejscu gdzie powinno to być sprawdzane "isactive == true" nie brzmi jak dobre rozwiazanie
+        // myślałem nad dwiema metodami w repozytorium i powoli docieram do wnisoku że może nie być złotego środka...
         builder.Property(x => x.Role)
                .IsRequired()
                .HasColumnName("role")

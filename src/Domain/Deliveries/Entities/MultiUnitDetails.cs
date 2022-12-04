@@ -22,7 +22,7 @@ public sealed class MultiUnitDetails : Entity<MultiUnitDetailsId>, IUnitDetails
     public static ErrorOr<MultiUnitDetails> Create(double amount, UnitOfMeasureId unitOfMeasureId, TransportUnit transportUnit)
     {
         if (transportUnit is null) return DomainFailures.Common.MissingParentObject;
-        if (amount <= 0) return DomainFailures.Deliveries.InvalidUnitAmount;
+        if (amount <= 0) return DomainFailures.Deliveries.InvalidMultiUnitDetails;
 
         return new MultiUnitDetails(MultiUnitDetailsId.Empty, amount, unitOfMeasureId, transportUnit);
     }

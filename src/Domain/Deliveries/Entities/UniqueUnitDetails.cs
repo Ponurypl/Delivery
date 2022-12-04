@@ -18,7 +18,7 @@ public sealed class UniqueUnitDetails : Entity<UniqueUnitDetailsId>, IUnitDetail
     public static ErrorOr<UniqueUnitDetails> Create(string barcode, TransportUnit transportUnit)
     {
         if (transportUnit is null) return DomainFailures.Common.MissingParentObject;
-        if (string.IsNullOrWhiteSpace(barcode)) return DomainFailures.Deliveries.InvalidUnitBarcode;
+        if (string.IsNullOrWhiteSpace(barcode)) return DomainFailures.Deliveries.InvalidUniqueUnitDetails;
 
         return new UniqueUnitDetails(UniqueUnitDetailsId.Empty, barcode, transportUnit);
     }

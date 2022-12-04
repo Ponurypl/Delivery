@@ -48,7 +48,7 @@ public sealed class Scan : AggregateRoot<ScanId>
     {
         if (quantity <= 0)
         {
-            return DomainFailures.Scans.InvalidQuantity;
+            return DomainFailures.Scans.InvalidScan;
         }
 
         Quantity = quantity;

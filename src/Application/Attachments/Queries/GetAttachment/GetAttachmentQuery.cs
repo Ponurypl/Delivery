@@ -2,6 +2,7 @@
 
 public sealed record GetAttachmentQuery : IQuery<AttachmentDto>
 {
-    //TODO: Albo dodać transportId albo zmienić id na guid
+    //TODO: Done? Albo dodać transportId albo zmienić id na guid
     public int Id { get; init; }
+    public int TransportId { get; init; }
 }

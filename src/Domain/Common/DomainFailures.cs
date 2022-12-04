@@ -16,8 +16,8 @@ internal static class DomainFailures
 
     public static class Deliveries
     {
-        public static Error InvalidUnitBarcode => Error.Validation(nameof(InvalidUnitBarcode)); //TODO: Albo to zostaje i reszta powinna być bardziej szczegółowa albo to powinno byc InvalidUniqueUnitDetails
-        public static Error InvalidUnitAmount => Error.Validation(nameof(InvalidUnitAmount));
+        public static Error InvalidUniqueUnitDetails => Error.Validation(nameof(InvalidUniqueUnitDetails)); //TODO: Done. Albo to zostaje i reszta powinna być bardziej szczegółowa albo to powinno byc InvalidUniqueUnitDetails
+        public static Error InvalidMultiUnitDetails => Error.Validation(nameof(InvalidMultiUnitDetails));
         public static Error InvalidTransportUnit => Error.Validation(nameof(InvalidTransportUnit));
         public static Error InvalidTransportUnitDetails => Error.Validation(nameof(InvalidTransportUnitDetails));
         public static Error InvalidRecipient => Error.Validation(nameof(InvalidRecipient));
@@ -31,12 +31,11 @@ internal static class DomainFailures
 
     public static class Scans
     {
-        public static Error InvalidQuantity => Error.Validation(nameof(InvalidQuantity));
+        public static Error InvalidScan => Error.Validation(nameof(InvalidScan));
     }
 
     public static class Users
     {
-        public static Error InvalidPhoneNumber => Error.Validation(nameof(InvalidPhoneNumber));
-        public static Error UserDoesNotMeetRole => Error.Validation(nameof(UserDoesNotMeetRole)); //TODO: Przemyśleć ten error (typ lub nazwa)
+        public static Error UserDoesNotMeetRole => Error.Conflict(nameof(UserDoesNotMeetRole)); //TODO: Done. będzie konflikt jeśli nie spełniamy wymogów biznesowych. Przemyśleć ten error (typ lub nazwa)
     }
 }
