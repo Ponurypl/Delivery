@@ -49,8 +49,8 @@ internal sealed class AttachmentPgConfiguration : IEntityTypeConfiguration<Attac
         builder.Property(x => x.AdditionalInformation).HasColumnName("additional_information").HasMaxLength(2000);
 
         builder.HasKey(x => x.Id);
-        builder.HasOne<User>().WithMany().HasForeignKey(x => x.CreatorId).IsRequired();
-        builder.HasOne<Transport>().WithMany().HasForeignKey(x => x.TransportId).IsRequired();
+        builder.HasOne<User>().WithMany().HasForeignKey(x => x.CreatorId);
+        builder.HasOne<Transport>().WithMany().HasForeignKey(x => x.TransportId);
         builder.HasOne<TransportUnit>().WithMany().HasForeignKey(x => x.TransportUnitId);
         builder.HasOne<Scan>().WithMany().HasForeignKey(x => x.ScanId);
     }

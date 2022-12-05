@@ -18,16 +18,12 @@ public sealed class GetAttachmentQueryHandler : IQueryHandler<GetAttachmentQuery
 
     public async Task<ErrorOr<AttachmentDto>> Handle(GetAttachmentQuery request, CancellationToken cancellationToken)
     {
-        //TODO: done, ale nie jestem pewien czy zostawić wyciagnięcie po AttachmentId, i weryfikacja TransportId obok, czy w repozytorium dodać metodę na oba id.
-        // mówiliśmy sobie że wyciągamy po konkretnym id rzeczy które chcemy wyciągnąć.
         Attachment? attachment = await _attachmentRepository.GetByIdAsync(new AttachmentId(request.Id), cancellationToken);
-        if (attachment is null 
-            || attachment.TransportId != new TransportId(request.TransportId))
+        if (attachment is null || attachment.TransportId != new TransportId(request.TransportId))
         {
             return Failure.AttachmentNotExists;
         }
 
         return _mapper.Map<AttachmentDto>(attachment);
-
     }
 }

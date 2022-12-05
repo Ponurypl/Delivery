@@ -16,13 +16,14 @@ internal class UniqueUnitDetailsPgConfiguration : IEntityTypeConfiguration<Uniqu
                .HasConversion<UniqueUnitDetailsId.EfCoreValueConverter>()
                .UseIdentityColumn();
         builder.Property(x => x.Barcode).IsRequired().HasColumnName("barcode");
-        builder.Property(x => x.TransportUnit.Id)
+        builder.Property<int>("transport_unit_id")
                .IsRequired()
-               .HasColumnName("trasnposrt_unit_id")
                .HasConversion<TransportUnitId.EfCoreValueConverter>()
                .HasComment("id from table transport_units");
 
         builder.HasKey(x => x.Id);
-        builder.HasOne<TransportUnit>().WithMany().HasForeignKey(x => x.TransportUnit.Id);
+        builder.HasOne(x => x.TransportUnit)
+               .WithOne(x => (UniqueUnitDetails)x.UnitDetails)
+               .HasForeignKey("transport_unit_id");
     }
 }

@@ -5,7 +5,6 @@ using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Infrastructure.Persistence.Configurations;
 internal sealed class UserPgConfiguration : IEntityTypeConfiguration<User>
-
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
@@ -18,11 +17,8 @@ internal sealed class UserPgConfiguration : IEntityTypeConfiguration<User>
                .HasConversion<UserId.EfCoreValueConverter>();                                                                
         builder.Property(x => x.IsActive)
                .IsRequired()
-               .HasColumnName("is_active")
-               .HasComment("Is user active or inactive, inactive users cannot log in, and be assinged to new deliveries.");
-        //TODO: do zweryfikowania czy nieaktywny użytkownik na pewno nie może być przypisany i zalogować się
-        // no i pytanie jak to zrobić dobrze, dodawanie w każdym miejscu gdzie powinno to być sprawdzane "isactive == true" nie brzmi jak dobre rozwiazanie
-        // myślałem nad dwiema metodami w repozytorium i powoli docieram do wnisoku że może nie być złotego środka...
+               .HasColumnName("active")
+               .HasComment("Is user active or inactive, inactive users cannot log in, and be assigned to new deliveries.");
         builder.Property(x => x.Role)
                .IsRequired()
                .HasColumnName("role")
@@ -35,27 +31,25 @@ internal sealed class UserPgConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.Password)
                .IsRequired()
                .HasColumnName("password")
-               .HasMaxLength(50)
+               .HasMaxLength(100)
                .HasComment("password hash");
         builder.Property(x => x.PhoneNumber)
                .IsRequired()
                .HasColumnName("phone_number")
                .HasMaxLength(15)
-               .HasComment("user phonenumber without whitespaces or separators");
-        //TODO: tu program krzyczy że location może być null, no prawda, ale nigdzie indziej o to nie płakał,
-        //chodzi o to że chcę coś z lokacji jeszcze wyciągnąć?
+               .HasComment("user phone number without whitespaces or separators");
         builder.Property(x => x.Location!.Longitude)
                .HasColumnName("geolocation_longitude")
                .HasPrecision(3, 5)
-               .HasComment("user last known longitude, with precison up to 1m");
+               .HasComment("user last known longitude, with precision up to 1m");
         builder.Property(x => x.Location!.Latitude)
-               .HasColumnName("geolocation_lattitude")
+               .HasColumnName("geolocation_latitude")
                .HasPrecision(3, 5)
-               .HasComment("user last known lattitude, with precison up to 1m");
+               .HasComment("user last known latitude, with precision up to 1m");
         builder.Property(x => x.Location!.Accuracy)
                .HasColumnName("geolocation_accuracy")
                .HasPrecision(3, 0)
-               .HasComment("level of accuracy of longitude and lattitude in meters. Can be null if speed is 0");
+               .HasComment("level of accuracy of longitude and latitude in meters. Can be null if speed is 0");
         builder.Property(x => x.Location!.Heading)
                .HasColumnName("geolocation_heading")
                .HasPrecision(4, 2)
@@ -64,8 +58,8 @@ internal sealed class UserPgConfiguration : IEntityTypeConfiguration<User>
                .HasColumnName("geolocation_speed")
                .HasPrecision(4, 2)
                .HasComment("user last known speed in m/s");
-        builder.Property(x => x.Location!.ReadDate)
-               .HasColumnName("geolocation_readdate")
+        builder.Property(x => x.Location!.LastUpdateDate)
+               .HasColumnName("geolocation_last_update")
                .HasComment("last date of geolocation update");
 
         builder.HasKey(x => x.Id);

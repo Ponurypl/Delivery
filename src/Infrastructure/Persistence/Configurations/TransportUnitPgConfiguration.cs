@@ -29,19 +29,19 @@ internal sealed class TransportUnitPgConfiguration : IEntityTypeConfiguration<Tr
                .IsRequired()
                .HasColumnName("recipient_phone_number")
                .HasMaxLength(15)
-               .HasComment("phonenumber without whitespaces or separators");
+               .HasComment("phone number without whitespaces or separators");
         builder.Property(x => x.Recipient.FlatNumber).HasColumnName("recipient_flat_number").HasMaxLength(5);
         builder.Property(x => x.Recipient.StreetNumber).HasColumnName("recipient_street_number").IsRequired().HasMaxLength(5);
         builder.Property(x => x.Recipient.Street).HasColumnName("recipient_street").HasMaxLength(200);
-        builder.Property(x => x.Recipient.Town).HasColumnName("recipient_twon").IsRequired().HasMaxLength(200);
+        builder.Property(x => x.Recipient.Town).HasColumnName("recipient_town").IsRequired().HasMaxLength(200);
         builder.Property(x => x.Recipient.Country).HasColumnName("recipient_country").IsRequired().HasMaxLength(200);
         builder.Property(x => x.Recipient.PostCode).HasColumnName("recipient_post_code").IsRequired().HasMaxLength(200);
-        //TODO: Done.recipient
+        
         builder.Property(x => x.AdditionalInformation).HasColumnName("additional_information").HasMaxLength(2000);
 
 
         builder.HasKey(x => x.Id);
-        builder.HasOne(x => x.Transport).WithMany(x => x.TransportUnits).HasForeignKey("transport_id").IsRequired(); //TODO: do zweryfikowania
+        builder.HasOne(x => x.Transport).WithMany(x => x.TransportUnits).HasForeignKey("transport_id");
         builder.HasOne(x => (UniqueUnitDetails)x.UnitDetails).WithOne(x => x.TransportUnit);
         builder.HasOne(x => (MultiUnitDetails)x.UnitDetails).WithOne(x => x.TransportUnit);
     }

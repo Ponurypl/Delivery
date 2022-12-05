@@ -38,6 +38,6 @@ internal sealed class TransportPgConfiguration : IEntityTypeConfiguration<Transp
         builder.Property(x => x.TotalWeight).HasColumnName("total_weight").HasPrecision(9,4);
 
         builder.HasKey(x => x.Id);
-        builder.HasMany(x => x.TransportUnits).WithOne(x => x.Transport).IsRequired();
+        builder.HasMany(x => x.TransportUnits).WithOne(x => x.Transport);
     }
 }

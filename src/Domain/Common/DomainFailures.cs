@@ -16,7 +16,7 @@ internal static class DomainFailures
 
     public static class Deliveries
     {
-        public static Error InvalidUniqueUnitDetails => Error.Validation(nameof(InvalidUniqueUnitDetails)); //TODO: Done. Albo to zostaje i reszta powinna być bardziej szczegółowa albo to powinno byc InvalidUniqueUnitDetails
+        public static Error InvalidUniqueUnitDetails => Error.Validation(nameof(InvalidUniqueUnitDetails));
         public static Error InvalidMultiUnitDetails => Error.Validation(nameof(InvalidMultiUnitDetails));
         public static Error InvalidTransportUnit => Error.Validation(nameof(InvalidTransportUnit));
         public static Error InvalidTransportUnitDetails => Error.Validation(nameof(InvalidTransportUnitDetails));
@@ -36,6 +36,6 @@ internal static class DomainFailures
 
     public static class Users
     {
-        public static Error UserDoesNotMeetRole => Error.Conflict(nameof(UserDoesNotMeetRole)); //TODO: Done. będzie konflikt jeśli nie spełniamy wymogów biznesowych. Przemyśleć ten error (typ lub nazwa)
+        public static Error UserDoesNotMeetRole => Error.Conflict(nameof(UserDoesNotMeetRole));
     }
 }

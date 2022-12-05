@@ -36,24 +36,23 @@ internal sealed class ScanPgConfiguration : IEntityTypeConfiguration<Scan>
                .HasComment("id from table users. Designates who created this scan");
         builder.Property(x => x.Quantity)
                .HasColumnName("quantity")
-               .HasComment("unloaded quntity from multi_unit, null for unique_unit type of transport unit deliviery");
-        //TODO: podobnie jak w użytkownikach środowisko ma problem z tym że lokacaja ma prawo być pusta.
-        //Załatwiamy wykrzyknikiem czy jakoś inaczej?
+               .HasPrecision(8,3)
+               .HasComment("unloaded quantity from multi_unit, null for unique_unit type of transport unit delivery");
         builder.Property(x => x.Location!.Longitude)
                .HasColumnName("location_longitude")
                .HasPrecision(3, 5)
-               .HasComment("Longitude of scan, with precison up to 1m");
+               .HasComment("Longitude of scan, with precision up to 1m");
         builder.Property(x => x.Location!.Latitude)
                .HasColumnName("location_latitude")
                .HasPrecision(3, 5)
-               .HasComment("Latitude of scan, with precison up to 1m");
+               .HasComment("Latitude of scan, with precision up to 1m");
         builder.Property(x => x.Location!.Accuracy)
                .HasColumnName("location_accuracy")
                .HasPrecision(3, 0)
-               .HasComment("level of accuracy for longitude and lattitude in meters");
+               .HasComment("level of accuracy for longitude and latitude in meters");
 
         builder.HasKey(x => x.Id);
-        builder.HasOne<TransportUnit>().WithMany().HasForeignKey(x => x.TransportUnitId).IsRequired();
-        builder.HasOne<User>().WithMany().HasForeignKey(x => x.DelivererId).IsRequired();
+        builder.HasOne<TransportUnit>().WithMany().HasForeignKey(x => x.TransportUnitId);
+        builder.HasOne<User>().WithMany().HasForeignKey(x => x.DelivererId);
     }
 }

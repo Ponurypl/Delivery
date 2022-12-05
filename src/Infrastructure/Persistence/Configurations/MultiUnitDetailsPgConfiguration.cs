@@ -27,15 +27,11 @@ internal class MultiUnitDetailsPgConfiguration : IEntityTypeConfiguration<MultiU
                .HasColumnName("amount")
                .HasPrecision(5,3)
                .HasComment("amount to be delivierd, dependens on type of unit of measure for example it can be pices/kilograms/meters etc.");
-        builder.Property(x => x.TransportUnit.Id)
-               .IsRequired()
-               .HasColumnName("transport_unit_id")
-               .HasConversion<TransportUnitId.EfCoreValueConverter>()
-               .HasComment("id from table transport_units");
+        builder.Property<int>("transport_unit_id").IsRequired().HasComment("id from table transport_units");
 
 
         builder.HasKey(x => x.Id);
-        builder.HasOne<UnitOfMeasure>().WithMany().HasForeignKey(x => x.UnitOfMeasureId).IsRequired();
-        builder.HasOne<TransportUnit>().WithMany().HasForeignKey(x => x.TransportUnit.Id).IsRequired();
+        builder.HasOne<UnitOfMeasure>().WithMany().HasForeignKey(x => x.UnitOfMeasureId);
+        builder.HasOne(x => x.TransportUnit).WithOne(x => (MultiUnitDetails)x.UnitDetails).HasForeignKey("transport_unit_id");
     }
 }
