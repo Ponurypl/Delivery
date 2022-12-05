@@ -34,7 +34,7 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
     {
         var delivererId = new UserId(request.DelivererId);
         var deliverer = await _userRepository.GetByIdAsync(delivererId, cancellationToken);
-        if (deliverer is null)
+        if (deliverer is null || !deliverer.IsActive)
         {
             return Failure.UserNotExists;
         }

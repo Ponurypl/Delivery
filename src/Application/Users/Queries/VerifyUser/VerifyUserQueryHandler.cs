@@ -25,7 +25,7 @@ public sealed class VerifyUserQueryHandler : IQueryHandler<VerifyUserQuery, Veri
         
         var verification = _hashService.Verify(request.Password, user.Password);
 
-        if (verification)
+        if (verification && user.IsActive)
         {
             return new VerifiedUserDto { Id = user.Id.Value, Username = user.Username };
         }
