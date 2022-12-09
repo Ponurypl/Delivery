@@ -1,12 +1,10 @@
-﻿
-using MultiProject.Delivery.Domain.Common.Abstractions;
-using MultiProject.Delivery.Domain.Deliveries.Interfaces;
+﻿using MultiProject.Delivery.Domain.Common.Abstractions;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
-public sealed class MultiUnitDetails : Entity<MultiUnitDetailsId>, IUnitDetails
+public sealed class MultiUnitDetails : Entity<MultiUnitDetailsId>
 {
     public UnitOfMeasureId UnitOfMeasureId { get; private set; }
     public double Amount { get; private set; }

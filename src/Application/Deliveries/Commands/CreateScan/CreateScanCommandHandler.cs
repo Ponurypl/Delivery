@@ -59,7 +59,7 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
 
         var scan = scanCreateResult.Value;
 
-        if (transportUnit.UnitDetails is MultiUnitDetails mtd)
+        if (transportUnit.MultiUnitDetails is not null)
         {
             if (request.Quantity is null or <= 0)
             {

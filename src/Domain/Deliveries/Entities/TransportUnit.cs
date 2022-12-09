@@ -1,6 +1,5 @@
 ﻿using MultiProject.Delivery.Domain.Common.Abstractions;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
-using MultiProject.Delivery.Domain.Deliveries.Interfaces;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
 
@@ -14,7 +13,8 @@ public sealed class TransportUnit : Entity<TransportUnitId>
     public TransportUnitStatus Status { get; private set; }
     public string? AdditionalInformation { get; private set; }
     public Recipient Recipient { get; private set; }
-    public IUnitDetails UnitDetails { get; private set; } = null!;
+    public UniqueUnitDetails? UniqueUnitDetails { get; private set; }
+    public MultiUnitDetails? MultiUnitDetails { get; private set; }
 
 #pragma warning disable CS8618, IDE0051
     private TransportUnit(TransportUnitId id) : base(id)
@@ -65,7 +65,7 @@ public sealed class TransportUnit : Entity<TransportUnitId>
                 return result.Errors;
             }
 
-            newTransportUnit.UnitDetails = result.Value;
+            newTransportUnit.UniqueUnitDetails = result.Value;
         }
         else
         {
@@ -75,7 +75,7 @@ public sealed class TransportUnit : Entity<TransportUnitId>
                 return result.Errors;
             }
 
-            newTransportUnit.UnitDetails = result.Value;
+            newTransportUnit.MultiUnitDetails = result.Value;
         }
 
         return newTransportUnit;

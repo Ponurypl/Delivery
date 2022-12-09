@@ -1,10 +1,9 @@
 ﻿using MultiProject.Delivery.Domain.Common.Abstractions;
-using MultiProject.Delivery.Domain.Deliveries.Interfaces;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Deliveries.Entities;
 
-public sealed class UniqueUnitDetails : Entity<UniqueUnitDetailsId>, IUnitDetails
+public sealed class UniqueUnitDetails : Entity<UniqueUnitDetailsId>
 {
     public string Barcode { get; private set; }
     public TransportUnit TransportUnit { get ; private set ; }
