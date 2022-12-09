@@ -8,10 +8,10 @@ var services = builder.Services;
 services.AddApplicationLayerServices();
 services.AddInfrastructureLayerServices(builder.Configuration);
 services.AddWebApiLayerServices();
+services.AddFastEndpoints();
 
 var app = builder.Build();
-
-app.MapGet("/", () => "Hello World!");
-
+app.UseAuthorization();
+app.UseFastEndpoints();
 
 app.Run();
