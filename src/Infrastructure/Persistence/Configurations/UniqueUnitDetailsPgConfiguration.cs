@@ -15,7 +15,7 @@ internal class UniqueUnitDetailsPgConfiguration : IEntityTypeConfiguration<Uniqu
                .HasColumnName("unique_unit_id")
                .HasConversion<UniqueUnitDetailsId.EfCoreValueConverter>()
                .ValueGeneratedOnAdd();
-        builder.Property(x => x.Barcode).IsRequired().HasColumnName("barcode");
+        builder.Property(x => x.Barcode).IsRequired().HasColumnName("barcode").HasMaxLength(20);
         builder.Property<TransportUnitId>("transport_unit_id")
                .IsRequired()
                .HasConversion<TransportUnitId.EfCoreValueConverter>()
