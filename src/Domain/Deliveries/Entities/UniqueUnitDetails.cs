@@ -9,7 +9,14 @@ public sealed class UniqueUnitDetails : Entity<UniqueUnitDetailsId>, IUnitDetail
     public string Barcode { get; private set; }
     public TransportUnit TransportUnit { get ; private set ; }
 
-    private UniqueUnitDetails(UniqueUnitDetailsId id,string barcode, TransportUnit transportUnit) :base(id)
+#pragma warning disable CS8618, IDE0051
+    private UniqueUnitDetails(UniqueUnitDetailsId id) : base(id)
+    {
+        //EF Core ctor
+    }
+#pragma warning restore
+
+    private UniqueUnitDetails(UniqueUnitDetailsId id, string barcode, TransportUnit transportUnit) :base(id)
     {
         Barcode = barcode;
         TransportUnit = transportUnit;

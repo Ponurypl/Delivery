@@ -14,6 +14,13 @@ public sealed class User : AggregateRoot<UserId>
     public string PhoneNumber { get; private set; } 
     public AdvancedGeolocation? Location { get; private set; }
 
+#pragma warning disable CS8618, IDE0051
+    private User(UserId id) : base(id)
+    {
+        //EF Core ctor
+    }
+#pragma warning restore
+
     private User(UserId id, bool isActive, UserRole role, string username, string password, string phoneNumber)
         : base(id)
     {

@@ -22,6 +22,12 @@ public sealed class Transport : AggregateRoot<TransportId>
     public UserId ManagerId { get; private set; }
     public IReadOnlyList<TransportUnit> TransportUnits => _transportUnits;
 
+#pragma warning disable CS8618, IDE0051
+    private Transport(TransportId id) : base(id)
+    {
+        //EF Core ctor
+    }
+#pragma warning restore
 
     private Transport(TransportId id, UserId delivererId, string number, string? additionalInformation, double? totalWeight, DateTime startDate,
                       UserId managerId, TransportStatus status, DateTime creationDate) : base(id)

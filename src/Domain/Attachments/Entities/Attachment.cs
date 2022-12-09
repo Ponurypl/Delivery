@@ -19,6 +19,12 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
     public byte[]? Payload { get; private set; }
     public string? AdditionalInformation { get; private set; }
 
+#pragma warning disable CS8618, IDE0051
+    private Attachment(AttachmentId id) : base(id)
+    {
+        //EF Core ctor
+    }
+#pragma warning restore
     private Attachment(AttachmentId id, UserId creatorId, TransportId transportId, AttachmentStatus status, 
                        DateTime lastUpdateDate) : base(id)
     {

@@ -17,6 +17,13 @@ public sealed class Scan : AggregateRoot<ScanId>
     public double? Quantity { get; private set; }
     public Geolocation? Location { get; private set; }
 
+#pragma warning disable CS8618, IDE0051
+    private Scan(ScanId id) : base(id)
+    {
+        //EF Core ctor
+    }
+#pragma warning restore
+
     private Scan(ScanId id, TransportUnitId transportUnitId, UserId delivererId, DateTime lastUpdateDate,
                  ScanStatus scanStatus)
         : base(id)

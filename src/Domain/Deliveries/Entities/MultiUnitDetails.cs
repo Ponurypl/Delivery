@@ -12,6 +12,13 @@ public sealed class MultiUnitDetails : Entity<MultiUnitDetailsId>, IUnitDetails
     public double Amount { get; private set; }
     public TransportUnit TransportUnit { get; private set; }
 
+#pragma warning disable CS8618, IDE0051
+    private MultiUnitDetails(MultiUnitDetailsId id) : base(id)
+    {
+        //EF Core ctor
+    }
+#pragma warning restore
+
     private MultiUnitDetails(MultiUnitDetailsId id, double amount, UnitOfMeasureId unitOfMeasureId, TransportUnit transportUnit) : base(id)
     {
         Amount = amount;

@@ -16,6 +16,12 @@ public sealed class TransportUnit : Entity<TransportUnitId>
     public Recipient Recipient { get; private set; }
     public IUnitDetails UnitDetails { get; private set; } = null!;
 
+#pragma warning disable CS8618, IDE0051
+    private TransportUnit(TransportUnitId id) : base(id)
+    {
+        //EF Core ctor
+    }
+#pragma warning restore
 
     private TransportUnit(TransportUnitId id, string number, string? additionalInformation, string description, Recipient recipient, 
                           Transport transport, TransportUnitStatus status) : base(id)

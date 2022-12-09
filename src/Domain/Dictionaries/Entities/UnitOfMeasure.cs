@@ -9,6 +9,13 @@ public sealed class UnitOfMeasure : AggregateRoot<UnitOfMeasureId>
     public string Symbol { get; set; } = default!;
     public string? Description { get; set; }
 
+#pragma warning disable CS8618, IDE0051
+    private UnitOfMeasure(UnitOfMeasureId id) : base(id)
+    {
+        //EF Core ctor
+    }
+#pragma warning restore
+
     private UnitOfMeasure(UnitOfMeasureId id, string name, string symbol, string? description) 
         : base(id)
     {
