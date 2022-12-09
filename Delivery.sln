@@ -12,13 +12,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8F7D8D5D-1568-4BB2-9F24-C4747BC357ED}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		db-docker-compose.yml = db-docker-compose.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\Application\Application.csproj", "{07FF9E80-8F04-4A35-AC68-F1CD0D40E9FE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{67EBDE87-BB30-420A-9695-89B3EB2F839E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "src\WebApi\WebApi.csproj", "{0AF5F8D2-C566-490B-8023-C6CCAA72BB0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "src\WebApi\WebApi.csproj", "{0AF5F8D2-C566-490B-8023-C6CCAA72BB0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
