@@ -16,7 +16,7 @@ internal class MultiUnitDetailsPgConfiguration : IEntityTypeConfiguration<MultiU
                .IsRequired()
                .HasColumnName("multi_unit_id")
                .HasConversion<MultiUnitDetailsId.EfCoreValueConverter>()
-               .UseIdentityColumn();
+               .ValueGeneratedOnAdd();
         builder.Property(x => x.UnitOfMeasureId)
                .IsRequired()
                .HasColumnName("unit_of_measure_id")
@@ -26,12 +26,9 @@ internal class MultiUnitDetailsPgConfiguration : IEntityTypeConfiguration<MultiU
                .IsRequired()
                .HasColumnName("amount")
                .HasPrecision(5,3)
-               .HasComment("amount to be delivierd, dependens on type of unit of measure for example it can be pices/kilograms/meters etc.");
-        builder.Property<int>("transport_unit_id").IsRequired().HasComment("id from table transport_units");
-
-
+               .HasComment("amount to be delivered, depends on type of unit of measure for example it can be pieces/kilograms/meters etc.");
+        
         builder.HasKey(x => x.Id);
         builder.HasOne<UnitOfMeasure>().WithMany().HasForeignKey(x => x.UnitOfMeasureId);
-        builder.HasOne(x => x.TransportUnit).WithOne(x => (MultiUnitDetails)x.UnitDetails).HasForeignKey("transport_unit_id");
     }
 }

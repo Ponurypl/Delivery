@@ -13,7 +13,6 @@ internal sealed class UserPgConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.Id)
                .IsRequired()
                .HasColumnName("user_id")
-               .UseIdentityColumn()
                .HasConversion<UserId.EfCoreValueConverter>();                                                                
         builder.Property(x => x.IsActive)
                .IsRequired()
@@ -38,27 +37,27 @@ internal sealed class UserPgConfiguration : IEntityTypeConfiguration<User>
                .HasColumnName("phone_number")
                .HasMaxLength(15)
                .HasComment("user phone number without whitespaces or separators");
-        builder.Property(x => x.Location!.Longitude)
+        builder.OwnsOne(x => x.Location).Property(x => x.Longitude)
                .HasColumnName("geolocation_longitude")
                .HasPrecision(3, 5)
                .HasComment("user last known longitude, with precision up to 1m");
-        builder.Property(x => x.Location!.Latitude)
+        builder.OwnsOne(x => x.Location).Property(x => x.Latitude)
                .HasColumnName("geolocation_latitude")
                .HasPrecision(3, 5)
                .HasComment("user last known latitude, with precision up to 1m");
-        builder.Property(x => x.Location!.Accuracy)
+        builder.OwnsOne(x => x.Location).Property(x => x.Accuracy)
                .HasColumnName("geolocation_accuracy")
                .HasPrecision(3, 0)
                .HasComment("level of accuracy of longitude and latitude in meters. Can be null if speed is 0");
-        builder.Property(x => x.Location!.Heading)
+        builder.OwnsOne(x => x.Location).Property(x => x.Heading)
                .HasColumnName("geolocation_heading")
                .HasPrecision(4, 2)
                .HasComment("user last known heading in degrees where 0 is north");
-        builder.Property(x => x.Location!.Speed)
+        builder.OwnsOne(x => x.Location).Property(x => x.Speed)
                .HasColumnName("geolocation_speed")
                .HasPrecision(4, 2)
                .HasComment("user last known speed in m/s");
-        builder.Property(x => x.Location!.LastUpdateDate)
+        builder.OwnsOne(x => x.Location).Property(x => x.LastUpdateDate)
                .HasColumnName("geolocation_last_update")
                .HasComment("last date of geolocation update");
 

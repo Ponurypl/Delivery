@@ -20,7 +20,7 @@ internal sealed class AttachmentPgConfiguration : IEntityTypeConfiguration<Attac
         builder.Property(x => x.Id)
                .IsRequired()
                .HasColumnName("attachment_id")
-               .UseIdentityColumn()
+               .ValueGeneratedOnAdd()
                .HasConversion<AttachmentId.EfCoreValueConverter>();
         builder.Property(x => x.CreatorId)
                .IsRequired()

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
+using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Infrastructure.Persistence.Configurations;
@@ -15,7 +16,7 @@ internal sealed class TransportPgConfiguration : IEntityTypeConfiguration<Transp
         builder.Property(x => x.Id)
                .IsRequired()
                .HasColumnName("transport_id")
-               .UseIdentityColumn()
+               .ValueGeneratedOnAdd()
                .HasConversion<TransportId.EfCoreValueConverter>();
         builder.Property(x => x.DelivererId)
                .IsRequired()
@@ -39,5 +40,7 @@ internal sealed class TransportPgConfiguration : IEntityTypeConfiguration<Transp
 
         builder.HasKey(x => x.Id);
         builder.HasMany(x => x.TransportUnits).WithOne(x => x.Transport);
+        builder.HasOne<User>().WithMany().HasForeignKey(x => x.DelivererId);
+        builder.HasOne<User>().WithMany().HasForeignKey(x => x.ManagerId);
     }
 }

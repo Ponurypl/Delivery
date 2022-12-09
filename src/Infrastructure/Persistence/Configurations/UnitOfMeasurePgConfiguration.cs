@@ -14,7 +14,7 @@ internal sealed class UnitOfMeasurePgConfiguration : IEntityTypeConfiguration<Un
         builder.Property(x => x.Id)
                .IsRequired()
                .HasColumnName("unit_of_measure_id")
-               .UseIdentityColumn()
+               .ValueGeneratedOnAdd()
                .HasConversion<UnitOfMeasureId.EfCoreValueConverter>();
         builder.Property(x => x.Name).IsRequired().HasColumnName("name").HasMaxLength(50);
         builder.Property(x => x.Symbol)

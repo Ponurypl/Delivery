@@ -17,12 +17,12 @@ internal sealed class ScanPgConfiguration : IEntityTypeConfiguration<Scan>
         builder.Property(x => x.Id)
                .IsRequired()
                .HasColumnName("scan_id")
-               .UseIdentityColumn()
+               .ValueGeneratedOnAdd()
                .HasConversion<ScanId.EfCoreValueConverter>();
         builder.Property(x => x.TransportUnitId)
                .IsRequired()
                .HasColumnName("transport_unit_id")
-               .HasConversion<TransportId.EfCoreValueConverter>()
+               .HasConversion<TransportUnitId.EfCoreValueConverter>()
                .HasComment("id from table transport_units");
         builder.Property(x => x.Status)
                .IsRequired()
@@ -38,15 +38,15 @@ internal sealed class ScanPgConfiguration : IEntityTypeConfiguration<Scan>
                .HasColumnName("quantity")
                .HasPrecision(8,3)
                .HasComment("unloaded quantity from multi_unit, null for unique_unit type of transport unit delivery");
-        builder.Property(x => x.Location!.Longitude)
+        builder.OwnsOne(x => x.Location).Property(x => x.Longitude)
                .HasColumnName("location_longitude")
                .HasPrecision(3, 5)
                .HasComment("Longitude of scan, with precision up to 1m");
-        builder.Property(x => x.Location!.Latitude)
+        builder.OwnsOne(x => x.Location).Property(x => x.Latitude)
                .HasColumnName("location_latitude")
                .HasPrecision(3, 5)
                .HasComment("Latitude of scan, with precision up to 1m");
-        builder.Property(x => x.Location!.Accuracy)
+        builder.OwnsOne(x => x.Location).Property(x => x.Accuracy)
                .HasColumnName("location_accuracy")
                .HasPrecision(3, 0)
                .HasComment("level of accuracy for longitude and latitude in meters");
