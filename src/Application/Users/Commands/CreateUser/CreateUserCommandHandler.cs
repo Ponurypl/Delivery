@@ -5,13 +5,13 @@ using MultiProject.Delivery.Domain.Users.Entities;
 
 namespace MultiProject.Delivery.Application.Users.Commands.CreateUser;
 
-public sealed class CreateUserCommandCommandHandler : ICommandHandler<CreateUserCommand, UserCreatedDto>
+public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, UserCreatedDto>
 {
     private readonly IUserRepository _userRepository;
     private readonly IHashService _hashService;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateUserCommandCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IHashService hashService)
+    public CreateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IHashService hashService)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
