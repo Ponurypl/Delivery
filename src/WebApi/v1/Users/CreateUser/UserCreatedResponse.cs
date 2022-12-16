@@ -1,4 +1,4 @@
-﻿namespace WebApi.v1.Users.CreateUser;
+﻿namespace MultiProject.Delivery.WebApi.v1.Users.CreateUser;
 
 public record UserCreatedResponse
 {

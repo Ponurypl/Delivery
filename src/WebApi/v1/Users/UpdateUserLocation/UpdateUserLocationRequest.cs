@@ -1,4 +1,4 @@
-﻿namespace WebApi.v1.Users.UpdateUserLocation;
+﻿namespace MultiProject.Delivery.WebApi.v1.Users.UpdateUserLocation;
 
 public class UpdateUserLocationRequest
 {

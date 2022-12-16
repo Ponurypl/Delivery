@@ -1,8 +1,6 @@
-﻿using ErrorOr;
-using MediatR;
-using MultiProject.Delivery.Application.Users.Commands.CreateUser;
+﻿using MultiProject.Delivery.Application.Users.Commands.CreateUser;
 
-namespace WebApi.v1.Users.CreateUser;
+namespace MultiProject.Delivery.WebApi.v1.Users.CreateUser;
 
 public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, UserCreatedResponse>
 {
@@ -15,7 +13,9 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, UserCreated
 
     public override void Configure()
     {
-        Post("users");
+        Post("/");
+        AllowAnonymous();
+        Group<UsersEndpointGroup>();
         Version(1);
     }
 
@@ -26,21 +26,10 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, UserCreated
                                               Password = req.Password,
                                               Username = req.Username,
                                               PhoneNumber = req.PhoneNumber,
-                                              Role =
-                                                  (MultiProject.Delivery.Application.Users.Commands.CreateUser.UserRole)
-                                                  req.Role
+                                              Role = (Application.Users.Commands.CreateUser.UserRole) req.Role
                                           }, ct);
 
-        if (response.IsError)
-        {
-            foreach (var error in response.Errors)
-            {
-                AddError(error.Description, error.Code);
-            }
-
-            ThrowError("saidfhsajkfh");
-            return;
-        }
+        ValidationFailures.AddErrorsAndThrowIfNeeded(response);
 
         await SendOkAsync(new UserCreatedResponse() { Id = response.Value.Id }, ct);
     }

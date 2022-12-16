@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace WebApi;
+namespace MultiProject.Delivery.WebApi;
 
 public static class ConfigureServices
 {

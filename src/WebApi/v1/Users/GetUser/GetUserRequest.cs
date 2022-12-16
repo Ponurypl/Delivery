@@ -1,4 +1,4 @@
-﻿namespace WebApi.v1.Users.GetUser;
+﻿namespace MultiProject.Delivery.WebApi.v1.Users.GetUser;
 
 public class GetUserRequest
 {

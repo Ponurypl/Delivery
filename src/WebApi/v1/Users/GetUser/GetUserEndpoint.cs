@@ -1,21 +1,27 @@
-﻿using MediatR;
-using ErrorOr;
+﻿using MultiProject.Delivery.Application.Common.Failures;
 using MultiProject.Delivery.Application.Users.Queries.GetUser;
 
-namespace WebApi.v1.Users.GetUser;
+namespace MultiProject.Delivery.WebApi.v1.Users.GetUser;
 
 public class GetUserEndpoint : Endpoint<GetUserRequest, GetUserResponse>
 {
     private readonly ISender _sender;
+    private readonly IMapper _mapper;
 
-    public GetUserEndpoint(ISender sender)
+    public GetUserEndpoint(ISender sender, IMapper mapper)
     {
         _sender = sender;
+        _mapper = mapper;
     }
 
     public override void Configure()
     {
-        Get("users");
+        Get("{UserId}");
+        Group<UsersEndpointGroup>();
+        Description(b =>
+                    {
+                        b.Produces(StatusCodes.Status404NotFound);
+                    });
         Version(1);
     }
 
@@ -23,23 +29,13 @@ public class GetUserEndpoint : Endpoint<GetUserRequest, GetUserResponse>
     {
         ErrorOr<UserDto> result = await _sender.Send(new GetUserQuery(){ UserId = req.UserId }, ct);
 
-        if(result.IsError)
+        if(result.IsError && result.Errors.Contains(Failure.UserNotExists))
         {
-            foreach(var error in result.Errors)
-            {
-                AddError(error.Description, error.Code);
-            }
-            ThrowError("Error List");
-            return;
+            await SendNotFoundAsync(ct);
         }
 
-        await SendOkAsync(new GetUserResponse()
-        {
-            Id = result.Value.Id,
-            Role = result.Value.Role,
-            PhoneNumber = result.Value.PhoneNumber,
-            Username = result.Value.Username
+        ValidationFailures.AddErrorsAndThrowIfNeeded(result);
 
-        });
+        await SendOkAsync(_mapper.Map<GetUserResponse>(result.Value), ct);
     }
 }

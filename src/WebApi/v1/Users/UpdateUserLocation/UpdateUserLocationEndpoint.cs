@@ -1,8 +1,7 @@
 ﻿using ErrorOr;
-using MediatR;
 using MultiProject.Delivery.Application.Users.Commands.UpdateUserLocation;
 
-namespace WebApi.v1.Users.UpdateUserLocation;
+namespace MultiProject.Delivery.WebApi.v1.Users.UpdateUserLocation;
 
 public class UpdateUserLocationEndpoint : Endpoint<UpdateUserLocationRequest>
 {
@@ -15,7 +14,8 @@ public class UpdateUserLocationEndpoint : Endpoint<UpdateUserLocationRequest>
 
     public override void Configure()
     {
-        Put("users");
+        Put("{UserId}/location");
+        Group<UsersEndpointGroup>();
         Version(1);
     }
 
@@ -29,18 +29,10 @@ public class UpdateUserLocationEndpoint : Endpoint<UpdateUserLocationRequest>
                                                         Accuracy = req.Accuracy,
                                                         Heading = req.Heading,
                                                         Speed = req.Speed
-                                                      },ct);
-        if (response.IsError)
-        {
-            foreach (var error in response.Errors)
-            {
-                AddError(error.Description, error.Code);
-            }
+                                                      }, ct);
+        
+        ValidationFailures.AddErrorsAndThrowIfNeeded(response);
 
-            ThrowError("ErrorList");
-            return;
-        }
-
-        await SendNoContentAsync();
+        await SendNoContentAsync(ct);
     }
 }
