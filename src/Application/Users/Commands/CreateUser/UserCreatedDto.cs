@@ -2,5 +2,5 @@
 
 public sealed record UserCreatedDto
 {
-    public Guid? Id { get; set; }
+    public Guid Id { get; set; }
 }

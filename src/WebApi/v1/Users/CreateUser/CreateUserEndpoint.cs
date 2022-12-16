@@ -21,7 +21,7 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, UserCreated
 
     public override async Task HandleAsync(CreateUserRequest req, CancellationToken ct)
     {
-        var response = await _sender.Send(new CreateUserCommand()
+        ErrorOr<UserCreatedDto> response = await _sender.Send(new CreateUserCommand()
                                           {
                                               Password = req.Password,
                                               Username = req.Username,
@@ -42,6 +42,6 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, UserCreated
             return;
         }
 
-        await SendOkAsync(new UserCreatedResponse() { Id = response.Value.Id!.Value }, ct);
+        await SendOkAsync(new UserCreatedResponse() { Id = response.Value.Id }, ct);
     }
 }
