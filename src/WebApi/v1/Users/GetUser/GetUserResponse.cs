@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Users.GetUser;
 
-public class GetUserResponse
+public sealed record GetUserResponse
 {
     public Guid Id { get; init; }
     public string Role { get; init; } = default!;

@@ -3,7 +3,7 @@ using MultiProject.Delivery.Application.Users.Commands.UpdateUserLocation;
 
 namespace MultiProject.Delivery.WebApi.v1.Users.UpdateUserLocation;
 
-public class UpdateUserLocationEndpoint : Endpoint<UpdateUserLocationRequest>
+public sealed class UpdateUserLocationEndpoint : Endpoint<UpdateUserLocationRequest>
 {
     private readonly ISender _sender;
 

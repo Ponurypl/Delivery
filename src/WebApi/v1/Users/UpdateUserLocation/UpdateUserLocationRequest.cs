@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Users.UpdateUserLocation;
 
-public class UpdateUserLocationRequest
+public sealed record UpdateUserLocationRequest
 {
     public Guid UserId { get; init; }
     public double Latitude { get; init; }

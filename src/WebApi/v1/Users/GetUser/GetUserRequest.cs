@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Users.GetUser;
 
-public class GetUserRequest
+public sealed record GetUserRequest
 {
     public Guid UserId { get; init; }
 }

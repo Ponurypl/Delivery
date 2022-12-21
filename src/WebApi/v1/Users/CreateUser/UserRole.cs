@@ -1,7 +1,7 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Users.CreateUser;
 
 [Flags]
-public enum UserRole
+public sealed enum UserRole
 {
     None, Deliverer, Manager
 }

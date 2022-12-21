@@ -3,7 +3,7 @@ using MultiProject.Delivery.Application.Users.Queries.GetUser;
 
 namespace MultiProject.Delivery.WebApi.v1.Users.GetUser;
 
-public class GetUserEndpoint : Endpoint<GetUserRequest, GetUserResponse>
+public sealed class GetUserEndpoint : Endpoint<GetUserRequest, GetUserResponse>
 {
     private readonly ISender _sender;
     private readonly IMapper _mapper;

@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Users.CreateUser;
 
-public record UserCreatedResponse
+public sealed record UserCreatedResponse
 {
     public Guid Id { get; set; }
 }

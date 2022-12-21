@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Users.GetUser;
 
-public class GetUserRequestValidator : AbstractValidator<GetUserRequest>
+public sealed class GetUserRequestValidator : Validator<GetUserRequest>
 {
     public GetUserRequestValidator()
     {

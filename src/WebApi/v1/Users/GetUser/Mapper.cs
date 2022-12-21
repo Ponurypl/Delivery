@@ -2,7 +2,7 @@
 
 namespace MultiProject.Delivery.WebApi.v1.Users.GetUser;
 
-public class Mapper : IRegister
+public sealed class Mapper : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
