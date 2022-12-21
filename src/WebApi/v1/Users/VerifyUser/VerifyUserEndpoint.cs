@@ -22,6 +22,7 @@ public sealed class VerifyUserEndpoint : Endpoint<VerifyUserRequest, VerifyUserR
                     {
                         x.Produces(StatusCodes.Status404NotFound);
                     });
+        Version(1);
     }
 
     public override async Task HandleAsync(VerifyUserRequest req, CancellationToken ct)

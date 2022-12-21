@@ -14,7 +14,6 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, UserCreated
     public override void Configure()
     {
         Post("/");
-        AllowAnonymous();
         Group<UsersEndpointGroup>();
         Version(1);
     }

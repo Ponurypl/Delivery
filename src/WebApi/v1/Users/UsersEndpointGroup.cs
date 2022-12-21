@@ -10,6 +10,7 @@ public sealed class UsersEndpointGroup : Group
                                               {
                                                   b.Produces(StatusCodes.Status401Unauthorized);
                                                   b.ProducesValidationProblem();
+                                                  b.AllowAnonymous();
                                               });
                            });
     }
