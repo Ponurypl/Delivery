@@ -13,4 +13,5 @@ public static class Failure
     public static Error InvalidAttachmentInput => Error.Validation(nameof(InvalidAttachmentInput));
     public static Error InvalidMessage => Error.Validation(nameof(InvalidMessage));
     public static Error AttachmentNotExists => Error.Validation(nameof(AttachmentNotExists));
+    public static Error UnitOfMeasureNotExists => Error.NotFound(nameof(UnitOfMeasureNotExists));
 }
