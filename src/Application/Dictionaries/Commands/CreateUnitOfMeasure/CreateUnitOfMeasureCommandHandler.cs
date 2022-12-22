@@ -4,7 +4,7 @@ using MultiProject.Delivery.Domain.Dictionaries.Entities;
 
 namespace MultiProject.Delivery.Application.Dictionaries.Commands.CreateUnitOfMeasure;
 
-public sealed class CreateUnitOfMeasureCommandHandler : ICommandHandler<CreateUnitOfMeasureCommand>
+public sealed class CreateUnitOfMeasureCommandHandler : ICommandHandler<CreateUnitOfMeasureCommand, UnitOfMeasureCreatedDto>
 {
     private readonly IUnitOfMeasureRepository _unitOfMeasureRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -15,7 +15,7 @@ public sealed class CreateUnitOfMeasureCommandHandler : ICommandHandler<CreateUn
         _unitOfMeasureRepository = unitOfMeasureRepository;
     }
 
-    public async Task<ErrorOr<Success>> Handle(CreateUnitOfMeasureCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<UnitOfMeasureCreatedDto>> Handle(CreateUnitOfMeasureCommand request, CancellationToken cancellationToken)
     {
         var newUnitOfMeasure = UnitOfMeasure.Create(request.Name, request.Symbol, request.Description);
 
@@ -24,6 +24,6 @@ public sealed class CreateUnitOfMeasureCommandHandler : ICommandHandler<CreateUn
         _unitOfMeasureRepository.Add(newUnitOfMeasure.Value);
         await _unitOfWork.SaveChangesAsync(cancellationToken);        
 
-        return Result.Success;
+        return new UnitOfMeasureCreatedDto() { Id = newUnitOfMeasure.Value.Id.Value};
     }
 }
