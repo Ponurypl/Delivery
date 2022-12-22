@@ -8,6 +8,8 @@
     <DockerfileContext>..\..</DockerfileContext>
     <RootNamespace>MultiProject.Delivery.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <AssemblyName>Delivery.$(MSBuildProjectName)</AssemblyName>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<NoWarn>CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

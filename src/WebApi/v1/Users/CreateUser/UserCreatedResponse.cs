@@ -2,5 +2,5 @@
 
 public sealed record UserCreatedResponse
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 }

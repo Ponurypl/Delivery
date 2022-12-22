@@ -3,5 +3,7 @@
 [Flags]
 public enum UserRole
 {
-    None, Deliverer, Manager
+    None = 0, 
+    Deliverer = 1, 
+    Manager = 2
 }
