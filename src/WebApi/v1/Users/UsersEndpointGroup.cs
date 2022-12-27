@@ -1,4 +1,6 @@
-﻿namespace MultiProject.Delivery.WebApi.v1.Users;
+﻿using MultiProject.Delivery.WebApi.Common.Auth;
+
+namespace MultiProject.Delivery.WebApi.v1.Users;
 
 public sealed class UsersEndpointGroup : Group
 {
@@ -10,8 +12,8 @@ public sealed class UsersEndpointGroup : Group
                                               {
                                                   b.Produces(StatusCodes.Status401Unauthorized);
                                                   b.ProducesValidationProblem();
-                                                  b.AllowAnonymous();
                                               });
+                               ep.AuthSchemes(AuthConsts.AccessSchema);
                            });
     }
     

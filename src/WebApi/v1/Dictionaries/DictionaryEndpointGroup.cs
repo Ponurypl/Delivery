@@ -1,4 +1,6 @@
-﻿namespace MultiProject.Delivery.WebApi.v1.Dictionaries;
+﻿using MultiProject.Delivery.WebApi.Common.Auth;
+
+namespace MultiProject.Delivery.WebApi.v1.Dictionaries;
 
 public sealed class DictionaryEndpointGroup : Group
 {
@@ -10,8 +12,8 @@ public sealed class DictionaryEndpointGroup : Group
                                                      {
                                                          d.Produces(StatusCodes.Status401Unauthorized);
                                                          d.ProducesValidationProblem();
-                                                         d.AllowAnonymous();
                                                      });
+                                      ep.AuthSchemes(AuthConsts.AccessSchema);
                                   });
     }
 }
