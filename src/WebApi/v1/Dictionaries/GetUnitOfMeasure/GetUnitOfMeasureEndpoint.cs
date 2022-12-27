@@ -1,4 +1,5 @@
-﻿using MultiProject.Delivery.Application.Dictionaries.Queries.GetUnitOfMeasure;
+﻿using MultiProject.Delivery.Application.Common.Failures;
+using MultiProject.Delivery.Application.Dictionaries.Queries.GetUnitOfMeasure;
 
 namespace MultiProject.Delivery.WebApi.v1.Dictionaries.GetUnitOfMeasure;
 
@@ -15,7 +16,7 @@ public sealed class GetUnitOfMeasureEndpoint : Endpoint<GetUnitOfMeasureRequest,
 
     public override void Configure()
     {
-        Get("UnitOfMeasureId");
+        Get("{UnitOfMeasureId}");
         Group<DictionaryEndpointGroup>();
         Description(d =>
                     {
@@ -26,10 +27,15 @@ public sealed class GetUnitOfMeasureEndpoint : Endpoint<GetUnitOfMeasureRequest,
 
     public override async Task HandleAsync(GetUnitOfMeasureRequest req, CancellationToken ct)
     {
-        ErrorOr<GetUnitOfMeasureDto> response = await _sender.Send(new GetUnitOfMeasureQuery() { Id = req.Id }, ct);
+        ErrorOr<GetUnitOfMeasureDto> response = await _sender.Send(new GetUnitOfMeasureQuery() { Id = req.UnitOfMeasureId }, ct);
+
+        if (response.IsError && response.Errors.Contains(Failure.UnitOfMeasureNotExists))
+        {
+            await SendNotFoundAsync(ct);
+        }
 
         ValidationFailures.AddErrorsAndThrowIfNeeded(response);
 
-        SendOkAsync(_mapper.Map<GetUnitOfMeasureResponse>(response.Value),ct);
+        await SendOkAsync(_mapper.Map<GetUnitOfMeasureResponse>(response.Value), ct);
     }
 }

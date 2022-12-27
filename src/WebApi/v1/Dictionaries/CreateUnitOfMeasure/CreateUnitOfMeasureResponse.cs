@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Dictionaries.CreateUnitOfMeasure;
 
-public class CreateUnitOfMeasureResponse
+public sealed record CreateUnitOfMeasureResponse
 {
     public int Id { get; set; }
 }

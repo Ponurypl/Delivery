@@ -13,7 +13,7 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, UserCreated
 
     public override void Configure()
     {
-        Post("/");
+        Post("");
         Group<UsersEndpointGroup>();
         Version(1);
     }

@@ -4,7 +4,7 @@ public sealed class DictionaryEndpointGroup : Group
 {
     public DictionaryEndpointGroup()
     {
-        Configure("Dictionaries", ep =>
+        Configure("dictionaries", ep =>
                                   {
                                       ep.Description(d =>
                                                      {

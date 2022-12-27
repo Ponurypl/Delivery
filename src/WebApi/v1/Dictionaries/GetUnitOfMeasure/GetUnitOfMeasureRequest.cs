@@ -2,5 +2,5 @@
 
 public sealed record GetUnitOfMeasureRequest
 {
-    public int Id { get; init; }
+    public int UnitOfMeasureId { get; init; }
 }

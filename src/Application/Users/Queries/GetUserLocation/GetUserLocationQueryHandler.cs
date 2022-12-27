@@ -23,6 +23,6 @@ public sealed class GetUserLocationQueryHandler : IQueryHandler<GetUserLocationQ
             return Failure.UserNotExists;
         }
 
-        return _mapper.Map<GetUserLocationDto>(user);
+        return _mapper.Map<GetUserLocationDto>(user.Location!);
     }
 }

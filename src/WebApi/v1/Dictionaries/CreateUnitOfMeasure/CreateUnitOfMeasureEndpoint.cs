@@ -2,11 +2,11 @@
 
 namespace MultiProject.Delivery.WebApi.v1.Dictionaries.CreateUnitOfMeasure;
 
-public sealed class CreateUnnitOfMeasureEndpoint : Endpoint<CreateUnitOfMeasureRequest>
+public sealed class CreateUnitOfMeasureEndpoint : Endpoint<CreateUnitOfMeasureRequest>
 {
     private readonly ISender _sender;
 
-    public CreateUnnitOfMeasureEndpoint(ISender sender)
+    public CreateUnitOfMeasureEndpoint(ISender sender)
     {
         _sender = sender;
     }

@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Users.GetUserLocation;
 
-public class GetUserLocationResponse
+public sealed record GetUserLocationResponse
 {
     public double Latitude { get; set; }
     public double Longitude { get; set; }

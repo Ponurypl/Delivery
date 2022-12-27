@@ -21,9 +21,15 @@ public sealed class UpdateUserLocationEndpoint : Endpoint<UpdateUserLocationRequ
 
     public override async Task HandleAsync(UpdateUserLocationRequest req, CancellationToken ct)
     {
+        string? userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+        if (userId is null)
+        {
+            await SendUnauthorizedAsync(ct);
+        }
+
         ErrorOr<Success> response = await _sender.Send(new UpdateUserLocationCommand() 
                                                       { 
-                                                        UserId = req.UserId,
+                                                        UserId = Guid.Parse(userId!),
                                                         Latitude = req.Latitude,
                                                         Longitude = req.Longitude,
                                                         Accuracy = req.Accuracy,
