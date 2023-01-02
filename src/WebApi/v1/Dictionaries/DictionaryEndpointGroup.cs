@@ -10,7 +10,6 @@ public sealed class DictionaryEndpointGroup : Group
                                   {
                                       ep.Description(d =>
                                                      {
-                                                         d.Produces(StatusCodes.Status401Unauthorized);
                                                          d.ProducesValidationProblem();
                                                      });
                                       ep.AuthSchemes(AuthConsts.AccessSchema);

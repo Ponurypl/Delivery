@@ -68,6 +68,7 @@ services.AddSwaggerDoc(settings =>
                                                 Scheme = JwtBearerDefaults.AuthenticationScheme,
                                                 BearerFormat = "JWT",
                                             });
+                           settings.OperationProcessors.Add(new AddUnauthorizedResponseOperationProcessor());
                        },
                        js =>
                        {

@@ -10,7 +10,6 @@ public sealed class UsersEndpointGroup : Group
                            {
                                ep.Description(b =>
                                               {
-                                                  b.Produces(StatusCodes.Status401Unauthorized);
                                                   b.ProducesValidationProblem();
                                               });
                                ep.AuthSchemes(AuthConsts.AccessSchema);
