@@ -1,27 +1,25 @@
-﻿using FastEndpoints.Security;
-using MultiProject.Delivery.Application.Common.Failures;
-using MultiProject.Delivery.Application.Users.Queries.VerifyUser;
-using MultiProject.Delivery.Domain.Common.DateTimeProvider;
-using MultiProject.Delivery.WebApi.Common.Auth;
-using System.Security.Claims;
+﻿using MultiProject.Delivery.Application.Users.Queries.VerifyUser;
+using MultiProject.Delivery.WebApi.v1.Auth.Common;
+using MultiProject.Delivery.WebApi.v1.Auth.Services;
 
 namespace MultiProject.Delivery.WebApi.v1.Auth.Login;
 
 public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 {
     private readonly ISender _sender;
-    private readonly IDateTime _dateTime;
+    private readonly ITokenService _tokenService;
 
-    public LoginEndpoint(ISender sender, IDateTime dateTime)
+    public LoginEndpoint(ISender sender, ITokenService tokenService)
     {
         _sender = sender;
-        _dateTime = dateTime;
+        _tokenService = tokenService;
     }
 
     public override void Configure()
     {
         Post("login");
         AllowAnonymous();
+        Description(b => b.ProducesValidationProblem());
         Group<AuthEndpointGroup>();
         Version(1);
     }
@@ -32,34 +30,10 @@ public sealed class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
         ValidationFailures.AddErrorsAndThrowIfNeeded(result);
 
-        var accessExpire = _dateTime.UtcNow.AddMinutes(10);
-        var accessToken = JWTBearer.CreateToken(signingKey: AuthConsts.JwtSigningKey,
-                                             expireAt: accessExpire,
-                                             audience: AuthConsts.AccessSchema,
-                                             claims: new Claim[] { new("Username", result.Value.Username), 
-                                                                   new("UserID", result.Value.Id.ToString()) });
+        (TokenDetails Access, TokenDetails Refresh) tokens =
+            await _tokenService.GetNewTokensAsync(result.Value.Username, result.Value.Id, ct);
 
-        var refreshExpire = _dateTime.UtcNow.AddHours(2);
-        var refreshToken = JWTBearer.CreateToken(signingKey: AuthConsts.JwtSigningKey,
-                                                expireAt: refreshExpire,
-                                                audience: AuthConsts.RefreshSchema,
-                                                claims: new Claim[] { new("Username", result.Value.Username),
-                                                                      new("UserID", result.Value.Id.ToString()) });
-
-        //TODO: Zapis tokena w bazie
-        await SendOkAsync(new LoginResponse
-                          {
-                              AccessToken = new TokenDetails
-                                            {
-                                                Token = accessToken, 
-                                                ExpireAt = accessExpire
-                                            },
-                              RefreshToken = new TokenDetails()
-                                            {
-                                                 Token = refreshToken,
-                                                 ExpireAt = refreshExpire
-                                            }
-                          }, ct);
+        await SendOkAsync(new LoginResponse { AccessToken = tokens.Access, RefreshToken = tokens.Refresh, }, ct);
 
     }
 }

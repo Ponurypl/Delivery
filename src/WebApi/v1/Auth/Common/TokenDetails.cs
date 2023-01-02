@@ -1,4 +1,4 @@
-﻿namespace MultiProject.Delivery.WebApi.v1.Auth.Login;
+﻿namespace MultiProject.Delivery.WebApi.v1.Auth.Common;
 
 public record TokenDetails
 {

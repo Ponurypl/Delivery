@@ -4,9 +4,6 @@ public sealed class AuthEndpointGroup : Group
 {
     public AuthEndpointGroup()
     {
-        Configure("auth", ep =>
-                          {
-                              ep.Description(b => b.ProducesValidationProblem());
-                          });
+        Configure("auth", _ => {});
     }
 }

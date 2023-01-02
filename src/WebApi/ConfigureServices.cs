@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using MultiProject.Delivery.WebApi.v1.Auth.Services;
+using System.Reflection;
 
 namespace MultiProject.Delivery.WebApi;
 
@@ -9,6 +10,10 @@ public static class ConfigureServices
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
         services.AddSingleton(TypeAdapterConfig.GlobalSettings);
         services.AddScoped<IMapper, ServiceMapper>();
+
+        services.AddDistributedMemoryCache();
+        
+        services.AddScoped<ITokenService, TokenService>();
 
         return services;
     }
