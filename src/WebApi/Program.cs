@@ -7,6 +7,7 @@ using MultiProject.Delivery.WebApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MultiProject.Delivery.WebApi.Common.Auth;
+using MultiProject.Delivery.WebApi.Common.Swagger;
 using NSwag;
 using System.Text;
 

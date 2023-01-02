@@ -2,7 +2,7 @@ using NSwag;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
-namespace MultiProject.Delivery.WebApi;
+namespace MultiProject.Delivery.WebApi.Common.Swagger;
 
 public sealed class AddUnauthorizedResponseOperationProcessor : IOperationProcessor
 {
