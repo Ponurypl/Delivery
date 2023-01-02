@@ -1,5 +1,4 @@
-﻿using ErrorOr;
-using MultiProject.Delivery.Application.Users.Commands.UpdateUserLocation;
+﻿using MultiProject.Delivery.Application.Users.Commands.UpdateUserLocation;
 
 namespace MultiProject.Delivery.WebApi.v1.Users.UpdateUserLocation;
 
@@ -25,6 +24,7 @@ public sealed class UpdateUserLocationEndpoint : Endpoint<UpdateUserLocationRequ
         if (userId is null)
         {
             await SendUnauthorizedAsync(ct);
+            return;
         }
 
         ErrorOr<Success> response = await _sender.Send(new UpdateUserLocationCommand() 

@@ -32,6 +32,7 @@ public sealed class GetUnitOfMeasureEndpoint : Endpoint<GetUnitOfMeasureRequest,
         if (response.IsError && response.Errors.Contains(Failure.UnitOfMeasureNotExists))
         {
             await SendNotFoundAsync(ct);
+            return;
         }
 
         ValidationFailures.AddErrorsAndThrowIfNeeded(response);

@@ -33,6 +33,7 @@ public sealed class GetUserLocationEndpoint : Endpoint<GetUserLocationRequest, G
         if (result.IsError && result.Errors.Contains(Failure.UserNotExists)) 
         {
             await SendNotFoundAsync(ct);
+            return;
         }
 
         ValidationFailures.AddErrorsAndThrowIfNeeded(result);

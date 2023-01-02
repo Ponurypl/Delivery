@@ -32,6 +32,7 @@ public sealed class GetUserEndpoint : Endpoint<GetUserRequest, GetUserResponse>
         if(result.IsError && result.Errors.Contains(Failure.UserNotExists))
         {
             await SendNotFoundAsync(ct);
+            return;
         }
 
         ValidationFailures.AddErrorsAndThrowIfNeeded(result);
