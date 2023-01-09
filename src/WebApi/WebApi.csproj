@@ -13,9 +13,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.5.0" />
-    <PackageReference Include="FastEndpoints.Security" Version="5.5.0" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="5.5.0" />
+    <PackageReference Include="FastEndpoints" Version="5.6.0" />
+    <PackageReference Include="FastEndpoints.Security" Version="5.6.0" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.6.0" />
     <PackageReference Include="Mapster" Version="7.3.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.0" />
     <PackageReference Include="MediatR" Version="11.1.0" />
@@ -30,6 +30,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="v1\Deliveries\CreateScan\" />
+    <Folder Include="v1\Deliveries\GetTransport\" />
+    <Folder Include="v1\Deliveries\GetTransportDetails\" />
   </ItemGroup>
 
 </Project>
