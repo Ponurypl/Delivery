@@ -31,7 +31,7 @@ public static class ConfigureServices
         services.AddScoped<IUnitOfMeasureRepository, UnitOfMeasureRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddScoped<IDateTime, SystemDateTimeProvider>();
+        services.AddTransient<IDateTime, SystemDateTimeProvider>();
 
         services.AddDbContext<ApplicationDbContext>();
         

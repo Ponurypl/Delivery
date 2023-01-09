@@ -31,6 +31,5 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, UserCreated
         ValidationFailures.AddErrorsAndThrowIfNeeded(response);
 
         await SendOkAsync(new UserCreatedResponse() { Id = response.Value.Id }, ct);
-        return;
     }
 }
