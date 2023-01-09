@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Application.Common.Cryptography;
+using MultiProject.Delivery.Application.Common.Failures;
 using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Domain.Users.Entities;
@@ -21,12 +22,14 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
     public async Task<ErrorOr<UserCreatedDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         //TODO: do przemapowania rola cast na dole nie działa 
-        //TODO: sprawdź czy username istnieje, jeśli tak to "dziękuje, do widzenia, dobranoc"
-        var newUserResult = User.Create((Domain.Users.Enums.UserRole)request.Role, request.Username, _hashService.Hash(request.Password), request.PhoneNumber);
+        //TODO: Done. sprawdź czy username istnieje, jeśli tak to "dziękuje, do widzenia, dobranoc"
+        if (await _userRepository.GetByUsernameAsync(request.Username, cancellationToken) is not null) return Failure.UserNameTaken;
+
+        ErrorOr<User> newUserResult = User.Create((Domain.Users.Enums.UserRole)request.Role, request.Username, _hashService.Hash(request.Password), request.PhoneNumber);
 
         if (newUserResult.IsError) return newUserResult.Errors;
 
-        var user = newUserResult.Value;
+        User user = newUserResult.Value;
         _userRepository.Add(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

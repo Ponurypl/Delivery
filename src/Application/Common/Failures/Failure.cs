@@ -4,6 +4,7 @@ public static class Failure
 {
     public static Error InvalidTransportUnitDetails => Error.Validation(nameof(InvalidTransportUnitDetails));
     public static Error UserNotExists => Error.NotFound(nameof(UserNotExists));
+    public static Error UserNameTaken => Error.NotFound(nameof(UserNameTaken));
     public static Error WrongUserOrPassword => Error.Validation(nameof(WrongUserOrPassword));
     public static Error TransportNotExists => Error.NotFound(nameof(TransportNotExists));
     public static Error ScanNotExists => Error.NotFound(nameof(ScanNotExists));
