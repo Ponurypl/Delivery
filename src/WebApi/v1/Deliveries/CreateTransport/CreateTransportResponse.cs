@@ -3,5 +3,5 @@
 public sealed record CreateTransportResponse
 {
     public int Id { get; init; }
-    public List<TransportUnitResponse> TransportUnits { get; init; } = new();
+    public List<ResponseTransportUnit> TransportUnits { get; init; } = new();
 }

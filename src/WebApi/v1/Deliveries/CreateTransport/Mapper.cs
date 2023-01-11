@@ -6,10 +6,10 @@ public sealed class Mapper : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<CreateTransportCommand, CreateTransportRequest>();
-        config.NewConfig<TransportUnitToCreate, TransportUnitRequest>();
+        config.NewConfig<CreateTransportRequest, CreateTransportCommand>();
+        config.NewConfig<RequestTransportUnit, TransportUnitToCreate>();
 
-        config.NewConfig<CreateTransportResponse, TransportCreatedDto>();
-        config.NewConfig<TransportUnitResponse, TransportUnitCreatedDto>();
+        config.NewConfig<TransportCreatedDto, CreateTransportResponse>();
+        config.NewConfig<TransportUnitCreatedDto, ResponseTransportUnit>();
     }
 }

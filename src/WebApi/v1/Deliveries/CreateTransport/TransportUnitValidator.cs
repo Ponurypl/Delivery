@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Deliveries.CreateTransport;
 
-public class TransportUnitValidator : Validator<TransportUnitRequest>
+public class TransportUnitValidator : Validator<RequestTransportUnit>
 {
     public TransportUnitValidator()
     {
@@ -22,22 +22,22 @@ public class TransportUnitValidator : Validator<TransportUnitRequest>
         RuleFor(x => x.RecipientCompanyName).NotEmpty().When(x => string.IsNullOrWhiteSpace(x.RecipientLastName)
                                                                         || string.IsNullOrWhiteSpace(x.RecipientName));
     }
-    private static bool AtLeastOneTypeOfDetailsIsGiven(TransportUnitRequest x)
+    private static bool AtLeastOneTypeOfDetailsIsGiven(RequestTransportUnit x)
     {
         return UniqueUnitFieldsNotEmpty(x) || MultiUnitFieldsNotEmpty(x);
     }
 
-    private static bool OnlyOneTypeOfDetailsIsGiven(TransportUnitRequest x)
+    private static bool OnlyOneTypeOfDetailsIsGiven(RequestTransportUnit x)
     {
         return !UniqueUnitFieldsNotEmpty(x) || !MultiUnitFieldsNotEmpty(x);
     }
 
-    private static bool MultiUnitFieldsNotEmpty(TransportUnitRequest x)
+    private static bool MultiUnitFieldsNotEmpty(RequestTransportUnit x)
     {
         return x.Amount is not null && x.UnitOfMeasureId is not null;
     }
 
-    private static bool UniqueUnitFieldsNotEmpty(TransportUnitRequest x)
+    private static bool UniqueUnitFieldsNotEmpty(RequestTransportUnit x)
     {
         return !string.IsNullOrWhiteSpace(x.Barcode);
     }

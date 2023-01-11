@@ -2,10 +2,10 @@
 
 /// <summary>
 /// if package is of "Unique" type only barcode needs to be given eg. courier delivery
-/// if package is of "Multi" type onlu UnitOfMeasure and Amount needs to be given eg. 2t of sand, 2kg of potatoes
-/// providing all 3 fields will result in ValidationError, as type of packege could not be determined.
+/// if package is of "Multi" type only UnitOfMeasure and Amount needs to be given eg. 2t of sand, 2kg of potatoes
+/// providing all 3 fields will result in ValidationError, as type of package could not be determined.
 /// </summary>
-public sealed record TransportUnitRequest
+public sealed record RequestTransportUnit
 {
     public string Description { get; init; } = default!;
     public string Number { get; init; } = default!;

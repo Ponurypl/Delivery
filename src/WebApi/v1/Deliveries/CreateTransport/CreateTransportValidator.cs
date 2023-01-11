@@ -12,7 +12,7 @@ public class CreateTransportValidator : Validator<CreateTransportRequest>
         RuleFor(x => x.StartDate).NotEmpty().GreaterThan(dateTime.UtcNow);
         RuleFor(x => x.Number).NotEmpty();
 
-        RuleFor(x => x.TransportUnits).NotEmpty().WithMessage("At least One TransportUnit must be specified in delivery");
+        RuleFor(x => x.TransportUnits).NotEmpty().WithMessage("At least One RequestTransportUnit must be specified in delivery");
         RuleForEach(x => x.TransportUnits).SetValidator(new TransportUnitValidator());
 
         RuleFor(x => x.TotalWeight).GreaterThan(0).When(x => x.TotalWeight is not null);

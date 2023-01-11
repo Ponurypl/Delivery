@@ -1,7 +1,7 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Deliveries.CreateTransport;
 
 /// <summary>
-/// At least one TransportUnitRequest needs to be provded to create Deliviery
+/// At least one RequestTransportUnit needs to be provided to create Delivery
 /// </summary>
 public sealed record CreateTransportRequest
 {
@@ -9,7 +9,7 @@ public sealed record CreateTransportRequest
     public string Number { get; init; } = default!;
     public DateTime StartDate { get; init; }
     public Guid ManagerId { get; init; }
-    public List<TransportUnitRequest> TransportUnits { get; init; } = new();
+    public List<RequestTransportUnit> TransportUnits { get; init; } = new();
     public string? AdditionalInformation { get; init; }
     public double? TotalWeight { get; init; }
 }
