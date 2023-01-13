@@ -22,7 +22,6 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
     public async Task<ErrorOr<UserCreatedDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         //TODO: do przemapowania rola cast na dole nie działa 
-        //TODO: Done. sprawdź czy username istnieje, jeśli tak to "dziękuje, do widzenia, dobranoc"
         if (await _userRepository.GetByUsernameAsync(request.Username, cancellationToken) is not null) return Failure.UserNameTaken;
 
         ErrorOr<User> newUserResult = User.Create((Domain.Users.Enums.UserRole)request.Role, request.Username, _hashService.Hash(request.Password), request.PhoneNumber);

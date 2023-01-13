@@ -62,6 +62,5 @@ internal sealed class UserPgConfiguration : IEntityTypeConfiguration<User>
                .HasComment("last date of geolocation update");
 
         builder.HasKey(x => x.Id);
-        //TODO: Username ma być unique
     }
 }

@@ -3,9 +3,9 @@
 public sealed record TransportUnitDto
 {
     public int Id { get; init; }
-    public string Number { get; init; }
-    public string Description { get; init; }
-    public string Status { get; init; }
+    public string Number { get; init; } = default!;
+    public string Description { get; init; } = default!;
+    public string Status { get; init; } = default!;
     public string? AdditionalInformation { get; init; }
     public RecipientDto Recipient { get; init; }
     public string? Barcode { get; init; }
