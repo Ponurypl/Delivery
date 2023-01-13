@@ -35,7 +35,6 @@
   <ItemGroup>
     <Folder Include="v1\Deliveries\CreateScan\" />
     <Folder Include="v1\Deliveries\GetTransport\" />
-    <Folder Include="v1\Deliveries\GetTransportDetails\" />
   </ItemGroup>
 
 </Project>
