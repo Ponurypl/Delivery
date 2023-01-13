@@ -25,7 +25,7 @@ internal sealed class TransportRepository : ITransportRepository
     public async Task<List<Transport>> GetListByDateAsync(DateTime dateFrom, DateTime dateTo, CancellationToken cancellationToken = default)
     {
         return await _transports.AsNoTracking()
-                                .Where(t => dateFrom.ToUniversalTime() <= t.CreationDate && t.CreationDate <= dateTo.ToUniversalTime()) //TODO: wydawało mi się że nasz DateTime tak czy siak był UTC?
+                                .Where(t => dateFrom.ToUniversalTime() <= t.CreationDate && t.CreationDate <= dateTo.ToUniversalTime())
                                 .ToListAsync(cancellationToken);
     }
 }
