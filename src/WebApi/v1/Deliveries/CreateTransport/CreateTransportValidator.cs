@@ -16,7 +16,7 @@ public class CreateTransportValidator : Validator<CreateTransportRequest>
         RuleFor(x => x.TransportUnits).NotEmpty().WithMessage("At least One RequestTransportUnit must be specified in delivery");
         RuleForEach(x => x.TransportUnits).SetValidator(new TransportUnitValidator());
 
-        RuleFor(x => x.TotalWeight).GreaterThan(0).When(x => x.TotalWeight is not null);
+        RuleFor(x => x.TotalWeight).GreaterThan(0).When(x => x.TotalWeight.HasValue);
         RuleFor(x => x.TotalWeight).PrecisionScale(9, 4);
     }
 }

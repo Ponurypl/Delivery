@@ -34,7 +34,7 @@ public class TransportUnitValidator : Validator<RequestTransportUnit>
 
     private static bool MultiUnitFieldsNotEmpty(RequestTransportUnit x)
     {
-        return x.Amount is not null && x.UnitOfMeasureId is not null;
+        return x.Amount.HasValue && x.UnitOfMeasureId.HasValue;
     }
 
     private static bool UniqueUnitFieldsNotEmpty(RequestTransportUnit x)
