@@ -1,6 +1,6 @@
-﻿namespace MultiProject.Delivery.Application.Deliveries.Queries.GetTransports;
+﻿namespace MultiProject.Delivery.WebApi.v1.Deliveries.GetTransports;
 
-public sealed record TransportDto
+public sealed record GetTransportsResponse
 {
     public int Id { get; init; }
     public Guid DelivererId { get; init; }
