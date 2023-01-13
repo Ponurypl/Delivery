@@ -5,10 +5,10 @@ public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCom
 {
     public CreateUserCommandValidator()
     {
-        RuleFor(x => x.Username).NotEmpty().NotEqual(x => x.Password);
-        RuleFor(x => x.Password).NotEmpty();
+        RuleFor(x => x.Username).NotEmpty().NotEqual(x => x.Password).MaximumLength(50);
+        RuleFor(x => x.Password).NotEmpty().MaximumLength(100);
 
-        RuleFor(x => x.PhoneNumber).NotEmpty();
+        RuleFor(x => x.PhoneNumber).NotEmpty().MaximumLength(15);
         RuleFor(x => x.Role).NotEmpty().IsInEnum();
     }
 }
