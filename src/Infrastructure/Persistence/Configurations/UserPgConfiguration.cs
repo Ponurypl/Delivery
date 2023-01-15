@@ -39,11 +39,11 @@ internal sealed class UserPgConfiguration : IEntityTypeConfiguration<User>
                .HasComment("user phone number without whitespaces or separators");
         builder.OwnsOne(x => x.Location).Property(x => x.Longitude)
                .HasColumnName("geolocation_longitude")
-               .HasPrecision(3, 5)
+               .HasPrecision(8, 5)
                .HasComment("user last known longitude, with precision up to 1m");
         builder.OwnsOne(x => x.Location).Property(x => x.Latitude)
                .HasColumnName("geolocation_latitude")
-               .HasPrecision(3, 5)
+               .HasPrecision(8, 5)
                .HasComment("user last known latitude, with precision up to 1m");
         builder.OwnsOne(x => x.Location).Property(x => x.Accuracy)
                .HasColumnName("geolocation_accuracy")
@@ -51,11 +51,11 @@ internal sealed class UserPgConfiguration : IEntityTypeConfiguration<User>
                .HasComment("level of accuracy of longitude and latitude in meters. Can be null if speed is 0");
         builder.OwnsOne(x => x.Location).Property(x => x.Heading)
                .HasColumnName("geolocation_heading")
-               .HasPrecision(4, 2)
+               .HasPrecision(5, 2)
                .HasComment("user last known heading in degrees where 0 is north");
         builder.OwnsOne(x => x.Location).Property(x => x.Speed)
                .HasColumnName("geolocation_speed")
-               .HasPrecision(4, 2)
+               .HasPrecision(6, 2)
                .HasComment("user last known speed in m/s");
         builder.OwnsOne(x => x.Location).Property(x => x.LastUpdateDate)
                .HasColumnName("geolocation_last_update")

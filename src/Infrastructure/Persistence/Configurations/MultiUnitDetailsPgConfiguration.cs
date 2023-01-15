@@ -25,7 +25,7 @@ internal class MultiUnitDetailsPgConfiguration : IEntityTypeConfiguration<MultiU
         builder.Property(x => x.Amount)
                .IsRequired()
                .HasColumnName("amount")
-               .HasPrecision(5,3)
+               .HasPrecision(8,3)
                .HasComment("amount to be delivered, depends on type of unit of measure for example it can be pieces/kilograms/meters etc.");
         
         builder.HasKey(x => x.Id);

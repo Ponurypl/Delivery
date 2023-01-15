@@ -40,11 +40,11 @@ internal sealed class ScanPgConfiguration : IEntityTypeConfiguration<Scan>
                .HasComment("unloaded quantity from multi_unit, null for unique_unit type of transport unit delivery");
         builder.OwnsOne(x => x.Location).Property(x => x.Longitude)
                .HasColumnName("location_longitude")
-               .HasPrecision(3, 5)
+               .HasPrecision(8, 5)
                .HasComment("Longitude of scan, with precision up to 1m");
         builder.OwnsOne(x => x.Location).Property(x => x.Latitude)
                .HasColumnName("location_latitude")
-               .HasPrecision(3, 5)
+               .HasPrecision(8, 5)
                .HasComment("Latitude of scan, with precision up to 1m");
         builder.OwnsOne(x => x.Location).Property(x => x.Accuracy)
                .HasColumnName("location_accuracy")
