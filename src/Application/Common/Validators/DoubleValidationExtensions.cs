@@ -1,4 +1,4 @@
-﻿namespace MultiProject.Delivery.WebApi.Common.Validators;
+﻿namespace MultiProject.Delivery.Application.Common.Validators;
 
 public static class DoubleValidationExtensions
 {

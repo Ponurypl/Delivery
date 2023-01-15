@@ -1,6 +1,6 @@
 ﻿using FluentValidation.Validators;
 
-namespace MultiProject.Delivery.WebApi.Common.Validators;
+namespace MultiProject.Delivery.Application.Common.Validators;
 
 /// <summary>
 /// Allows a double to be validated for scale and precision.
