@@ -4,7 +4,8 @@ public sealed class CreateUnitOfMeasureCommandValidator : AbstractValidator<Crea
 {
     public CreateUnitOfMeasureCommandValidator()
     {
-        RuleFor(x => x.Name).NotEmpty();
-        RuleFor(x => x.Symbol).NotEmpty();
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(50);
+        RuleFor(x => x.Symbol).NotEmpty().MaximumLength(5);
+        RuleFor(x => x.Description).MaximumLength(200);
     }
 }

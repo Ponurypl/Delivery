@@ -5,9 +5,9 @@ public sealed class CreateUserCommandValidator : AbstractValidator<CreateUserCom
     public CreateUserCommandValidator()
     {
         RuleFor(x => x.Username).NotEmpty().NotEqual(x => x.Password).MaximumLength(50);
-        RuleFor(x => x.Password).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Password).NotEmpty().MaximumLength(35);
 
-        RuleFor(x => x.PhoneNumber).NotEmpty().MaximumLength(15);
+        RuleFor(x => x.PhoneNumber).Matches(@"^(\+\d{2,3})?\d{9}$").MaximumLength(15);
         RuleFor(x => x.Role).NotEmpty().IsInEnum();
     }
 }
