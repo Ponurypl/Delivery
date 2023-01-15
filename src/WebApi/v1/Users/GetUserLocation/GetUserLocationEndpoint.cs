@@ -16,7 +16,7 @@ public sealed class GetUserLocationEndpoint : Endpoint<GetUserLocationRequest, G
 
     public override void Configure()
     {
-        Get("{UserId}/location");
+        Get("location/{UserId}");
         Group<UsersEndpointGroup>();
         Description(x =>
                     {
