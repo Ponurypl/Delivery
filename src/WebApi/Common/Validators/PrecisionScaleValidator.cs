@@ -2,6 +2,14 @@
 
 namespace MultiProject.Delivery.WebApi.Common.Validators;
 
+/// <summary>
+/// Allows a double to be validated for scale and precision.
+/// Scale would be the number of digits to the right of the double point.
+/// Precision would be the number of digits. This number includes both the left and the right sides of the double point.
+///
+/// 123.4500 has an scale of 4 and a precision of 7, but an effective scale
+/// and precision of 2 and 5 respectively.
+/// </summary>
 public class PrecisionScaleValidator<T> : PropertyValidator<T, double>
 {
     private readonly int _scale;
@@ -30,7 +38,7 @@ public class PrecisionScaleValidator<T> : PropertyValidator<T, double>
         if (scale > _scale || actualIntegerDigits > expectedIntegerDigits)
         {
             context.MessageFormatter
-                   .AppendArgument("ExpectedPrecision", _precision)
+                   .AppendArgument("ExpectedPrecision", actualIntegerDigits - 1 < 0 ? 0 : actualIntegerDigits - 1)
                    .AppendArgument("ExpectedScale", _scale)
                    .AppendArgument("Digits", actualIntegerDigits < 0 ? 0 : actualIntegerDigits)
                    .AppendArgument("ActualScale", scale);
