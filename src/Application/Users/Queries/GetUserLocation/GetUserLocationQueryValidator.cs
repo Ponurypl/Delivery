@@ -1,6 +1,5 @@
-﻿using FluentValidation;
+﻿namespace MultiProject.Delivery.Application.Users.Queries.GetUserLocation;
 
-namespace MultiProject.Delivery.Application.Users.Queries.GetUserLocation;
 public sealed class GetUserLocationQueryValidator : AbstractValidator<GetUserLocationQuery>
 {
     public GetUserLocationQueryValidator()

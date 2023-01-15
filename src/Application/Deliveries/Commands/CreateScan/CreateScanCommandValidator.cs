@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
+﻿namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
 
 public sealed class CreateScanCommandValidator : AbstractValidator<CreateScanCommand>
 {

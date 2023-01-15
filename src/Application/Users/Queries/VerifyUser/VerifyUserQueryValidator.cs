@@ -1,6 +1,5 @@
-﻿using FluentValidation;
+﻿namespace MultiProject.Delivery.Application.Users.Queries.VerifyUser;
 
-namespace MultiProject.Delivery.Application.Users.Queries.VerifyUser;
 public sealed class VerifyUserQueryValidator : AbstractValidator<VerifyUserQuery>
 {
     public VerifyUserQueryValidator()

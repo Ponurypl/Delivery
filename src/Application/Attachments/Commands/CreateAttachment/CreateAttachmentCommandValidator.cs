@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace MultiProject.Delivery.Application.Attachments.Commands.CreateAttachment;
+﻿namespace MultiProject.Delivery.Application.Attachments.Commands.CreateAttachment;
 
 public sealed class CreateAttachmentCommandValidator : AbstractValidator<CreateAttachmentCommand>
 {

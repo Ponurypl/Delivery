@@ -1,6 +1,5 @@
-﻿using FluentValidation;
+﻿namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateTransport;
 
-namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateTransport;
 public sealed class TransportUnitToCreateValidator : AbstractValidator<TransportUnitToCreate>
 {
     public TransportUnitToCreateValidator()

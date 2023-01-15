@@ -1,6 +1,5 @@
-﻿using FluentValidation;
+﻿namespace MultiProject.Delivery.Application.Deliveries.Queries.GetTransports;
 
-namespace MultiProject.Delivery.Application.Deliveries.Queries.GetTransports;
 public sealed class GetTransportsQueryValidator : AbstractValidator<GetTransportsQuery>
 {
     public GetTransportsQueryValidator()

@@ -1,6 +1,5 @@
-﻿using FluentValidation;
+﻿namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
 
-namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
 public sealed class ScanGeolocationValidator : AbstractValidator<ScanGelocation>
 {
     public ScanGeolocationValidator()

@@ -1,6 +1,5 @@
-﻿using FluentValidation;
+﻿namespace MultiProject.Delivery.Application.Users.Commands.UpdateUserLocation;
 
-namespace MultiProject.Delivery.Application.Users.Commands.UpdateUserLocation;
 public sealed class UpdateUserLocationCommandValidator : AbstractValidator<UpdateUserLocationCommand>
 {
     public UpdateUserLocationCommandValidator()
