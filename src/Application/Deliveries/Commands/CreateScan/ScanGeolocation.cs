@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
 
-public sealed record ScanGelocation
+public sealed record ScanGeolocation
 {
     public required double Latitude { get; init; }
     public required double Longitude { get; init; }

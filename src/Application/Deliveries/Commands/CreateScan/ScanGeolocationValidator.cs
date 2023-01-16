@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
 
-public sealed class ScanGeolocationValidator : AbstractValidator<ScanGelocation?>
+public sealed class ScanGeolocationValidator : AbstractValidator<ScanGeolocation?>
 {
     public ScanGeolocationValidator()
     {

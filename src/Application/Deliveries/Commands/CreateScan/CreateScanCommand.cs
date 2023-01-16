@@ -6,5 +6,5 @@ public sealed record CreateScanCommand : ICommand<ScanCreatedDto>
     public required int TransportUnitId { get; init; }
     public required Guid DelivererId { get; init; }
     public double? Quantity { get; init; }
-    public ScanGelocation? Location { get; init; }
+    public ScanGeolocation? Location { get; init; }
 }
