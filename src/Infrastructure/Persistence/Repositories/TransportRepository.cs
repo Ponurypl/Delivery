@@ -19,7 +19,12 @@ internal sealed class TransportRepository : ITransportRepository
 
     public async Task<Transport?> GetByIdAsync(TransportId id, CancellationToken cancellationToken = default)
     {
-        return await _transports.FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+        return await _transports.Where(t => t.Id == id)
+                                .Include(x => x.TransportUnits)
+                                .ThenInclude(x => x.UniqueUnitDetails)
+                                .Include(x => x.TransportUnits)
+                                .ThenInclude(x => x.MultiUnitDetails)  
+                                .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<List<Transport>> GetListByDateAsync(DateTime dateFrom, DateTime dateTo, CancellationToken cancellationToken = default)
