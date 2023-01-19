@@ -2,12 +2,11 @@
 using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
-using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.Entities;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
-namespace MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
+namespace MultiProject.Delivery.Application.Scans.Commands.CreateScan;
 
 public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand, ScanCreatedDto>
 {
@@ -50,8 +49,8 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
             return Failure.UserNotExists;
         }
 
-        var scanCreateResult = Scan.Create(transportUnitId, deliverer.Id , _dateTime);
-        
+        var scanCreateResult = Scan.Create(transportUnitId, deliverer.Id, _dateTime);
+
         if (scanCreateResult.IsError)
         {
             return scanCreateResult.Errors;

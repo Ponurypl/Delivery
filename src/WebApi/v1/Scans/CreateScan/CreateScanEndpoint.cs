@@ -1,8 +1,6 @@
-﻿using MultiProject.Delivery.Application.Common.Failures;
-using MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
-using NJsonSchema.Validation;
+﻿using MultiProject.Delivery.Application.Scans.Commands.CreateScan;
 
-namespace MultiProject.Delivery.WebApi.v1.Deliveries.CreateScan;
+namespace MultiProject.Delivery.WebApi.v1.Scans.CreateScan;
 
 public sealed class CreateScanEndpoint : Endpoint<CreateScanRequest, CreateScanResponse>
 {
@@ -17,12 +15,8 @@ public sealed class CreateScanEndpoint : Endpoint<CreateScanRequest, CreateScanR
 
     public override void Configure()
     {
-        Post("Scan/");
-        Description(d =>
-                    {
-                        d.Produces(StatusCodes.Status404NotFound);
-                    });
-        Group<DeliveriesEndpointGroup>();
+        Post("scan");
+        Group<ScansEndpointGroup>();
         Version(1);
     }
 
@@ -30,6 +24,6 @@ public sealed class CreateScanEndpoint : Endpoint<CreateScanRequest, CreateScanR
     {
         ErrorOr<ScanCreatedDto> result = await _sender.Send(_mapper.Map<CreateScanCommand>(req), ct);
         ValidationFailures.AddErrorsAndThrowIfNeeded(result);
-        await SendOkAsync(_mapper.Map<CreateScanResponse>(result.Value),ct);
+        await SendOkAsync(_mapper.Map<CreateScanResponse>(result.Value), ct);
     }
 }

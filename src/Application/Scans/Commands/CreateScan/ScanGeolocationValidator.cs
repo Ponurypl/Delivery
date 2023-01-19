@@ -1,8 +1,8 @@
-﻿namespace MultiProject.Delivery.WebApi.v1.Deliveries.CreateScan;
+﻿namespace MultiProject.Delivery.Application.Scans.Commands.CreateScan;
 
-public sealed class RequestScanGeolocationValidator : Validator<RequestScanGeolocation?>
+public sealed class ScanGeolocationValidator : AbstractValidator<ScanGeolocation>
 {
-    public RequestScanGeolocationValidator()
+    public ScanGeolocationValidator()
     {
         RuleFor(x => x.Accuracy).GreaterThan(0).PrecisionScale(3, 0);
         RuleFor(x => x.Latitude).NotEmpty().PrecisionScale(8, 5);

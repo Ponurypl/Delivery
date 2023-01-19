@@ -1,6 +1,6 @@
-﻿using MultiProject.Delivery.Application.Deliveries.Commands.CreateScan;
+﻿using MultiProject.Delivery.Application.Scans.Commands.CreateScan;
 
-namespace MultiProject.Delivery.WebApi.v1.Deliveries.CreateScan;
+namespace MultiProject.Delivery.WebApi.v1.Scans.CreateScan;
 
 public sealed class Mapper : IRegister
 {

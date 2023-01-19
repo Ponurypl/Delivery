@@ -1,4 +1,4 @@
-﻿namespace MultiProject.Delivery.WebApi.v1.Deliveries.CreateScan;
+﻿namespace MultiProject.Delivery.WebApi.v1.Scans.CreateScan;
 
 public sealed record CreateScanResponse
 {
