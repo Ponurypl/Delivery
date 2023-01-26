@@ -9,6 +9,6 @@ public sealed class Mapper : IRegister
     {
         config.NewConfig<User, UserDto>()
               .Map(d => d.Id, s => s.Id.Value)
-              .Map(d => d.Role, s => s.Role.ToString());
+              .Map(d => d.Role, s => (int) s.Role);
     }
 }
