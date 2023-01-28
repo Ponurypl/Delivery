@@ -15,7 +15,7 @@ public sealed class CreateScanEndpoint : Endpoint<CreateScanRequest, CreateScanR
 
     public override void Configure()
     {
-        Post("scan");
+        Post("");
         Group<ScansEndpointGroup>();
         Version(1);
     }
