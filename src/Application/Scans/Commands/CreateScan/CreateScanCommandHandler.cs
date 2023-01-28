@@ -4,8 +4,10 @@ using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Application.Scans.Queries.GetTransportUnitScans;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
+using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.Entities;
+using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Application.Scans.Commands.CreateScan;
@@ -32,35 +34,37 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
 
     public async Task<ErrorOr<ScanCreatedDto>> Handle(CreateScanCommand request, CancellationToken cancellationToken)
     {
-        var transportId = new TransportId(request.TransportId);
-        var transport = await _transportRepository.GetByIdAsync(transportId, cancellationToken);
+        TransportId transportId = new(request.TransportId);
+        Transport? transport = await _transportRepository.GetByIdAsync(transportId, cancellationToken);
         if (transport is null)
         {
             return Failure.TransportNotExists;
         }
 
-        var transportUnitId = new TransportUnitId(request.TransportUnitId);
-        var transportUnit = transport.TransportUnits.FirstOrDefault(u => u.Id == transportUnitId);
+        TransportUnitId transportUnitId = new(request.TransportUnitId);
+        TransportUnit? transportUnit = transport.TransportUnits.FirstOrDefault(u => u.Id == transportUnitId);
         if (transportUnit is null)
         {
             return Failure.TransportUnitNotExists;
         }
 
-        var delivererId = new UserId(request.DelivererId);
-        var deliverer = await _userRepository.GetByIdAsync(delivererId, cancellationToken);
+        UserId delivererId = new(request.DelivererId);
+        User? deliverer = await _userRepository.GetByIdAsync(delivererId, cancellationToken);
         if (deliverer is null)
         {
             return Failure.UserNotExists;
         }
+        ErrorOr<List<GetTransportUnitScansDto>> existingScans = await _sender.
+                Send(new GetTransportUnitScansQuery { Id = transportUnit.Id.Value }, cancellationToken);
 
-        var scanCreateResult = Scan.Create(transportUnitId, deliverer.Id, _dateTime);
+        ErrorOr<Scan> scanCreateResult = Scan.Create(transportUnitId, deliverer.Id, _dateTime);
 
         if (scanCreateResult.IsError)
         {
             return scanCreateResult.Errors;
         }
 
-        var scan = scanCreateResult.Value;
+        Scan scan = scanCreateResult.Value;
 
         if (transportUnit.MultiUnitDetails is not null)
         {
@@ -69,8 +73,6 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
                 return Failure.InvalidScanInput;
             }
             
-            ErrorOr<List<GetTransportUnitScansDto>> existingScans = await _sender.
-                Send(new GetTransportUnitScansQuery { Id = transportUnit.Id.Value }, cancellationToken);
             double alreadyScannedAmount = Math.Round(existingScans.Value.Sum(existingScan => existingScan.Quantity) ?? 0d, 3);
             double amountAvilableForScan = Math.Round(transportUnit.MultiUnitDetails.Amount - alreadyScannedAmount, 3);
 
@@ -81,16 +83,23 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
 
 
 
-            var result = scan.AddQuantity(request.Quantity.Value);
+            ErrorOr<Updated> result = scan.AddQuantity(request.Quantity.Value);
             if (result.IsError)
             {
                 return result.Errors;
             }
         }
+        else
+        {
+            if(existingScans.Value.FirstOrDefault() != null)
+            {
+                return Failure.ScanAbleAmountExceeded(0);
+            }
+        }
 
         if (request.Location is not null)
         {
-            var result = scan.AddGeolocation(request.Location.Latitude, request.Location.Longitude,
+            ErrorOr<Updated> result = scan.AddGeolocation(request.Location.Latitude, request.Location.Longitude,
                                              request.Location.Accuracy);
             if (result.IsError)
             {
@@ -103,3 +112,4 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
         return new ScanCreatedDto { Id = scan.Id.Value };
     }
 }
+
