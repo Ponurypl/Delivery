@@ -91,7 +91,7 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
         }
         else
         {
-            if(existingScans.Value.FirstOrDefault() != null)
+            if(existingScans.Value is not null)
             {
                 return Failure.ScanAbleAmountExceeded(0);
             }
