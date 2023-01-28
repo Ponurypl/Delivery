@@ -10,8 +10,8 @@ public sealed class Mapper : IRegister
               .Map(d => d.Id, s => s.Id.Value)
               .Map(d => d.CreatorId, s => s.CreatorId.Value)
               .Map(d => d.TransportId, s => s.TransportId.Value)
-              .Map(d => d.ScanId, s => s.ScanId.Value)
-              .Map(d => d.TransportUnitId, s => s.TransportUnitId.Value)
-              .Map(d => d.Status, s => s.Status.ToString());
+              .Map(d => d.ScanId, s => s.ScanId!.Value)
+              .Map(d => d.TransportUnitId, s => s.TransportUnitId!.Value)
+              .Map(d => d.Status, s => (int) s.Status);
     }
 }

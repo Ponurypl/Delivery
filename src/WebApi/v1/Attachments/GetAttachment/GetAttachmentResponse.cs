@@ -1,8 +1,6 @@
-﻿using MultiProject.Delivery.Domain.Attachments.Enums;
+﻿namespace MultiProject.Delivery.WebApi.v1.Attachments.GetAttachment;
 
-namespace MultiProject.Delivery.Application.Attachments.Queries.GetAttachment;
-
-public sealed record AttachmentDto
+public sealed class GetAttachmentResponse
 {
     public int Id { get; init; }
     public Guid CreatorId { get; init; }
