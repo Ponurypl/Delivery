@@ -1,6 +1,8 @@
-﻿using MultiProject.Delivery.Application.Common.Failures;
+﻿using MediatR;
+using MultiProject.Delivery.Application.Common.Failures;
 using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
+using MultiProject.Delivery.Application.Scans.Queries.GetTransportUnitScans;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.Entities;
@@ -15,15 +17,17 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
     private readonly IScanRepository _scanRepository;
     private readonly ITransportRepository _transportRepository;
     private readonly IUserRepository _userRepository;
+    private readonly ISender _sender;
 
     public CreateScanCommandHandler(IUnitOfWork unitOfWork, IDateTime dateTime, IScanRepository scanRepository,
-                                    ITransportRepository transportRepository, IUserRepository userRepository)
+                                    ITransportRepository transportRepository, IUserRepository userRepository, ISender sender)
     {
         _unitOfWork = unitOfWork;
         _dateTime = dateTime;
         _scanRepository = scanRepository;
         _transportRepository = transportRepository;
         _userRepository = userRepository;
+        _sender = sender;
     }
 
     public async Task<ErrorOr<ScanCreatedDto>> Handle(CreateScanCommand request, CancellationToken cancellationToken)
@@ -64,6 +68,18 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
             {
                 return Failure.InvalidScanInput;
             }
+            
+            ErrorOr<List<GetTransportUnitScansDto>> existingScans = await _sender.
+                Send(new GetTransportUnitScansQuery { Id = transportUnit.Id.Value }, cancellationToken);
+            double alreadyScannedAmount = Math.Round(existingScans.Value.Sum(existingScan => existingScan.Quantity) ?? 0d, 3);
+            double amountAvilableForScan = Math.Round(transportUnit.MultiUnitDetails.Amount - alreadyScannedAmount, 3);
+
+            if (request.Quantity > amountAvilableForScan)
+            {
+                return Failure.ScanAbleAmountExceeded(amountAvilableForScan < 0 ? 0 : amountAvilableForScan);
+            }
+
+
 
             var result = scan.AddQuantity(request.Quantity.Value);
             if (result.IsError)

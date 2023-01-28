@@ -15,7 +15,7 @@ public sealed class TraceLogMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        Stopwatch time = null;
+        Stopwatch time = null!;
         if (_logger.IsEnabled(LogLevel.Trace))
         {
             time = Stopwatch.StartNew();

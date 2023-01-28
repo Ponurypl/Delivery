@@ -2,7 +2,7 @@
 
 namespace MultiProject.Delivery.WebApi.v1.Deliveries;
 
-public class DeliveriesEndpointGroup : Group
+public sealed class DeliveriesEndpointGroup : Group
 {
     public DeliveriesEndpointGroup()
     {
