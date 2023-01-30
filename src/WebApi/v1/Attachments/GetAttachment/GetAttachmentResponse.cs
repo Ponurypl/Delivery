@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Attachments.GetAttachment;
 
-public sealed class GetAttachmentResponse
+public sealed record GetAttachmentResponse
 {
     public int Id { get; init; }
     public Guid CreatorId { get; init; }

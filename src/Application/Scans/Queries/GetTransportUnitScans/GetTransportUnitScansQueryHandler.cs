@@ -18,7 +18,7 @@ public sealed class GetTransportUnitScansQueryHandler : IQueryHandler<GetTranspo
     public async Task<ErrorOr<List<GetTransportUnitScansDto>>> Handle(GetTransportUnitScansQuery request, CancellationToken cancellationToken)
     {
         List<Scan> scans = await _scanRepository.GetAllByTransportUnitIdAsync(new TransportUnitId(request.Id), cancellationToken);
-        if(scans is null || scans.Count == 0)
+        if(scans.Count == 0)
         {
             return Failure.ScanNotExists;
         }

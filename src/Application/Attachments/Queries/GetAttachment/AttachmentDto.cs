@@ -1,6 +1,4 @@
-﻿using MultiProject.Delivery.Domain.Attachments.Enums;
-
-namespace MultiProject.Delivery.Application.Attachments.Queries.GetAttachment;
+﻿namespace MultiProject.Delivery.Application.Attachments.Queries.GetAttachment;
 
 public sealed record AttachmentDto
 {

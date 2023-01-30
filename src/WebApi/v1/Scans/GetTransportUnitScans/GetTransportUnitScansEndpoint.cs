@@ -1,6 +1,5 @@
 ﻿using MultiProject.Delivery.Application.Common.Failures;
 using MultiProject.Delivery.Application.Scans.Queries.GetTransportUnitScans;
-using MultiProject.Delivery.WebApi.v1.Scans.GetScan;
 
 namespace MultiProject.Delivery.WebApi.v1.Scans.GetTransportUnitScans;
 

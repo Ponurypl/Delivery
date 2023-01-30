@@ -16,7 +16,7 @@ public sealed class GetAttachmentEndpoint : Endpoint<GetAttachmentRequest, GetAt
 
     public override void Configure()
     {
-        Get("{TransportId}/{ScanId}");
+        Get("{TransportId}/{AttachmentId}");
         Group<AttachmentsEndpointGroup>();
         Description(b =>
                         {
@@ -27,7 +27,7 @@ public sealed class GetAttachmentEndpoint : Endpoint<GetAttachmentRequest, GetAt
 
     public override async Task HandleAsync(GetAttachmentRequest req, CancellationToken ct)
     {
-        ErrorOr<AttachmentDto> result = await _sender.Send(new GetAttachmentQuery { Id = req.ScanId, TransportId =req.TransportId }, ct);
+        ErrorOr<AttachmentDto> result = await _sender.Send(new GetAttachmentQuery { Id = req.AttachmentId, TransportId = req.TransportId }, ct);
 
         if (result.IsError && result.Errors.Contains(Failure.AttachmentNotExists))
         {

@@ -1,6 +1,6 @@
 ﻿namespace MultiProject.Delivery.WebApi.v1.Scans.GetTransportUnitScans;
 
-public class GetTransportUnitScansResponse
+public sealed record GetTransportUnitScansResponse
 {
     public int Id { get; init; }
     public int TransportUnitId { get; init; }

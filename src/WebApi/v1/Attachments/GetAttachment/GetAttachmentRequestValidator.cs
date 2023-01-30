@@ -4,7 +4,7 @@ public sealed class GetAttachmentRequestValidator : Validator<GetAttachmentReque
 {
     public GetAttachmentRequestValidator()
     {
-        RuleFor(x => x.ScanId).NotEmpty();
+        RuleFor(x => x.AttachmentId).NotEmpty();
         RuleFor(x => x.TransportId).NotEmpty();
     }
 }

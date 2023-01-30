@@ -2,6 +2,6 @@
 
 public sealed record GetAttachmentRequest
 {
-    public int ScanId { get; init; }
+    public int AttachmentId { get; init; }
     public int TransportId { get; init; }
 }

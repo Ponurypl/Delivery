@@ -24,6 +24,6 @@ public sealed class CreateAttachmentEndpoint : Endpoint<CreateAttachmentRequest,
         ErrorOr<AttachmentCreatedDto> result = await _sender.Send(_mapper.Map<CreateAttachmentCommand>(req), ct);
 
         ValidationFailures.AddErrorsAndThrowIfNeeded(result);
-        await SendOkAsync(_mapper.Map<CreateAttachmentResponse>(result.Value));
+        await SendOkAsync(_mapper.Map<CreateAttachmentResponse>(result.Value), ct);
     }
 }
