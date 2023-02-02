@@ -15,6 +15,7 @@ public sealed class DebugLogMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
+        //TODO: do przeróbki na log kanoniczny Info
         long startTime = Stopwatch.GetTimestamp();
 
         //before endpoint

@@ -27,7 +27,8 @@ try
     .ReadFrom.Configuration(context.Configuration)
     .MinimumLevel.Verbose()
     .Enrich.FromLogContext()
-    .WriteTo.File("logs/Delivery_.log", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("logs/Delivery_.log", rollingInterval: RollingInterval.Day, 
+                  outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u4}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
     .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u4}] {SourceContext}: {Message:lj}{NewLine}{Exception}"));
 
     var services = builder.Services;
@@ -115,7 +116,7 @@ try
 }
 catch(Exception ex)
 {
-    Log.Fatal(ex, "Aplication startup fatal error");
+    Log.Fatal(ex, "Application startup fatal error");
 }
 finally
 {
