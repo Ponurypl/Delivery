@@ -1,4 +1,6 @@
 ﻿using MultiProject.Delivery.Application.Scans.Commands.CreateScan;
+using MultiProject.Delivery.Domain.Scans.ValueTypes;
+using MultiProject.Delivery.WebApi.v1.Scans.GetScan;
 
 namespace MultiProject.Delivery.WebApi.v1.Scans.CreateScan;
 
@@ -24,6 +26,10 @@ public sealed class CreateScanEndpoint : Endpoint<CreateScanRequest, CreateScanR
     {
         ErrorOr<ScanCreatedDto> result = await _sender.Send(_mapper.Map<CreateScanCommand>(req), ct);
         ValidationFailures.AddErrorsAndThrowIfNeeded(result);
-        await SendOkAsync(_mapper.Map<CreateScanResponse>(result.Value), ct);
+        await SendCreatedAtAsync<GetScanEndpoint>(
+            new { ScanId = result.Value.Id },
+            _mapper.Map<CreateScanResponse>(result.Value),
+            generateAbsoluteUrl: true,
+            cancellation: ct);
     }
 }

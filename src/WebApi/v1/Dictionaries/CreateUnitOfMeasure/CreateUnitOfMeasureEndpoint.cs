@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Application.Dictionaries.Commands.CreateUnitOfMeasure;
+using MultiProject.Delivery.WebApi.v1.Dictionaries.GetUnitOfMeasure;
 
 namespace MultiProject.Delivery.WebApi.v1.Dictionaries.CreateUnitOfMeasure;
 
@@ -24,6 +25,10 @@ public sealed class CreateUnitOfMeasureEndpoint : Endpoint<CreateUnitOfMeasureRe
 
         ValidationFailures.AddErrorsAndThrowIfNeeded(response);
 
-        await SendOkAsync(new CreateUnitOfMeasureResponse() { Id = response.Value.Id }, ct);
+        await SendCreatedAtAsync<GetUnitOfMeasureEndpoint>(
+            new { UnitOfMeasureId = response.Value.Id },             
+            new CreateUnitOfMeasureResponse() { Id = response.Value.Id },
+            generateAbsoluteUrl: true,
+            cancellation: ct);
     }
 }

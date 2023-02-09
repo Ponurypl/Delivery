@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Application.Deliveries.Commands.CreateTransport;
+using MultiProject.Delivery.WebApi.v1.Deliveries.GetTransportDetails;
 
 namespace MultiProject.Delivery.WebApi.v1.Deliveries.CreateTransport;
 
@@ -24,6 +25,10 @@ public sealed class CreateTransportEndpoint : Endpoint<CreateTransportRequest, C
     {
         ErrorOr<TransportCreatedDto> response = await _sender.Send(_mapper.Map<CreateTransportCommand>(req),ct);
         ValidationFailures.AddErrorsAndThrowIfNeeded(response);
-        await SendOkAsync(_mapper.Map<CreateTransportResponse>(response.Value), ct);
+        await SendCreatedAtAsync<GetTransportDetailsEndpoint>(
+            new { TransportId = response.Value.Id },
+            _mapper.Map<CreateTransportResponse>(response.Value), 
+            generateAbsoluteUrl: true,
+            cancellation: ct);
     }
 }

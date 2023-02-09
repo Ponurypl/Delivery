@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Application.Attachments.Commands.CreateAttachment;
+using MultiProject.Delivery.WebApi.v1.Attachments.GetAttachment;
 
 namespace MultiProject.Delivery.WebApi.v1.Attachments.CreateAttachment;
 
@@ -24,6 +25,10 @@ public sealed class CreateAttachmentEndpoint : Endpoint<CreateAttachmentRequest,
         ErrorOr<AttachmentCreatedDto> result = await _sender.Send(_mapper.Map<CreateAttachmentCommand>(req), ct);
 
         ValidationFailures.AddErrorsAndThrowIfNeeded(result);
-        await SendOkAsync(_mapper.Map<CreateAttachmentResponse>(result.Value), ct);
+        await SendCreatedAtAsync<GetAttachmentEndpoint>(
+            new { AttachmentId = result.Value.Id, TransportId = req.TransportId },
+            _mapper.Map<CreateAttachmentResponse>(result.Value),
+            generateAbsoluteUrl: true,
+            cancellation: ct);
     }
 }

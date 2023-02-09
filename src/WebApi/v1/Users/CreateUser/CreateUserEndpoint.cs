@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Application.Users.Commands.CreateUser;
+using MultiProject.Delivery.WebApi.v1.Users.GetUser;
 
 namespace MultiProject.Delivery.WebApi.v1.Users.CreateUser;
 
@@ -30,6 +31,10 @@ public sealed class CreateUserEndpoint : Endpoint<CreateUserRequest, UserCreated
 
         ValidationFailures.AddErrorsAndThrowIfNeeded(response);
 
-        await SendOkAsync(new UserCreatedResponse() { Id = response.Value.Id }, ct);
+        await SendCreatedAtAsync<GetUserEndpoint>(
+            new { UserId = response.Value.Id },
+            new UserCreatedResponse() { Id = response.Value.Id }, 
+            generateAbsoluteUrl: true,
+            cancellation: ct);
     }
 }
