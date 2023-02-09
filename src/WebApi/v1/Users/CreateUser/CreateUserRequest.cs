@@ -5,8 +5,8 @@
 /// </example>
 public sealed record CreateUserRequest
 {
-    public UserRole Role { get; set; }
-    public string Username { get; set; } = default!;
-    public string Password { get; set; } = default!;
-    public string PhoneNumber { get; set; } = default!;
+    public UserRole Role { get; init; }
+    public string Username { get; init; } = default!;
+    public string Password { get; init; } = default!;
+    public string PhoneNumber { get; init; } = default!;
 }

@@ -13,9 +13,6 @@ public sealed class UpdateUserLocationEndpoint : Endpoint<UpdateUserLocationRequ
 
     public override void Configure()
     {
-        //poprzedni zapis generował w dokumentacji swaggerowej konieczność uzupełnienia tego pola mimo tego że z niego nie korzystamy,
-        //tylko dlatego że jest częścią śceiżki, teraz co gorsze mieć coś podane co i tak ignorujemy i można przez to źle zinterpretować dokumentację
-        //myśląc że da się geo innego użytkownika nadpisać, czy mieć "niespójną" z innymi endpointami ścieżkę w użytkownikach?
         Put("location");
         Group<UsersEndpointGroup>();
         Version(1);
