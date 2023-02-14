@@ -1,4 +1,5 @@
-﻿using MultiProject.Delivery.WebApi.Common.Logging;
+﻿using FluentValidation.Results;
+using MultiProject.Delivery.WebApi.Common.Logging;
 using System.Text.Json;
 
 namespace MultiProject.Delivery.WebApi.Common.Middleware;
@@ -54,5 +55,19 @@ public sealed class TraceLogMiddleware
                                              context.Request.QueryString.Value ?? string.Empty, context.Request.Method,
                                              requestBody, responseHeaders, responseBody, context.Response.StatusCode);
         }
+    }
+}
+
+
+internal sealed class TraceLogPostProcessor : IGlobalPostProcessor
+{
+    public async Task PostProcessAsync(object req, object? res, HttpContext ctx, IReadOnlyCollection<ValidationFailure> failures,
+                                 CancellationToken ct)
+    {
+        ILogger<TraceLogPostProcessor> logger = ctx.Resolve<ILogger<TraceLogPostProcessor>>();
+
+
+        logger.LogInformation(JsonSerializer.Serialize(req));
+
     }
 }

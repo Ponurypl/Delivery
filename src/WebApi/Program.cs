@@ -109,6 +109,10 @@ try
                              c.Versioning.DefaultVersion = 1;
                              c.Versioning.Prefix = "v";
                              c.Versioning.PrependToRoute = true;
+                             //c.Endpoints.Configurator = ep =>
+                             //                           {
+                             //                               ep.PostProcessors(Order.Before, new TraceLogPostProcessor());
+                             //                           };
                          });
     app.UseSwaggerGen();
 
