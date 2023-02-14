@@ -1,10 +1,10 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 
 namespace MultiProject.Delivery.Application.Common.Behaviors;
 
-internal sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, ErrorOr<TResponse>>
-    where TRequest : IRequest<ErrorOr<TResponse>>
+internal sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
+    where TResponse: IErrorOr
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -13,7 +13,7 @@ internal sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavio
         _validators = validators;
     }
 
-    public async Task<ErrorOr<TResponse>> Handle(TRequest request, RequestHandlerDelegate<ErrorOr<TResponse>> next,
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
                                                  CancellationToken cancellationToken)
     {
         if (_validators.Any())
@@ -28,7 +28,7 @@ internal sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavio
                            .ToList();
 
             if (failures.Any())
-                return Failures.Failure.InvalidMessage;
+                return (dynamic)Failures.Failure.InvalidMessage;
         }
 
         return await next();

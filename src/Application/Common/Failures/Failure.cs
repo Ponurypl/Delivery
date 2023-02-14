@@ -16,4 +16,5 @@ public static class Failure
     public static Error InvalidMessage => Error.Validation(nameof(InvalidMessage));
     public static Error AttachmentNotExists => Error.Validation(nameof(AttachmentNotExists));
     public static Error UnitOfMeasureNotExists => Error.NotFound(nameof(UnitOfMeasureNotExists));
+    public static Error UnhandledException => Error.Unexpected(nameof(UnhandledException));
 }
