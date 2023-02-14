@@ -64,4 +64,9 @@ public sealed class User : AggregateRoot<UserId>
     {
         return (Role & UserRole.Manager) == UserRole.Manager ? Result.Success : DomainFailures.Users.UserDoesNotMeetRole;
     }
+
+    public void UpdateUser(UserRole requestRole, bool requestIsActive, string requestPhoneNumber)
+    {
+        throw new NotImplementedException();
+    }
 }

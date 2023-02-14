@@ -26,7 +26,7 @@ internal class UpdateUserEndpoint : ICommandHandler<UpdateUserCommand>
         User? userToUpdate = await _userRepository.GetByIdAsync(new UserId(request.UserId),cancellationToken);
         if (userToUpdate is null) return Failure.UserNotExists;
 
-        userToUpdate.UpdateUser(request.Role, request.IsActive, request.PhoneNumber);
+        userToUpdate.UpdateUser((Domain.Users.Enums.UserRole)request.Role, request.IsActive, request.PhoneNumber);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         await _publisher.Publish(userToUpdate, cancellationToken);
