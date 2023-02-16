@@ -22,7 +22,7 @@ internal sealed class TraceLogBehavior<TRequest, TResponse> : IPipelineBehavior<
             return await next();
         }
 
-        //TODO: Zabezpieczyć przed wylotem
+        //TODO: Zabezpieczyć przed wylotem ?
         string req = JsonSerializer.Serialize(request);
         TResponse response = await next();
         string resp = JsonSerializer.Serialize(response);

@@ -2,7 +2,7 @@
 
 namespace MultiProject.Delivery.WebApi.Common.Middleware;
 
-public sealed class DebugLogMiddleware
+public sealed class DebugLogMiddleware //TODO: Canonical log middleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<DebugLogMiddleware> _logger;
