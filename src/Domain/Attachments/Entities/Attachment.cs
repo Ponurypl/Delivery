@@ -64,9 +64,13 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
         return Create(creatorId, transportId, dateTimeProvider, payload, additionalInformation);
     }
 
-    //TODO: Do przemyślenia kiedy dodajemy dodatkowe id
     public ErrorOr<Updated> AddScanId(ScanId scanId)
     {
+        if (TransportUnitId is null)
+        {
+            return DomainFailures.Attachments.InvalidAttachment;
+        }
+
         ScanId = scanId;
         return Result.Updated;
     }

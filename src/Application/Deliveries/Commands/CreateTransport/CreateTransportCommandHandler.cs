@@ -62,6 +62,15 @@ public sealed class CreateTransportCommandHandler : ICommandHandler<CreateTransp
         List<NewTransportUnit> transportUnitsToCreate = _mapper.Map<List<NewTransportUnit>>(request.TransportUnits);
 
         //TODO: Benchmark wydajności pomiędzy pełną listą a listą już ograniczoną
+        //var units = transportUnitsToCreate.Where(u => u.UnitOfMeasureId is not null)
+        //                                  .Select(u => u.UnitOfMeasureId)
+        //                                  .Distinct();
+
+        //if (units.Any(u => !unitOfMeasureList.Exists(x => x.Id.Value == u)))
+        //{
+        //    return Failure.InvalidTransportUnitDetails;
+        //}
+
         foreach (var unit in transportUnitsToCreate)
         {
             if (unit.UnitOfMeasureId is null)
