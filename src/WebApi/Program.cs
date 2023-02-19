@@ -96,6 +96,8 @@ try
                                js.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                            },
                            shortSchemaNames: true, maxEndpointVersion: 1, addJWTBearerAuth: false);
+    
+        ValidatorOptions.Global.LanguageManager.Enabled = false;
 
     var app = builder.Build();
     app.UseTraceLogging();
