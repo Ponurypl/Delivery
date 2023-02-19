@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using MultiProject.Delivery.Application.Common.Logging;
 using System.Text.Json;
 
 namespace MultiProject.Delivery.Application.Common.Behaviors;
@@ -27,8 +28,7 @@ internal sealed class TraceLogBehavior<TRequest, TResponse> : IPipelineBehavior<
         TResponse response = await next();
         string resp = JsonSerializer.Serialize(response);
 
-        //TODO: Przerób mnie na definicje loga
-        _logger.Log(LogLevel.Trace, "Request: {request}, Response: {response}", req, resp);
+        LogDefinitions.RequestProcessingTrace(_logger, next.Target!.ToString() ?? string.Empty, req, resp);
 
         return response;
     }

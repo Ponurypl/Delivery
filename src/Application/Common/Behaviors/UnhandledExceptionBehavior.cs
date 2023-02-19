@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using MultiProject.Delivery.Application.Common.Failures;
+using MultiProject.Delivery.Application.Common.Logging;
 
 namespace MultiProject.Delivery.Application.Common.Behaviors;
 
@@ -23,8 +24,7 @@ internal sealed class UnhandledExceptionBehavior<TRequest, TResponse> : IPipelin
         }
         catch (Exception e)
         {
-            //TODO: Definicja
-            _logger.LogError(e, "Unhandled exception encountered");
+            LogDefinitions.UnhandledException(_logger, e);
             return (dynamic)Failure.UnhandledException;
         }
     }
