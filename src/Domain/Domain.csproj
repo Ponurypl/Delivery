@@ -16,4 +16,9 @@
     <PackageReference Include="StronglyTypedId" Version="1.0.0-beta06" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Delivery.Domain.Tests.Unit" />
+    <!--<InternalsVisibleToSuffix Include="Tests.Unit" />-->
+  </ItemGroup>
+
 </Project>
