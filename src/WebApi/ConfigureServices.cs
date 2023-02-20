@@ -9,6 +9,9 @@ public static class ConfigureServices
     {
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
         TypeAdapterConfig.GlobalSettings.Compile();
+        
+        ValidatorOptions.Global.LanguageManager.Enabled = false;
+
         services.AddSingleton(TypeAdapterConfig.GlobalSettings);
         services.AddScoped<IMapper, ServiceMapper>();
 

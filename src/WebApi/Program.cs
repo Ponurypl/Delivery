@@ -24,12 +24,12 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog((context, services, configuration) => configuration
-    .ReadFrom.Configuration(context.Configuration)
-    .MinimumLevel.Verbose()
-    .Enrich.FromLogContext()
-    .WriteTo.File("logs/Delivery_.log", rollingInterval: RollingInterval.Day, 
-                  outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u4}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
-    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u4}] {SourceContext}: {Message:lj}{NewLine}{Exception}"));
+        .ReadFrom.Configuration(context.Configuration)
+        .MinimumLevel.Verbose()
+        .Enrich.FromLogContext()
+        .WriteTo.File("logs/Delivery_.log", rollingInterval: RollingInterval.Day, 
+                      outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u4}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
+        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u4}] {SourceContext}: {Message:lj}{NewLine}{Exception}"));
 
     var services = builder.Services;
 
@@ -97,8 +97,6 @@ try
                            },
                            shortSchemaNames: true, maxEndpointVersion: 1, addJWTBearerAuth: false);
     
-        ValidatorOptions.Global.LanguageManager.Enabled = false;
-
     var app = builder.Build();
     app.UseTraceLogging();
     app.UseAuthentication();
@@ -111,10 +109,6 @@ try
                              c.Versioning.DefaultVersion = 1;
                              c.Versioning.Prefix = "v";
                              c.Versioning.PrependToRoute = true;
-                             //c.Endpoints.Configurator = ep =>
-                             //                           {
-                             //                               ep.PostProcessors(Order.Before, new TraceLogPostProcessor());
-                             //                           };
                          });
     app.UseSwaggerGen();
 
