@@ -37,10 +37,7 @@ internal sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavio
             {
                 string failuresjson = JsonSerializer.Serialize(failures);
                 string requestjson = JsonSerializer.Serialize(request);
-                // TODO: da się lepiej wyciągnąć nazwę metody która się wyjebała niż GetType?
-                // mogę  zrobić context.instanceToValidate.ToString, ale
-                // wtedy nie mam fullname co konkretnie się skrzaczyło i mam nazwę z polami i ich wartościami.
-                LogDefinitions.ValidationFailures(_logger, context.InstanceToValidate.GetType().FullName ?? string.Empty, requestjson, failuresjson) ;
+                LogDefinitions.ValidationFailures(_logger, typeof(TRequest).FullName!, requestjson, failuresjson) ;
                 return (dynamic)Failures.Failure.InvalidMessage;
             }
         }

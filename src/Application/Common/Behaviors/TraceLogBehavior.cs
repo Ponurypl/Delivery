@@ -27,8 +27,8 @@ internal sealed class TraceLogBehavior<TRequest, TResponse> : IPipelineBehavior<
         string req = JsonSerializer.Serialize(request);
         TResponse response = await next();
         string resp = JsonSerializer.Serialize(response);
-
-        LogDefinitions.RequestProcessingTrace(_logger, next.Target!.ToString() ?? string.Empty, req, resp);
+        
+        LogDefinitions.RequestProcessingTrace(_logger, typeof(TRequest).FullName!, req, resp);
 
         return response;
     }
