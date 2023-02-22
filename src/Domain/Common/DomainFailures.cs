@@ -37,6 +37,7 @@ internal static class DomainFailures
     public static class Users
     {
         public static Error UserDoesNotMeetRole => Error.Conflict(nameof(UserDoesNotMeetRole));
+        public static Error InvalidUser => Error.Validation(nameof(InvalidUser));
     }
 
     public static class Attachments

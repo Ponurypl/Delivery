@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Domain.Common.Abstractions;
+using MultiProject.Delivery.Domain.Common.Extensions;
 using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Users.Enums;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
@@ -33,9 +34,12 @@ public sealed class User : AggregateRoot<UserId>
 
     public static ErrorOr<User> Create(UserRole role, string username, string password, string phoneNumber)
     {
-
         //TODO: Regex na numer telefonu
-
+        if (string.IsNullOrWhiteSpace(username)) return DomainFailures.Users.InvalidUser;
+        if (string.IsNullOrWhiteSpace(password)) return DomainFailures.Users.InvalidUser;
+        if (string.IsNullOrWhiteSpace(phoneNumber)) return DomainFailures.Users.InvalidUser;
+        if (!role.IsValidForEnum()) return DomainFailures.Users.InvalidUser;
+        
         return new User(UserId.New(), true, role, username, password, phoneNumber);
     }
 
