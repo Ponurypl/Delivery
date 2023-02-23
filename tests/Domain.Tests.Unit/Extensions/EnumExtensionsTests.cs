@@ -1,113 +1,108 @@
 ﻿using MultiProject.Delivery.Domain.Common.Extensions;
+using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 
 namespace MultiProject.Delivery.Domain.Tests.Unit.Extensions;
+
 public class EnumExtensionsTests
 {
-    [Flags]
-    enum WithFlags
-    {
-        First = 1,
-        Second = 2,
-        Third = 4,
-        Fourth = 8
-    }
-
-    enum WithoutFlags
-    {
-        First = 1,
-        Second = 22,
-        Third = 55,
-        Fourth = 13,
-        Fifth = 127
-    }
-
-    enum WithoutNumbers
-    {
-        First, // 1
-        Second, // 2
-        Third, // 3
-        Fourth // 4
-    }
-
-    enum WithoutFirstNumberAssigned
-    {
-        First = 7,
-        Second, // 8
-        Third, // 9
-        Fourth // 10
-    }
-
-
-    enum WithNagativeNumbers
-    {
-        First = -7,
-        Second = -8,
-        Third = -9,
-        Fourth = -10
-    }
-
-    [Fact]
-    public void IsValidEnumTests()
+    [Theory]
+    [InlineData(1 | 4, true)]
+    [InlineData(1 | 4 | 2, true)]
+    [InlineData(2, true)]
+    [InlineData(3, true)]
+    [InlineData(1 + 2 + 4 + 8, true)]
+    [InlineData(12, true)]
+    [InlineData(16, false)]
+    [InlineData(17, false)]
+    [InlineData(18, false)]
+    [InlineData(0, false)]
+    public void IsValidEnum_WhenEnumHasFlagsAttribute(int value, bool expectedResult)
     {
         //Arrange
 
         //Act
+        var result = ((WithFlags)(value)).IsValidForEnum();
 
         //Assert
-        ((WithFlags)(1 | 4)).IsValidForEnum().Should().Be(true);
-        ((WithFlags)(1 | 4)).IsValidForEnum().Should().Be(true);
-        ((WithFlags)(1 | 4 | 2)).IsValidForEnum().Should().Be(true);
-        ((WithFlags)(2)).IsValidForEnum().Should().Be(true);
-        ((WithFlags)(3)).IsValidForEnum().Should().Be(true);
-        ((WithFlags)(1 + 2 + 4 + 8)).IsValidForEnum().Should().Be(true);
-        ((WithFlags)(12)).IsValidForEnum().Should().Be(true);
+        result.Should().Be(expectedResult);
+    }
 
-        ((WithFlags)(16)).IsValidForEnum().Should().Be(false);
-        ((WithFlags)(17)).IsValidForEnum().Should().Be(false);
-        ((WithFlags)(18)).IsValidForEnum().Should().Be(false);
-        ((WithFlags)(0)).IsValidForEnum().Should().Be(false);
+    [Theory]
+    [InlineData(1, true)]
+    [InlineData(22, true)]
+    [InlineData(53 | 6, true)]
+    [InlineData(22 | 25 | 99, true)]
+    [InlineData(48, false)]
+    [InlineData(50, false)]
+    [InlineData(1 | 22, false)]
+    [InlineData(9 | 27 | 4, false)]
+    public void IsValidEnum_WhenEnumHasNoFlagsAttribute(int value, bool expectedResult)
+    {
+        //Arrange
 
-        ((WithoutFlags)1).IsValidForEnum().Should().Be(true);
-        ((WithoutFlags)22).IsValidForEnum().Should().Be(true);
-        ((WithoutFlags)(53 | 6)).IsValidForEnum().Should().Be(true);   // Will end up being Third
-        ((WithoutFlags)(22 | 25 | 99)).IsValidForEnum().Should().Be(true); // Will end up being Fifth
-        ((WithoutFlags)55).IsValidForEnum().Should().Be(true);
-        ((WithoutFlags)127).IsValidForEnum().Should().Be(true);
+        //Act
+        var result = ((WithoutFlags)(value)).IsValidForEnum();
 
-        ((WithoutFlags)48).IsValidForEnum().Should().Be(false);
-        ((WithoutFlags)50).IsValidForEnum().Should().Be(false);
-        ((WithoutFlags)(1 | 22)).IsValidForEnum().Should().Be(false);
-        ((WithoutFlags)(9 | 27 | 4)).IsValidForEnum().Should().Be(false);
+        //Assert
+        result.Should().Be(expectedResult);
+    }
 
-        ((WithoutNumbers)0).IsValidForEnum().Should().Be(true);
-        ((WithoutNumbers)1).IsValidForEnum().Should().Be(true);
-        ((WithoutNumbers)2).IsValidForEnum().Should().Be(true);
-        ((WithoutNumbers)3).IsValidForEnum().Should().Be(true);
-        ((WithoutNumbers)(1 | 2)).IsValidForEnum().Should().Be(true); // Will end up being Third
-        ((WithoutNumbers)(1 + 2)).IsValidForEnum().Should().Be(true); // Will end up being Third
+    [Theory]
+    [InlineData(0, true)]
+    [InlineData(1, true)]
+    [InlineData(2, true)]
+    [InlineData(3, true)]
+    [InlineData(4, false)]
+    [InlineData(5, false)]
+    [InlineData(25, false)]
+    [InlineData(1 + 2 + 3, false)]
+    public void IsValidEnum_WhenEnumHasNoFlagsAttributeAndNoNumberValuesDeclared(int value, bool expectedResult)
+    {
+        //Arrange
 
-        ((WithoutNumbers)4).IsValidForEnum().Should().Be(false);
-        ((WithoutNumbers)5).IsValidForEnum().Should().Be(false);
-        ((WithoutNumbers)25).IsValidForEnum().Should().Be(false);
-        ((WithoutNumbers)(1 + 2 + 3)).IsValidForEnum().Should().Be(false);
+        //Act
+        var result = ((WithoutNumbers)(value)).IsValidForEnum();
 
-        ((WithoutFirstNumberAssigned)7).IsValidForEnum().Should().Be(true);
-        ((WithoutFirstNumberAssigned)8).IsValidForEnum().Should().Be(true);
-        ((WithoutFirstNumberAssigned)9).IsValidForEnum().Should().Be(true);
-        ((WithoutFirstNumberAssigned)10).IsValidForEnum().Should().Be(true);
+        //Assert
+        result.Should().Be(expectedResult);
+    }
 
-        ((WithoutFirstNumberAssigned)11).IsValidForEnum().Should().Be(false);
-        ((WithoutFirstNumberAssigned)6).IsValidForEnum().Should().Be(false);
-        ((WithoutFirstNumberAssigned)(7 | 9)).IsValidForEnum().Should().Be(false);
-        ((WithoutFirstNumberAssigned)(8 + 10)).IsValidForEnum().Should().Be(false);
+    [Theory]
+    [InlineData(7, true)]
+    [InlineData(8, true)]
+    [InlineData(9, true)]
+    [InlineData(10, true)]
+    [InlineData(11, false)]
+    [InlineData(6, false)]
+    [InlineData(7 | 9, false)]
+    [InlineData(8 + 10, false)]
+    public void IsValidEnum_WhenEnumHasNoFlagsAttributeAndOnlyFirstNumberValueDeclared(int value, bool expectedResult)
+    {
+        //Arrange
 
-        ((WithNagativeNumbers)(-7)).IsValidForEnum().Should().Be(true);
-        ((WithNagativeNumbers)(-8)).IsValidForEnum().Should().Be(true);
-        ((WithNagativeNumbers)(-9)).IsValidForEnum().Should().Be(true);
-        ((WithNagativeNumbers)(-10)).IsValidForEnum().Should().Be(true);
+        //Act
+        var result = ((WithoutFirstNumberAssigned)(value)).IsValidForEnum();
 
-        ((WithNagativeNumbers)(-11)).IsValidForEnum().Should().Be(false);
-        ((WithNagativeNumbers)(7)).IsValidForEnum().Should().Be(false);
-        ((WithNagativeNumbers)(8)).IsValidForEnum().Should().Be(false);
+        //Assert
+        result.Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData(-7, true)]
+    [InlineData(-8, true)]
+    [InlineData(-9, true)]
+    [InlineData(-10, true)]
+    [InlineData(-11, false)]
+    [InlineData(7, false)]
+    [InlineData(8, false)]
+    public void IsValidEnum_WhenEnumHasNoFlagsAttributeAndDeclaredNumberValuesAreNegative(int value, bool expectedResult)
+    {
+        //Arrange
+
+        //Act
+        var result = ((WithNagativeNumbers)(value)).IsValidForEnum();
+
+        //Assert
+        result.Should().Be(expectedResult);
     }
 }
