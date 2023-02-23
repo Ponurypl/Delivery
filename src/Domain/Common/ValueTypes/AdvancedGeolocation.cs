@@ -18,7 +18,7 @@ public sealed class AdvancedGeolocation : Geolocation
     public static ErrorOr<AdvancedGeolocation> Create(double latitude, double longitude, double accuracy,
                                                       DateTime lastUpdateDate, double heading, double speed)
     {
-        if (heading < 0 || speed < 0)
+        if (heading < 0 || speed < 0 || accuracy <= 0)
         {
             return DomainFailures.Geolocations.InvalidAdvancedGeolocation;
         }

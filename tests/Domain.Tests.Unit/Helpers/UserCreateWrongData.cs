@@ -7,21 +7,16 @@ public class UserCreateWrongData : IEnumerable<object[]>
 {
     public IEnumerator<object[]> GetEnumerator()
     {
-        List<object[]> data = new();
-        // Role, Username, Password, PhoneNumber
-        data.Add(new object[] { UserRole.Deliverer, "", "", "" });
-        data.Add(new object[] { UserRole.Deliverer, " ", " ", " " });
-        data.Add(new object[] { UserRole.Deliverer, null, null, null });
-        data.Add(new object[] { UserRole.Manager, "", "", "" });
-        data.Add(new object[] { UserRole.Manager, " ", " ", " " });
-        data.Add(new object[] { UserRole.Manager, null, null, null });
-        data.Add(new object[] { (UserRole)(-5), "", "", "" });
-        data.Add(new object[] { (UserRole)(-5), " ", " ", " " });
-        data.Add(new object[] { (UserRole)(-5), null, null, null });
-        
-        return data.GetEnumerator();
-
-        //TODO: Pokazać yieldy
+        //// Role, Username, Password, PhoneNumber
+        yield return new object[] { UserRole.Deliverer, "", "", "" };
+        yield return new object[] { UserRole.Deliverer, " ", " ", " " };
+        yield return new object[] { UserRole.Deliverer, null, null, null };
+        yield return new object[] { UserRole.Manager, "", "", "" };
+        yield return new object[] { UserRole.Manager, " ", " ", " " };
+        yield return new object[] { UserRole.Manager, null, null, null };
+        yield return new object[] { (UserRole)(-5), "", "", "" };
+        yield return new object[] { (UserRole)(-5), " ", " ", " " };
+        yield return new object[] { (UserRole)(-5), null, null, null };
     }
 
     IEnumerator IEnumerable.GetEnumerator()
