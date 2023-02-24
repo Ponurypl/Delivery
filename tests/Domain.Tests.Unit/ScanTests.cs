@@ -2,7 +2,9 @@
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.Entities;
+using MultiProject.Delivery.Domain.Scans.Enums;
 using MultiProject.Delivery.Domain.Scans.ValueTypes;
+using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Tests.Unit;
@@ -15,20 +17,28 @@ public class ScanTests
     public void Create_WhenValidDataProvided_ThenNewValidObjectReturned(int intTransportUnitId, Guid guidDelivererId)
     {
         //Arrange
-        IDateTime DateTimeProviderSubsititute = Substitute.For<IDateTime>();
+        DateTime creationDate = new(2023, 1, 1, 12, 0, 0);
+        IDateTime dateTimeProvider = Substitute.For<IDateTime>();
+        dateTimeProvider.UtcNow.Returns(creationDate);
+
         TransportUnitId transportUnitId = new(intTransportUnitId);
         UserId userId = new(guidDelivererId);
 
         //Act
-        ErrorOr<Scan> result = Scan.Create(transportUnitId, userId, DateTimeProviderSubsititute);
-        Scan sut = result.Value;
+        ErrorOr<Scan> result = Scan.Create(transportUnitId, userId, dateTimeProvider);
 
         //Assert
         result.IsError.Should().BeFalse();
-        sut.Should().NotBeNull();
-        sut.TransportUnitId.Should().Be(transportUnitId);
-        sut.DelivererId.Should().Be(userId);
-        sut.Id.Should().Be(ScanId.Empty);
+
+        Scan obj = result.Value;
+        obj.Should().NotBeNull();
+        obj.TransportUnitId.Should().Be(transportUnitId);
+        obj.DelivererId.Should().Be(userId);
+        obj.Id.Should().Be(ScanId.Empty);
+        obj.LastUpdateDate.Should().Be(creationDate);
+        obj.Status.Should().Be(ScanStatus.Valid);
+        obj.Location.Should().BeNull();
+        obj.Quantity.Should().BeNull();
     }
 
     [Fact]
@@ -39,33 +49,32 @@ public class ScanTests
         UserId userId = new(Guid.Parse("80f77817-5a3d-4e1d-b203-6210fae49bf3"));
 
         //Act
-        ErrorOr<Scan> sut = Scan.Create(transportUnitId, userId, null!);
+        ErrorOr<Scan> result = Scan.Create(transportUnitId, userId, null!);
 
         //Assert
-
-        sut.IsError.Should().BeTrue();
-        sut.FirstError.Type.Should().Be(ErrorType.Unexpected);
-        sut.FirstError.Should().Be(DomainFailures.Common.MissingRequiredDependency);
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Unexpected);
+        result.FirstError.Should().Be(DomainFailures.Common.MissingRequiredDependency);
     }
 
     [Theory]
     [InlineData(1, "00000000-0000-0000-0000-000000000000")]
     [InlineData(0, "80f77817-5a3d-4e1d-b203-6210fae49bf3")]
+    [InlineData(0, "00000000-0000-0000-0000-000000000000")]
     public void Create_WhenInvalidDataProvided_ThenFailureReturned(int intTransportUnitId, Guid guidDelivererId)
     {
         //Arrange
-        IDateTime DateTimeProviderSubsititute = Substitute.For<IDateTime>();
+        IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         TransportUnitId transportUnitId = new(intTransportUnitId);
         UserId userId = new(guidDelivererId);
 
         //Act
-        ErrorOr<Scan> sut = Scan.Create(transportUnitId, userId, DateTimeProviderSubsititute);
-
+        ErrorOr<Scan> result = Scan.Create(transportUnitId, userId, dateTimeProvider);
+        
         //Assert
-
-        sut.IsError.Should().BeTrue();
-        sut.FirstError.Type.Should().Be(ErrorType.Validation);
-        sut.FirstError.Should().Be(DomainFailures.Scans.InvalidScan);
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Scans.InvalidScan);
     }
 
     [Theory]
@@ -76,10 +85,7 @@ public class ScanTests
     public void AddGeolocation_WhenValidDataProvided_ThenScanIsCreated(double latitude, double longitude, double accuracy)
     {
         //Arrange
-        IDateTime DateTimeProviderSubsititute = Substitute.For<IDateTime>();
-        TransportUnitId transportUnitId = new(1);
-        UserId userId = new(Guid.NewGuid());
-        Scan sut = Scan.Create(transportUnitId, userId, DateTimeProviderSubsititute).Value;
+        Scan sut = DomainFixture.Scans.GetScan();
 
         //Act
         ErrorOr<Updated> result = sut.AddGeolocation(latitude, longitude, accuracy);
@@ -99,10 +105,7 @@ public class ScanTests
     public void AddGeolocation_WhenInValidDataProvided_ThenFailureIsReturned(double latitude, double longitude, double accuracy)
     {
         //Arrange
-        IDateTime DateTimeProviderSubsititute = Substitute.For<IDateTime>();
-        TransportUnitId transportUnitId = new(1);
-        UserId userId = new(Guid.NewGuid());
-        Scan sut = Scan.Create(transportUnitId, userId, DateTimeProviderSubsititute).Value;
+        Scan sut = DomainFixture.Scans.GetScan();
 
         //Act
         ErrorOr<Updated> result = sut.AddGeolocation(latitude, longitude, accuracy);
@@ -122,10 +125,7 @@ public class ScanTests
     public void AddQuantity_WhenValidDataProvided_ThenScanQuantityIsUpdated(double quantity)
     {
         //Arrange
-        IDateTime DateTimeProviderSubsititute = Substitute.For<IDateTime>();
-        TransportUnitId transportUnitId = new(1);
-        UserId userId = new(Guid.NewGuid());
-        Scan sut = Scan.Create(transportUnitId, userId, DateTimeProviderSubsititute).Value;
+        Scan sut = DomainFixture.Scans.GetScan();
 
         //Act
         ErrorOr<Updated> result = sut.AddQuantity(quantity);
@@ -145,10 +145,7 @@ public class ScanTests
     public void AddQuantity_WhenInvalidDataProvided_ThenFailureIsReturned(double quantity)
     {
         //Arrange
-        IDateTime DateTimeProviderSubsititute = Substitute.For<IDateTime>();
-        TransportUnitId transportUnitId = new(1);
-        UserId userId = new(Guid.NewGuid());
-        Scan sut = Scan.Create(transportUnitId, userId, DateTimeProviderSubsititute).Value;
+        Scan sut = DomainFixture.Scans.GetScan();
 
         //Act
         ErrorOr<Updated> result = sut.AddQuantity(quantity);

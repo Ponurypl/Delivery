@@ -72,7 +72,7 @@ public class UserTests
         double speed, string readDateTime)
     {
         //Arrange
-        var sut = User.Create(UserRole.Deliverer, "abc", "password@#$hash!!!", "1234567890").Value;
+        var sut = DomainFixture.Users.GetUser();
         var castedDateTime = DateTime.Parse(readDateTime);
 
         //Act
@@ -102,7 +102,7 @@ public class UserTests
         double speed, string readDateTime)
     {
         //Arrange
-        var sut = User.Create(UserRole.Deliverer, "abc", "password@#$hash!!!", "1234567890").Value;
+        var sut = DomainFixture.Users.GetUser();
         var castedDateTime = DateTime.Parse(readDateTime);
 
         //Act
@@ -124,7 +124,7 @@ public class UserTests
         double speed, string readDateTime)
     {
         //Arrange
-        var sut = User.Create(UserRole.Deliverer, "abc", "password@#$hash!!!", "1234567890").Value;
+        var sut = DomainFixture.Users.GetUser();
         var castedDateTime = DateTime.Parse(readDateTime);
         sut.UpdateGeolocation(1, 1, 1, 1, 1, castedDateTime.AddDays(-1));
 
@@ -150,7 +150,7 @@ public class UserTests
     public void CheckIfUserIsDeliverer_WhenUserIsDeliverer_ThenReturnSuccess(UserRole role)
     {
         //Arrange
-        var sut = User.Create(role, "abc", "password@#$hash!!!", "1234567890").Value;
+        var sut = DomainFixture.Users.GetUser();
 
         //Act
         var result = sut.CheckIfUserIsDeliverer();
@@ -165,7 +165,7 @@ public class UserTests
     public void CheckIfUserIsDeliverer_WhenUserIsNotDeliverer_ThenReturnFailure(UserRole role)
     {
         //Arrange
-        var sut = User.Create(role, "abc", "password@#$hash!!!", "1234567890").Value;
+        var sut = DomainFixture.Users.GetUser(role);
 
         //Act
         var result = sut.CheckIfUserIsDeliverer();
@@ -182,7 +182,7 @@ public class UserTests
     public void CheckIfUserIsManager_WhenUserIsManager_ThenReturnSuccess(UserRole role)
     {
         //Arrange
-        var sut = User.Create(role, "abc", "password@#$hash!!!", "1234567890").Value;
+        var sut = DomainFixture.Users.GetUser(role);
 
         //Act
         var result = sut.CheckIfUserIsManager();
@@ -197,7 +197,7 @@ public class UserTests
     public void CheckIfUserIsManager_WhenUserIsNotManager_ThenReturnFailure(UserRole role)
     {
         //Arrange
-        var sut = User.Create(role, "abc", "password@#$hash!!!", "1234567890").Value;
+        var sut = DomainFixture.Users.GetUser(role);
 
         //Act
         var result = sut.CheckIfUserIsManager();
