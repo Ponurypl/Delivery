@@ -36,6 +36,9 @@ public sealed class Scan : AggregateRoot<ScanId>
 
     public static ErrorOr<Scan> Create(TransportUnitId transportUnitId, UserId delivererId, IDateTime dateTimeProvider)
     {
+        if (transportUnitId == TransportUnitId.Empty || delivererId == UserId.Empty) return DomainFailures.Scans.InvalidScan;
+        if (dateTimeProvider is null) return DomainFailures.Common.MissingRequiredDependency;
+
         return new Scan(ScanId.Empty, transportUnitId, delivererId, dateTimeProvider.UtcNow, ScanStatus.Valid);
     }
 
