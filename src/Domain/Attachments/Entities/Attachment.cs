@@ -38,6 +38,7 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
                                              byte[]? payload = null, string? additionalInformation = null)
     {
         if (dateTimeProvider is null) return DomainFailures.Common.MissingRequiredDependency;
+        if (creatorId == UserId.Empty || transportId == TransportId.Empty) return DomainFailures.Attachments.InvalidAttachment;
 
         Attachment newAttachment = new(AttachmentId.Empty, creatorId, transportId, AttachmentStatus.Valid,
                                        dateTimeProvider.UtcNow)
@@ -51,33 +52,36 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
     public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, string additionalInformation, 
                                              IDateTime dateTimeProvider)
     {
+        if (string.IsNullOrWhiteSpace(additionalInformation)) return DomainFailures.Attachments.InvalidAttachment;
         return Create(creatorId, transportId, dateTimeProvider, additionalInformation: additionalInformation);
     }
     public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, byte[] payload, IDateTime dateTimeProvider)
     {
+        if (payload.Length == 0) return DomainFailures.Attachments.InvalidAttachment;
         return Create(creatorId, transportId, dateTimeProvider, payload);
     }
 
     public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, byte[] payload, string additionalInformation, 
                                              IDateTime dateTimeProvider)
     {
+        if (string.IsNullOrWhiteSpace(additionalInformation) || payload.Length == 0) return DomainFailures.Attachments.InvalidAttachment;
         return Create(creatorId, transportId, dateTimeProvider, payload, additionalInformation);
     }
 
     public ErrorOr<Updated> AddScanId(ScanId scanId)
     {
-        if (TransportUnitId is null)
-        {
-            return DomainFailures.Attachments.InvalidAttachment;
-        }
+        if (TransportUnitId is null || scanId == Scans.ValueTypes.ScanId.Empty) return DomainFailures.Attachments.InvalidAttachment;
 
         ScanId = scanId;
         return Result.Updated;
     }
 
+    //TODO: Dla tej metody wyświetlają się testy z AddScanId, bo jest musi to być wykonane zanim można AddScanId, to ok?
     public ErrorOr<Updated> AddTransportUnitId(TransportUnitId transportUnitId)
     {
+        if (transportUnitId == Deliveries.ValueTypes.TransportUnitId.Empty) return DomainFailures.Attachments.InvalidAttachment;
         TransportUnitId = transportUnitId;
         return Result.Updated;
     }
+
 }

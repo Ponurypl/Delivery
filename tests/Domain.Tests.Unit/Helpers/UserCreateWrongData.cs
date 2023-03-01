@@ -10,13 +10,13 @@ public class UserCreateWrongData : IEnumerable<object[]>
         //// Role, Username, Password, PhoneNumber
         yield return new object[] { UserRole.Deliverer, "", "", "" };
         yield return new object[] { UserRole.Deliverer, " ", " ", " " };
-        yield return new object[] { UserRole.Deliverer, null, null, null };
+        yield return new object[] { UserRole.Deliverer, null!, null!, null! };
         yield return new object[] { UserRole.Manager, "", "", "" };
         yield return new object[] { UserRole.Manager, " ", " ", " " };
-        yield return new object[] { UserRole.Manager, null, null, null };
+        yield return new object[] { UserRole.Manager, null!, null!, null! };
         yield return new object[] { (UserRole)(-5), "", "", "" };
         yield return new object[] { (UserRole)(-5), " ", " ", " " };
-        yield return new object[] { (UserRole)(-5), null, null, null };
+        yield return new object[] { (UserRole)(-5), null!, null!, null! };
     }
 
     IEnumerator IEnumerable.GetEnumerator()
