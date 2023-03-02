@@ -73,7 +73,7 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
                 return Failure.InvalidScanAmount;
             }
 
-            ErrorOr<Updated> result = scan.AddQuantity(request.Quantity.Value);
+            ErrorOr<Updated> result = scan.SetQuantity(request.Quantity.Value);
             if (result.IsError)
             {
                 return result.Errors;
@@ -89,7 +89,7 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
 
         if (request.Location is not null)
         {
-            ErrorOr<Updated> result = scan.AddGeolocation(request.Location.Latitude, request.Location.Longitude,
+            ErrorOr<Updated> result = scan.SetGeolocation(request.Location.Latitude, request.Location.Longitude,
                                              request.Location.Accuracy);
             if (result.IsError)
             {

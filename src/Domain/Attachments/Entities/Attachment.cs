@@ -68,16 +68,19 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
         return Create(creatorId, transportId, dateTimeProvider, payload, additionalInformation);
     }
 
-    public ErrorOr<Updated> AddScanId(ScanId scanId)
+    public ErrorOr<Updated> SetScan(TransportUnitId transportUnitId, ScanId scanId)
     {
-        if (TransportUnitId is null || scanId == Scans.ValueTypes.ScanId.Empty) return DomainFailures.Attachments.InvalidAttachment;
+        if (transportUnitId == Deliveries.ValueTypes.TransportUnitId.Empty || scanId == Scans.ValueTypes.ScanId.Empty)
+        {
+            return DomainFailures.Attachments.InvalidAttachment;
+        }
 
+        TransportUnitId = transportUnitId;
         ScanId = scanId;
         return Result.Updated;
     }
 
-    //TODO: Dla tej metody wyświetlają się testy z AddScanId, bo jest musi to być wykonane zanim można AddScanId, to ok?
-    public ErrorOr<Updated> AddTransportUnitId(TransportUnitId transportUnitId)
+    public ErrorOr<Updated> SetTransportUnit(TransportUnitId transportUnitId)
     {
         if (transportUnitId == Deliveries.ValueTypes.TransportUnitId.Empty) return DomainFailures.Attachments.InvalidAttachment;
         TransportUnitId = transportUnitId;

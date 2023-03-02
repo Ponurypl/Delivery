@@ -42,26 +42,31 @@ public sealed class Transport : AggregateRoot<TransportId>
         ManagerId = managerId;
     }
 
-    public static ErrorOr<Transport> Create(UserId delivererId, string number, string? additionalInformation, double? totalWeight,
-        DateTime startDate, UserId managerId, IDateTime dateTimeProvider,
-        List<NewTransportUnit> transportUnitsToCreate)
+    public static ErrorOr<Transport> Create(UserId delivererId, string number, string? additionalInformation,
+                                            double? totalWeight, DateTime startDate, UserId managerId, 
+                                            IDateTime dateTimeProvider, List<NewTransportUnit> transportUnitsToCreate)
     {
         if (dateTimeProvider is null) return DomainFailures.Common.MissingRequiredDependency;
+
         DateTime creationDate = dateTimeProvider.UtcNow;
 
-        if (string.IsNullOrWhiteSpace(number) 
-            || delivererId == UserId.Empty 
+        if (string.IsNullOrWhiteSpace(number)
+            || delivererId == UserId.Empty
             || managerId == UserId.Empty
             || startDate == default
             || creationDate == default
-            || startDate < creationDate) return DomainFailures.Deliveries.InvalidTransport;
-        if (transportUnitsToCreate is null || transportUnitsToCreate.Count == 0)
+            || startDate < creationDate
+            || transportUnitsToCreate is null
+            || transportUnitsToCreate.Count == 0)
         {
             return DomainFailures.Deliveries.InvalidTransport;
         }
-        
-        Transport newTransport = new(TransportId.Empty, delivererId, number, additionalInformation, totalWeight, startDate, managerId,
-                                     TransportStatus.New, dateTimeProvider.UtcNow);
+
+        Transport newTransport = new(TransportId.Empty, delivererId, number, additionalInformation,
+                                     totalWeight, startDate, managerId,
+                                     TransportStatus.New, creationDate);
+
+        //TODO: Walidacja unikalności kodów kreskowych i numerów palet
 
         foreach (var unit in transportUnitsToCreate)
         {
@@ -74,8 +79,10 @@ public sealed class Transport : AggregateRoot<TransportId>
                                                       unit.RecipientStreetNumber,
                                                       unit.RecipientTown, unit.Number, unit.AdditionalInformation,
                                                       unit.Description,
-                                                      unit.Barcode, unit.Amount, 
-                                                      unit.UnitOfMeasureId is null ? null : new UnitOfMeasureId(unit.UnitOfMeasureId.Value));
+                                                      unit.Barcode, unit.Amount,
+                                                      unit.UnitOfMeasureId is null
+                                                          ? null
+                                                          : new UnitOfMeasureId(unit.UnitOfMeasureId.Value));
             if (tu.IsError)
             {
                 return tu.Errors;

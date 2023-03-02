@@ -83,13 +83,15 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
                 return Failure.TransportUnitNotExists;
             }
 
-            ErrorOr<Updated> transportUnitResult = attachment.AddTransportUnitId(transportUnit.Id);
-            if (transportUnitResult.IsError)
+            if (request.ScanId is null)
             {
-                return transportUnitResult.Errors;
+                ErrorOr<Updated> transportUnitResult = attachment.SetTransportUnit(transportUnit.Id);
+                if (transportUnitResult.IsError)
+                {
+                    return transportUnitResult.Errors;
+                }
             }
-
-            if (request.ScanId is not null)
+            else
             {
                 ScanId scanId = new(request.ScanId.Value);
                 Scan? scan = await _scanRepository.GetByIdAsync(scanId, cancellationToken);
@@ -103,7 +105,7 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
                     return Failure.InvalidAttachmentInput;
                 }
 
-                ErrorOr<Updated> scanResult = attachment.AddScanId(scan.Id);
+                ErrorOr<Updated> scanResult = attachment.SetScan(transportUnit.Id, scan.Id);
                 if (scanResult.IsError)
                 {
                     return scanResult.Errors;

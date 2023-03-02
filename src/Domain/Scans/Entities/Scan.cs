@@ -42,7 +42,7 @@ public sealed class Scan : AggregateRoot<ScanId>
         return new Scan(ScanId.Empty, transportUnitId, delivererId, dateTimeProvider.UtcNow, ScanStatus.Valid);
     }
 
-    public ErrorOr<Updated> AddGeolocation(double latitude, double longitude, double accuracy)
+    public ErrorOr<Updated> SetGeolocation(double latitude, double longitude, double accuracy)
     {
         var geolocation = Geolocation.Create(latitude, longitude, accuracy);
         if (geolocation.IsError)
@@ -54,7 +54,7 @@ public sealed class Scan : AggregateRoot<ScanId>
         return Result.Updated;
     }
 
-    public ErrorOr<Updated> AddQuantity(double quantity)
+    public ErrorOr<Updated> SetQuantity(double quantity)
     {
         if (quantity <= 0)
         {
