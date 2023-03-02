@@ -47,10 +47,17 @@ public sealed class Transport : AggregateRoot<TransportId>
         List<NewTransportUnit> transportUnitsToCreate)
     {
         if (dateTimeProvider is null) return DomainFailures.Common.MissingRequiredDependency;
-        if (string.IsNullOrWhiteSpace(number)) return DomainFailures.Deliveries.InvalidTransportUnit;
+        DateTime creationDate = dateTimeProvider.UtcNow;
+
+        if (string.IsNullOrWhiteSpace(number) 
+            || delivererId == UserId.Empty 
+            || managerId == UserId.Empty
+            || startDate == default
+            || creationDate == default
+            || startDate < creationDate) return DomainFailures.Deliveries.InvalidTransport;
         if (transportUnitsToCreate is null || transportUnitsToCreate.Count == 0)
         {
-            return DomainFailures.Deliveries.InvalidTransportUnit;
+            return DomainFailures.Deliveries.InvalidTransport;
         }
         
         Transport newTransport = new(TransportId.Empty, delivererId, number, additionalInformation, totalWeight, startDate, managerId,

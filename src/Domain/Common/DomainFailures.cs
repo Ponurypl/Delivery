@@ -19,6 +19,7 @@ internal static class DomainFailures
         public static Error InvalidUniqueUnitDetails => Error.Validation(nameof(InvalidUniqueUnitDetails));
         public static Error InvalidMultiUnitDetails => Error.Validation(nameof(InvalidMultiUnitDetails));
         public static Error InvalidTransportUnit => Error.Validation(nameof(InvalidTransportUnit));
+        public static Error InvalidTransport => Error.Validation(nameof(InvalidTransport));
         public static Error InvalidTransportUnitDetails => Error.Validation(nameof(InvalidTransportUnitDetails));
         public static Error InvalidRecipient => Error.Validation(nameof(InvalidRecipient));
 
