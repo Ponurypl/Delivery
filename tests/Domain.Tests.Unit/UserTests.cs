@@ -150,7 +150,7 @@ public class UserTests
     public void CheckIfUserIsDeliverer_WhenUserIsDeliverer_ThenReturnSuccess(UserRole role)
     {
         //Arrange
-        var sut = DomainFixture.Users.GetUser();
+        var sut = DomainFixture.Users.GetUser(role);
 
         //Act
         var result = sut.CheckIfUserIsDeliverer();
