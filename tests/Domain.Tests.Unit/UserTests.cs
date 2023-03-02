@@ -10,7 +10,8 @@ public class UserTests
 {
     [Theory]
     [ClassData(typeof(UserCreateWrongData))]
-    public void Create_WhenRequiredParametersAreNullOrEmpty_ThenFailureIsReturned(UserRole role, string username, string password, string phone)
+    public void Create_WhenRequiredParametersAreNullOrEmpty_ThenFailureIsReturned(
+        UserRole role, string username, string password, string phone)
     {
         //Arrange
 
@@ -28,9 +29,9 @@ public class UserTests
     {
         //Arrange
         var role = UserRole.Deliverer;
-        var username = "abc";
-        var password = "password@#$hash!!!";
-        var phone = "1234567890";
+        var username = DomainFixture.Users.Username;
+        var password = DomainFixture.Users.Password;
+        var phone = DomainFixture.Users.PhoneNumber;
 
         //Act
         var result = User.Create(role, username, password, phone);
@@ -52,9 +53,9 @@ public class UserTests
     {
         //Arrange
         var role = UserRole.Deliverer;
-        var username = "abc";
-        var password = "password@#$hash!!!";
-        var phone = "1234567890";
+        var username = DomainFixture.Users.Username;
+        var password = DomainFixture.Users.Password;
+        var phone = DomainFixture.Users.PhoneNumber;
 
         //Act
         var result = User.Create(role, username, password, phone);

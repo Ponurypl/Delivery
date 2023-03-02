@@ -1,6 +1,7 @@
 ﻿using MultiProject.Delivery.Domain.Common;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
+using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 
 namespace MultiProject.Delivery.Domain.Tests.Unit;
 
@@ -33,9 +34,9 @@ public class UnitOfMeasureTests
     public void Create_WhenValidDataProvided_ThenNewValidObjectCreated()
     {
         //Arrange
-        var name = "Kilogram";
-        var symbol = "Kg";
-        var description = "Sample description";
+        var name = DomainFixture.UnitOfMeasures.Name;
+        var symbol = DomainFixture.UnitOfMeasures.Symbol;
+        var description = DomainFixture.UnitOfMeasures.Description;
 
         //Act
         var result = UnitOfMeasure.Create(name, symbol, description);

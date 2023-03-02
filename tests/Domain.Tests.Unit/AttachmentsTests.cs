@@ -1,5 +1,4 @@
-﻿using ErrorOr;
-using MultiProject.Delivery.Domain.Attachments.Entities;
+﻿using MultiProject.Delivery.Domain.Attachments.Entities;
 using MultiProject.Delivery.Domain.Attachments.Enums;
 using MultiProject.Delivery.Domain.Attachments.ValueTypes;
 using MultiProject.Delivery.Domain.Common;
@@ -13,16 +12,16 @@ namespace MultiProject.Delivery.Domain.Tests.Unit;
 public class AttachmentsTests
 {
     [Fact]
-    public void Create_WhenValidDataProvidedWithPayload_ThenNewObjectReturned()
+    public void Create_WithPayload_WhenValidDataProvided_ThenNewObjectReturned()
     {
         //Arrange
         DateTime creationDate = new(2023, 3, 1, 20, 7, 0);
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
-        byte[] payload = {1, 4, 6, 43 };
 
-        UserId userId = new(Guid.Parse("0f0f1d91-37a5-4957-98fd-6e21f676be64"));
-        TransportId transportId = new(2);
+        byte[] payload = DomainFixture.Attachments.Payload;
+        UserId userId = DomainFixture.Users.GetId();
+        TransportId transportId = DomainFixture.Transports.GetId();
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, dateTimeProvider);
@@ -39,25 +38,25 @@ public class AttachmentsTests
         obj.Id.Should().Be(AttachmentId.Empty);
         obj.TransportUnitId.Should().BeNull();
         obj.AdditionalInformation.Should().BeNull();
-        obj.ScanId.Should().BeNull();        
-        //obj.Payload.Should().Be(payload);
-        //TODO: assert dla byte[], nie da się out of box
+        obj.ScanId.Should().BeNull();
+        obj.Payload.Should().NotBeNull();
+        obj.Payload.Should().Equal(payload);
     }
 
     [Fact]
-    public void Create_WhenValidDataProvidedWithAditionalInformation_ThenNewObjectReturned()
+    public void Create_WithAdditionalInformation_WhenValidDataProvided_ThenNewObjectReturned()
     {
         //Arrange
         DateTime creationDate = new(2023, 3, 1, 20, 7, 0);
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
-        string aditionalinformation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
-        UserId userId = new(Guid.Parse("0f0f1d91-37a5-4957-98fd-6e21f676be64"));
-        TransportId transportId = new(2);
+        string additionalInformation = DomainFixture.Attachments.AdditionalInformation;
+        UserId userId = DomainFixture.Users.GetId();
+        TransportId transportId = DomainFixture.Transports.GetId();
 
         //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, aditionalinformation, dateTimeProvider);
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, additionalInformation, dateTimeProvider);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -68,7 +67,7 @@ public class AttachmentsTests
         obj.CreatorId.Should().Be(userId);
         obj.LastUpdateDate.Should().Be(creationDate);
         obj.TransportId.Should().Be(transportId);
-        obj.AdditionalInformation.Should().Be(aditionalinformation);
+        obj.AdditionalInformation.Should().Be(additionalInformation);
         obj.Id.Should().Be(AttachmentId.Empty);
         obj.TransportUnitId.Should().BeNull();        
         obj.ScanId.Should().BeNull();
@@ -76,20 +75,20 @@ public class AttachmentsTests
     }
 
     [Fact]
-    public void Create_WhenValidDataProvidedWithAditionalInformationAndPayload_ThenNewObjectReturned()
+    public void Create_WithAdditionalInformationAndPayload_WhenValidDataProvided_ThenNewObjectReturned()
     {
         //Arrange
         DateTime creationDate = new(2023, 3, 1, 20, 7, 0);
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
-        string aditionalinformation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-        byte[] payload = {1, 4, 6, 43 };
 
-        UserId userId = new(Guid.Parse("0f0f1d91-37a5-4957-98fd-6e21f676be64"));
-        TransportId transportId = new(2);
+        byte[] payload = DomainFixture.Attachments.Payload;
+        string additionalInformation = DomainFixture.Attachments.AdditionalInformation;
+        UserId userId = DomainFixture.Users.GetId();
+        TransportId transportId = DomainFixture.Transports.GetId();
 
         //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, aditionalinformation, dateTimeProvider);
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, additionalInformation, dateTimeProvider);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -100,12 +99,12 @@ public class AttachmentsTests
         obj.CreatorId.Should().Be(userId);
         obj.LastUpdateDate.Should().Be(creationDate);
         obj.TransportId.Should().Be(transportId);
-        obj.AdditionalInformation.Should().Be(aditionalinformation);
+        obj.AdditionalInformation.Should().Be(additionalInformation);
         obj.Id.Should().Be(AttachmentId.Empty);
         obj.TransportUnitId.Should().BeNull();
         obj.ScanId.Should().BeNull();
-        //obj.Payload.Should().Be(payload);
-        //TODO: assert dla byte[], nie działa out of box
+        obj.Payload.Should().NotBeNull();
+        obj.Payload.Should().Equal(payload);
     }
 
     [Theory]
@@ -114,16 +113,18 @@ public class AttachmentsTests
     [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 0, new byte[] { 1, 4, 6, 43 }, "Lorem ipsum dolor sit amet")]
     [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 5, new byte[] { }, "Lorem ipsum dolor sit amet")]
     [InlineData("00000000-0000-0000-0000-000000000000", 0, new byte[] { }, "")]
-    public void Create_WhenInvalidDataProvidedWithAditionalInformationAndPayload_ThenValidationFailureReturned(Guid guiduserId, int inttransportId, byte[] payload, string aditionalinformation)
+    public void Create_WithAdditionalInformationAndPayload_WhenInvalidDataProvided_ThenValidationFailureReturned(
+        Guid rawUserId, int rawTransportId, byte[] payload, string additionalInformation)
     {
         //Arrange
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
 
-        UserId userId = new(guiduserId);
-        TransportId transportId = new(inttransportId);
+        UserId userId = new(rawUserId);
+        TransportId transportId = new(rawTransportId);
 
         //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, aditionalinformation, dateTimeProvider);
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, additionalInformation,
+                                                       dateTimeProvider);
 
         //Assert
         result.IsError.Should().BeTrue();
@@ -131,16 +132,16 @@ public class AttachmentsTests
         result.FirstError.Should().Be(DomainFailures.Attachments.InvalidAttachment);
     }
 
-    [Fact] // TODO: Czy ten test powinien przechodzić przez wszystkie rodzaje Attachment.Create? Dependency waliduje prywatny konstruktor
-    public void Create_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
+    [Fact] // TODO: Do uzupełnienia testy na unhappy path każdego z create
+    public void Create_WithAdditionalInformation_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
     {
         //Arrange
-        UserId userId = DomainFixture.Users.GetRandomId;
-        TransportId transportUnitId = DomainFixture.Transports.GetRandomId;
-        string aditionalinformation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+        UserId userId = DomainFixture.Users.GetRandomId();
+        TransportId transportUnitId = DomainFixture.Transports.GetRandomId();
+        string additionalInformation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
         //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, aditionalinformation, null!);
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, additionalInformation, null!);
 
         //Assert
         result.IsError.Should().BeTrue();
@@ -152,12 +153,12 @@ public class AttachmentsTests
     public void AddScanId_WhenValidDataProvided_ThenScanIdIsUpdated()
     {
         //Arrange
-        ScanId scanId = DomainFixture.Scans.GetRandomId;
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetRandomId;
+        ScanId scanId = DomainFixture.Scans.GetRandomId();
+        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetRandomId();
         Attachment sut = DomainFixture.Attachments.GetAttachment();
-        sut.AddTransportUnitId(transportUnitId);
+
         //Act
-        ErrorOr<Updated> result = sut.AddScanId(scanId);
+        ErrorOr<Updated> result = sut.SetScan(transportUnitId, scanId);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -165,33 +166,19 @@ public class AttachmentsTests
         sut.ScanId.Should().Be(scanId);
     }
 
-    [Fact]
-    public void AddScanId_WhenInvalidDataProvided_ThenValidationFailureIsReturned()
+    [Theory]
+    [InlineData(0, 1)]
+    [InlineData(1, 0)]
+    [InlineData(0, 0)]
+    public void SetScanId_WhenInvalidDataProvided_ThenValidationFailureIsReturned(int rawTransportUnitId, int rawScanId)
     {
         //Arrange
-        ScanId scanId = DomainFixture.Scans.GetEmptyId;
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetRandomId;
-        Attachment sut = DomainFixture.Attachments.GetAttachment();
-        sut.AddTransportUnitId(transportUnitId);
-
-        //Act
-        ErrorOr<Updated> result = sut.AddScanId(scanId);
-
-        //Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Type.Should().Be(ErrorType.Validation);
-        result.FirstError.Should().Be(DomainFailures.Attachments.InvalidAttachment);
-    }
-
-    [Fact] // TODO: Czy to kruchy test?
-    public void AddScanId_WhenBussinesDependencyIsNotMeet_ThenValidationFailureIsReturned()
-    {
-        //Arrange
-        ScanId scanId = DomainFixture.Scans.GetRandomId;
+        ScanId scanId = new(rawScanId);
+        TransportUnitId transportUnitId = new(rawTransportUnitId);
         Attachment sut = DomainFixture.Attachments.GetAttachment();
 
         //Act
-        ErrorOr<Updated> result = sut.AddScanId(scanId);
+        ErrorOr<Updated> result = sut.SetScan(transportUnitId, scanId);
 
         //Assert
         result.IsError.Should().BeTrue();
@@ -200,14 +187,14 @@ public class AttachmentsTests
     }
 
     [Fact]
-    public void AddTransportUnitId_WhenValidDataIsProvided_ThenTransportUnitIdIsUpdated()
+    public void SetTransportUnitId_WhenValidDataIsProvided_ThenTransportUnitIdIsUpdated()
     {
         //Arrange
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetRandomId;
+        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetRandomId();
         Attachment sut = DomainFixture.Attachments.GetAttachment();
         
         //Act
-        ErrorOr<Updated> result = sut.AddTransportUnitId(transportUnitId);
+        ErrorOr<Updated> result = sut.SetTransportUnit(transportUnitId);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -217,14 +204,14 @@ public class AttachmentsTests
 
 
     [Fact]
-    public void AddTransportUnitId_WhenInvalidDataIsProvided_ThenValidationFailureIsReturned()
+    public void SetTransportUnitId_WhenInvalidDataIsProvided_ThenValidationFailureIsReturned()
     {
         //Arrange
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetEmptyId;
+        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetEmptyId();
         Attachment sut = DomainFixture.Attachments.GetAttachment();
 
         //Act
-        ErrorOr<Updated> result = sut.AddTransportUnitId(transportUnitId);
+        ErrorOr<Updated> result = sut.SetTransportUnit(transportUnitId);
 
         //Assert
         result.IsError.Should().BeTrue();

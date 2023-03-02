@@ -14,20 +14,21 @@ public class TransportTests
     public void Create_WhenValidDataProvided_ThenNewObjectReturned()
     {
         //Arrange
-        UserId delivererId = DomainFixture.Users.GetRandomId;
+        UserId delivererId = DomainFixture.Users.GetId();
         string number = "ABC/234/2023-03/434";
-        DateTime startdate = new(2023, 03, 2, 15, 48, 0);
-        UserId managerId = DomainFixture.Users.GetRandomId;
+        DateTime startDate = new(2023, 03, 2, 15, 48, 0);
+        UserId managerId = DomainFixture.Users.GetId();
         string additionalInformation = "Great tests";
         double totalWeight = 43d;
-        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.NewTransportUnits.GetFilledList;
+        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.NewTransportUnits.GetFilledList();
 
         DateTime creationDate = new(2023, 1, 1, 1, 23, 14);
-        IDateTime dateprovider = Substitute.For<IDateTime>();
-        dateprovider.UtcNow.Returns(creationDate);
+        IDateTime dateTimeProvider = Substitute.For<IDateTime>();
+        dateTimeProvider.UtcNow.Returns(creationDate);
 
         //Act
-        ErrorOr<Transport> result = Transport.Create(delivererId, number, additionalInformation, totalWeight, startdate, managerId, dateprovider, transportUnitsToCreate);
+        ErrorOr<Transport> result = Transport.Create(delivererId, number, additionalInformation, totalWeight,
+                                                     startDate, managerId, dateTimeProvider, transportUnitsToCreate);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -38,27 +39,33 @@ public class TransportTests
         obj.Number.Should().Be(number);
         obj.AdditionalInformation.Should().Be(additionalInformation);
         obj.TotalWeight.Should().Be(totalWeight);
-        obj.StartDate.Should().Be(startdate);
+        obj.StartDate.Should().Be(startDate);
         obj.ManagerId.Should().Be(managerId);
         obj.CreationDate.Should().Be(creationDate);
         obj.Status.Should().Be(TransportStatus.New);
         obj.Id.Should().Be(TransportId.Empty);
-        obj.TransportUnits.Should().NotBeEmpty();
+        obj.TransportUnits.Should().HaveCount(transportUnitsToCreate.Count);
+
+        //TODO: GEHENNA (odroczona)
+
     }
 
     [Theory]
     [ClassData(typeof(TransportCreateWrongData))]
-    public void Create_WhenInvalidDataProvided_ThenValidationFailureIsReturned(Guid guidDelivererId, string number, DateTime startDate, Guid guidManagerId, DateTime creationDate, List<NewTransportUnit> transportUnitsToCreate)
+    public void Create_WhenInvalidDataProvided_ThenValidationFailureIsReturned(
+        Guid guidDelivererId, string number, DateTime startDate, Guid guidManagerId,
+        DateTime creationDate, List<NewTransportUnit> transportUnitsToCreate)
     {
         //Arrange
         UserId delivererId = new(guidDelivererId);
         UserId managerId = new(guidManagerId);
 
-        IDateTime dateprovider = Substitute.For<IDateTime>();
-        dateprovider.UtcNow.Returns(creationDate);
+        IDateTime dateTimeProvider = Substitute.For<IDateTime>();
+        dateTimeProvider.UtcNow.Returns(creationDate);
 
         //Act
-        ErrorOr<Transport> result = Transport.Create(delivererId, number, null, null, startDate, managerId, dateprovider, transportUnitsToCreate);
+        ErrorOr<Transport> result = Transport.Create(delivererId, number, null, null,
+                                                     startDate, managerId, dateTimeProvider, transportUnitsToCreate);
 
         //Assert
         result.IsError.Should().BeTrue();
@@ -70,18 +77,19 @@ public class TransportTests
     public void Create_DependencyIsNotProvided_ThenUnexpectedFailureIsReturned()
     {
         //Arrange
-        UserId delivererId = DomainFixture.Users.GetRandomId;
+        UserId delivererId = DomainFixture.Users.GetId();
         string number = "ABC/234/2023-03/434";
-        DateTime startdate = new(2023, 03, 2, 15, 48, 0);
-        UserId managerId = DomainFixture.Users.GetRandomId;
+        DateTime startDate = new(2023, 03, 2, 15, 48, 0);
+        UserId managerId = DomainFixture.Users.GetId();
         string additionalInformation = "Great tests";
         double totalWeight = 43d;
-        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.NewTransportUnits.GetFilledList;
+        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.NewTransportUnits.GetFilledList();
 
-        IDateTime dateprovider = null!;
+        IDateTime dateTimeProvider = null!;
 
         //Act
-        ErrorOr<Transport> result = Transport.Create(delivererId, number, additionalInformation, totalWeight, startdate, managerId, dateprovider, transportUnitsToCreate);
+        ErrorOr<Transport> result = Transport.Create(delivererId, number, additionalInformation, totalWeight,
+                                                     startDate, managerId, dateTimeProvider, transportUnitsToCreate);
 
         //Assert
         result.IsError.Should().BeTrue();

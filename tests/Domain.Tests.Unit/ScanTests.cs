@@ -11,18 +11,16 @@ namespace MultiProject.Delivery.Domain.Tests.Unit;
 public class ScanTests
 {
 
-    [Theory]
-    [InlineData(1, "0f0f1d91-37a5-4957-98fd-6e21f676be64")]
-    [InlineData(1342, "80f77817-5a3d-4e1d-b203-6210fae49bf3")]
-    public void Create_WhenValidDataProvided_ThenNewValidObjectReturned(int intTransportUnitId, Guid guidDelivererId)
+    [Fact]
+    public void Create_WhenValidDataProvided_ThenNewValidObjectReturned()
     {
         //Arrange
         DateTime creationDate = new(2023, 1, 1, 12, 0, 0);
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
 
-        TransportUnitId transportUnitId = new(intTransportUnitId);
-        UserId userId = new(guidDelivererId);
+        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetId();
+        UserId userId = DomainFixture.Users.GetId();
 
         //Act
         ErrorOr<Scan> result = Scan.Create(transportUnitId, userId, dateTimeProvider);
@@ -45,8 +43,8 @@ public class ScanTests
     public void Create_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
     {
         //Arrange
-        TransportUnitId transportUnitId = new(1);
-        UserId userId = new(Guid.Parse("80f77817-5a3d-4e1d-b203-6210fae49bf3"));
+        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetId();
+        UserId userId = DomainFixture.Users.GetId();
 
         //Act
         ErrorOr<Scan> result = Scan.Create(transportUnitId, userId, null!);
@@ -82,13 +80,13 @@ public class ScanTests
     [InlineData(12.12312, 43.23, 0.3424)]
     [InlineData(-123, 76554, 453)]
     [InlineData(123, -7644, 1)]
-    public void AddGeolocation_WhenValidDataProvided_ThenScanIsCreated(double latitude, double longitude, double accuracy)
+    public void SetGeolocation_WhenValidDataProvided_ThenScanIsCreated(double latitude, double longitude, double accuracy)
     {
         //Arrange
         Scan sut = DomainFixture.Scans.GetScan();
 
         //Act
-        ErrorOr<Updated> result = sut.AddGeolocation(latitude, longitude, accuracy);
+        ErrorOr<Updated> result = sut.SetGeolocation(latitude, longitude, accuracy);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -102,13 +100,13 @@ public class ScanTests
     [Theory]
     [InlineData(12, 43, 0)]
     [InlineData(12, 43, -0.1)]
-    public void AddGeolocation_WhenInValidDataProvided_ThenFailureIsReturned(double latitude, double longitude, double accuracy)
+    public void SetGeolocation_WhenInValidDataProvided_ThenFailureIsReturned(double latitude, double longitude, double accuracy)
     {
         //Arrange
         Scan sut = DomainFixture.Scans.GetScan();
 
         //Act
-        ErrorOr<Updated> result = sut.AddGeolocation(latitude, longitude, accuracy);
+        ErrorOr<Updated> result = sut.SetGeolocation(latitude, longitude, accuracy);
 
         //Assert
         result.IsError.Should().BeTrue();
@@ -122,13 +120,13 @@ public class ScanTests
     [InlineData(1.342)]
     [InlineData(135353)]
     [InlineData(0.431)]
-    public void AddQuantity_WhenValidDataProvided_ThenScanQuantityIsUpdated(double quantity)
+    public void SetQuantity_WhenValidDataProvided_ThenScanQuantityIsUpdated(double quantity)
     {
         //Arrange
         Scan sut = DomainFixture.Scans.GetScan();
 
         //Act
-        ErrorOr<Updated> result = sut.AddQuantity(quantity);
+        ErrorOr<Updated> result = sut.SetQuantity(quantity);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -142,13 +140,13 @@ public class ScanTests
     [InlineData(-34)]
     [InlineData(-34.3543)]
     [InlineData(-0.12)]
-    public void AddQuantity_WhenInvalidDataProvided_ThenFailureIsReturned(double quantity)
+    public void SetQuantity_WhenInvalidDataProvided_ThenFailureIsReturned(double quantity)
     {
         //Arrange
         Scan sut = DomainFixture.Scans.GetScan();
 
         //Act
-        ErrorOr<Updated> result = sut.AddQuantity(quantity);
+        ErrorOr<Updated> result = sut.SetQuantity(quantity);
 
         //Assert
         result.IsError.Should().BeTrue();

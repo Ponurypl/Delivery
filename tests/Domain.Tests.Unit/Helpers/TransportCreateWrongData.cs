@@ -13,7 +13,7 @@ public class TransportCreateWrongData : IEnumerable<object[]>
             new DateTime(2021, 1, 1, 12, 0, 0),
             Guid.NewGuid(),
             new DateTime(2023, 1, 1, 12, 0, 0),
-            DomainFixture.NewTransportUnits.GetFilledList
+            DomainFixture.NewTransportUnits.GetFilledList()
         };
         //null start date
         yield return new object[] {
@@ -22,7 +22,7 @@ public class TransportCreateWrongData : IEnumerable<object[]>
             null!,
             Guid.NewGuid(),
             new DateTime(2023, 1, 1, 12, 0, 0),
-            DomainFixture.NewTransportUnits.GetFilledList
+            DomainFixture.NewTransportUnits.GetFilledList()
         };
         //empty guidDelivererId
         yield return new object[] {
@@ -31,7 +31,7 @@ public class TransportCreateWrongData : IEnumerable<object[]>
             new DateTime(2023, 1, 1, 12, 0, 0),
             Guid.NewGuid(),
             new DateTime(2023, 1, 1, 12, 0, 0),
-            DomainFixture.NewTransportUnits.GetFilledList
+            DomainFixture.NewTransportUnits.GetFilledList()
         };
         //empty guidManagerId
         yield return new object[] {
@@ -40,7 +40,7 @@ public class TransportCreateWrongData : IEnumerable<object[]>
             new DateTime(2023, 1, 1, 12, 0, 0),
             Guid.Empty,
             new DateTime(2023, 1, 1, 12, 0, 0),
-            DomainFixture.NewTransportUnits.GetFilledList
+            DomainFixture.NewTransportUnits.GetFilledList()
         };
         //empty number
         yield return new object[] {
@@ -49,7 +49,7 @@ public class TransportCreateWrongData : IEnumerable<object[]>
             new DateTime(2023, 1, 1, 12, 0, 0),
             Guid.NewGuid(),
             new DateTime(2023, 1, 1, 12, 0, 0),
-            DomainFixture.NewTransportUnits.GetFilledList
+            DomainFixture.NewTransportUnits.GetFilledList()
         };
         //null number
         yield return new object[] {
@@ -58,7 +58,7 @@ public class TransportCreateWrongData : IEnumerable<object[]>
             new DateTime(2023, 1, 1, 12, 0, 0),
             Guid.NewGuid(),
             new DateTime(2023, 1, 1, 12, 0, 0),
-            DomainFixture.NewTransportUnits.GetFilledList
+            DomainFixture.NewTransportUnits.GetFilledList()
         };
         //empty List<NewTransportUnit>
         yield return new object[] {
@@ -67,7 +67,7 @@ public class TransportCreateWrongData : IEnumerable<object[]>
             new DateTime(2023, 1, 1, 12, 0, 0),
             Guid.NewGuid(),
             new DateTime(2023, 1, 1, 12, 0, 0),
-            DomainFixture.NewTransportUnits.GetEmptyList
+            DomainFixture.NewTransportUnits.GetEmptyList()
         };
         //null List<NewTransportUnit>
         yield return new object[] {
@@ -94,7 +94,7 @@ public class TransportCreateWrongData : IEnumerable<object[]>
             new DateTime(2021, 1, 1, 12, 0, 0),
             Guid.Empty,
             new DateTime(2023, 1, 1, 12, 0, 0),
-            DomainFixture.NewTransportUnits.GetEmptyList
+            DomainFixture.NewTransportUnits.GetEmptyList()
         };
     }
 
