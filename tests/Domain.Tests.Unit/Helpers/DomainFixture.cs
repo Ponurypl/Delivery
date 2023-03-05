@@ -102,14 +102,16 @@ internal static class DomainFixture
 
     public static class NewTransportUnits
     {
-        public static List<NewTransportUnit> GetFilledList() => new() { GetNewMultiTransportUnit(), GetNewUniqueTransportUnit()};
+        public static List<NewTransportUnit> GetFilledList() => new() { GetPredefinedMultiTransportUnit(), GetPredefinedUniqueTransportUnit(), 
+                                                                        GetRandomUniqueTransportUnit(),GetRandomUniqueTransportUnit(),
+                                                                        GetRandomMultiTransportUnit(), GetRandomMultiTransportUnit()};
         public static List<NewTransportUnit> GetEmptyList() => new();
-        public static NewTransportUnit GetNewUniqueTransportUnit()
+        public static NewTransportUnit GetPredefinedUniqueTransportUnit(string number = "DEF/4352/2245-223/dd", string barcode = "53465456453")
         {
             return new NewTransportUnit
                    {
                        Description = "Great Success",
-                       Number = "ABC/1244/2023-354/sd",
+                       Number = number,
                        AdditionalInformation = "1234ABCD",
                        RecipientCompanyName = "super name",
                        RecipientName = "Alberto",
@@ -121,16 +123,16 @@ internal static class DomainFixture
                        RecipientTown = "London",
                        RecipientCountry = "Moon",
                        RecipientPostCode = "54-643",
-                       Barcode = "53465456453"
-                   };
+                       Barcode = barcode
+            };
         }
 
-        public static NewTransportUnit GetNewMultiTransportUnit()
+        public static NewTransportUnit GetPredefinedMultiTransportUnit(string number = "ABC/1244/2023-354/sd")
         {
             return new NewTransportUnit
                    {
                        Description = "Great Success",
-                       Number = "ABC/1244/2023-354/sd",
+                       Number = number,
                        AdditionalInformation = "1234ABCD",
                        RecipientCompanyName = "super name",
                        RecipientName = "Alberto",
@@ -145,6 +147,49 @@ internal static class DomainFixture
                        UnitOfMeasureId = 12,
                        Amount = 34.53d
                    };
+        }
+
+        public static NewTransportUnit GetRandomUniqueTransportUnit(string? number = null, string? barcode = null)
+        {
+            return new NewTransportUnit
+            {
+                Description = "Great Success",
+                Number = number ?? Guid.NewGuid().ToString(),
+                AdditionalInformation = "1234ABCD",
+                RecipientCompanyName = "super name",
+                RecipientName = "Alberto",
+                RecipientLastName = "Gerat",
+                RecipientPhoneNumber = "505483544",
+                RecipientFlatNumber = "34",
+                RecipientStreetNumber = "23B-3",
+                RecipientStreet = "Striite",
+                RecipientTown = "London",
+                RecipientCountry = "Moon",
+                RecipientPostCode = "54-643",
+                Barcode = barcode ?? Guid.NewGuid().ToString()
+            };
+        }
+
+        public static NewTransportUnit GetRandomMultiTransportUnit(string? number = null)
+        {
+            return new NewTransportUnit
+            {
+                Description = "Great Success",
+                Number = number ?? Guid.NewGuid().ToString(),
+                AdditionalInformation = "1234ABCD",
+                RecipientCompanyName = "super name",
+                RecipientName = "Alberto",
+                RecipientLastName = "Gerat",
+                RecipientPhoneNumber = "505483544",
+                RecipientFlatNumber = "34",
+                RecipientStreetNumber = "23B-3",
+                RecipientStreet = "Striite",
+                RecipientTown = "London",
+                RecipientCountry = "Moon",
+                RecipientPostCode = "54-643",
+                UnitOfMeasureId = 12,
+                Amount = 34.53d
+            };
         }
     }
 }

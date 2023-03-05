@@ -14,15 +14,16 @@ public class TransportTests
     public void Create_WhenValidDataProvided_ThenNewObjectReturned()
     {
         //Arrange
-        UserId delivererId = DomainFixture.Users.GetId();
-        string number = "ABC/234/2023-03/434";
-        DateTime startDate = new(2023, 03, 2, 15, 48, 0);
-        UserId managerId = DomainFixture.Users.GetId();
-        string additionalInformation = "Great tests";
-        double totalWeight = 43d;
-        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.NewTransportUnits.GetFilledList();
 
-        DateTime creationDate = new(2023, 1, 1, 1, 23, 14);
+        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.NewTransportUnits.GetFilledList();
+        UserId delivererId = DomainFixture.Users.GetId();
+        UserId managerId = DomainFixture.Users.GetId();
+        string number = DomainFixture.Transports.Number;
+        string additionalInformation = DomainFixture.Transports.AdditionalInformation;
+        double totalWeight = DomainFixture.Transports.TotalWeight;
+        DateTime startDate = new(2023, 03, 2, 15, 48, 0);
+
+        DateTime creationDate = startDate.AddHours(-1);
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
 
@@ -71,6 +72,29 @@ public class TransportTests
         result.IsError.Should().BeTrue();
         result.FirstError.Type.Should().Be(ErrorType.Validation);
         result.FirstError.Should().Be(DomainFailures.Deliveries.InvalidTransport);
+    }
+
+    [Theory]
+    [ClassData(typeof(TransportCreateWrongTransportUnitData))]
+    public void Create_WhenInvalidTransportUnitsProvided_ThenValidationFailureIsReturned(
+    Guid guidDelivererId, string number, DateTime startDate, Guid guidManagerId,
+    DateTime creationDate, List<NewTransportUnit> transportUnitsToCreate)
+    {
+        //Arrange
+        UserId delivererId = new(guidDelivererId);
+        UserId managerId = new(guidManagerId);
+
+        IDateTime dateTimeProvider = Substitute.For<IDateTime>();
+        dateTimeProvider.UtcNow.Returns(creationDate);
+
+        //Act
+        ErrorOr<Transport> result = Transport.Create(delivererId, number, null, null,
+                                                     startDate, managerId, dateTimeProvider, transportUnitsToCreate);
+
+        //Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Deliveries.InvalidTransportUnit);
     }
 
     [Fact]
