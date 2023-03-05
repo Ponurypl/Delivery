@@ -132,16 +132,99 @@ public class AttachmentsTests
         result.FirstError.Should().Be(DomainFailures.Attachments.InvalidAttachment);
     }
 
-    [Fact] // TODO: Do uzupełnienia testy na unhappy path każdego z create
+    [Theory]
+    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 3, "")]
+    [InlineData("00000000-0000-0000-0000-000000000000", 4, "Lorem ipsum dolor sit amet")]
+    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 0, "Lorem ipsum dolor sit amet")]
+    [InlineData("00000000-0000-0000-0000-000000000000", 0, "")]
+    public void Create_WithAdditionalInformation_WhenInvalidDataProvided_ThenValidationFailureReturned(
+    Guid rawUserId, int rawTransportId, string additionalInformation)
+    {
+        //Arrange
+        IDateTime dateTimeProvider = Substitute.For<IDateTime>();
+
+        UserId userId = new(rawUserId);
+        TransportId transportId = new(rawTransportId);
+
+        //Act
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, additionalInformation,
+                                                       dateTimeProvider);
+
+        //Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Attachments.InvalidAttachment);
+    }
+
+    [Theory]
+    [InlineData("00000000-0000-0000-0000-000000000000", 4, new byte[] { 1, 4, 6, 43 })]
+    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 0, new byte[] { 1, 4, 6, 43 })]
+    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 5, new byte[] { })]
+    [InlineData("00000000-0000-0000-0000-000000000000", 0, new byte[] { })]
+    public void Create_WithPayload_WhenInvalidDataProvided_ThenValidationFailureReturned(
+    Guid rawUserId, int rawTransportId, byte[] payload)
+    {
+        //Arrange
+        IDateTime dateTimeProvider = Substitute.For<IDateTime>();
+
+        UserId userId = new(rawUserId);
+        TransportId transportId = new(rawTransportId);
+
+        //Act
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload,
+                                                       dateTimeProvider);
+
+        //Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Attachments.InvalidAttachment);
+    }
+
+    [Fact] 
     public void Create_WithAdditionalInformation_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
     {
         //Arrange
         UserId userId = DomainFixture.Users.GetRandomId();
         TransportId transportUnitId = DomainFixture.Transports.GetRandomId();
-        string additionalInformation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+        string additionalInformation = DomainFixture.Attachments.AdditionalInformation;
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, additionalInformation, null!);
+
+        //Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Unexpected);
+        result.FirstError.Should().Be(DomainFailures.Common.MissingRequiredDependency);
+    }
+
+    [Fact] 
+    public void Create_WithAdditionalInformationAndPayload_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
+    {
+        //Arrange
+        UserId userId = DomainFixture.Users.GetRandomId();
+        TransportId transportUnitId = DomainFixture.Transports.GetRandomId();
+        string additionalInformation = DomainFixture.Attachments.AdditionalInformation;
+        byte[] payload = DomainFixture.Attachments.Payload;
+
+        //Act
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, payload, additionalInformation, null!);
+
+        //Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Unexpected);
+        result.FirstError.Should().Be(DomainFailures.Common.MissingRequiredDependency);
+    }
+
+    [Fact]
+    public void Create_WithPayload_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
+    {
+        //Arrange
+        UserId userId = DomainFixture.Users.GetRandomId();
+        TransportId transportUnitId = DomainFixture.Transports.GetRandomId();
+        byte[] payload = DomainFixture.Attachments.Payload;
+
+        //Act
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, payload, null!);
 
         //Assert
         result.IsError.Should().BeTrue();
