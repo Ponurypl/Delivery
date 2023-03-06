@@ -62,10 +62,9 @@ public sealed class Transport : AggregateRoot<TransportId>
             return DomainFailures.Deliveries.InvalidTransport;
         }
 
-        List<NewTransportUnit> uniqueTypeTU = transportUnitsToCreate.Where(u => u.Barcode is not null).ToList();
-        //Walidacja unikalności kodów kreskowych i numerów palet
+        List<NewTransportUnit> uniqueTypeTransportUnit = transportUnitsToCreate.Where(u => u.Barcode is not null).ToList();
         if (transportUnitsToCreate.Select(u => u.Number).Distinct().Count() != transportUnitsToCreate.Count
-            || uniqueTypeTU.Select(u => u.Barcode).Distinct().Count() != uniqueTypeTU.Count)
+            || uniqueTypeTransportUnit.Select(u => u.Barcode).Distinct().Count() != uniqueTypeTransportUnit.Count)
         {
             return DomainFailures.Deliveries.InvalidTransportUnit;
         }
