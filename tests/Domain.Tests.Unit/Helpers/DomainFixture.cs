@@ -192,4 +192,22 @@ internal static class DomainFixture
             };
         }
     }
+
+    public static class Recipients
+    {
+        public static readonly string CompanyName = "companyName";
+        public static readonly string Country = "country";
+        public static readonly string FlatNumber = "flatNumber";
+        public static readonly string LastName = "lastname";
+        public static readonly string Name = "name";
+        public static readonly string PhoneNumber = "phoneNumber";
+        public static readonly string PostCode = "postCode";
+        public static readonly string Street = "street";
+        public static readonly string StreetNumber = "streetNumber";
+        public static readonly string Town = "town";
+        public static Recipient GetRecipient()
+        {
+            return Recipient.Create(CompanyName, Country, FlatNumber, LastName, Name, PhoneNumber, PostCode, Street, StreetNumber, Town).Value;
+        }
+    }
 }
