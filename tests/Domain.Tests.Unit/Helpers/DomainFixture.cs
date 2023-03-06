@@ -10,6 +10,7 @@ using MultiProject.Delivery.Domain.Scans.ValueTypes;
 using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.Enums;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
+using System.Reflection;
 
 namespace MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 
@@ -97,6 +98,11 @@ internal static class DomainFixture
             return Transport.Create(Users.GetRandomId(), Number, AdditionalInformation, TotalWeight,
                                     dateTime.UtcNow.AddHours(1), Users.GetRandomId(), dateTime,
                                     NewTransportUnits.GetFilledList()).Value;
+        }
+
+        public static Transport GetEmptyTransport()
+        {
+            return Activator.CreateInstance(typeof(Transport), BindingFlags.NonPublic | BindingFlags.Instance,null,new object[] {GetId()}, null) as Transport;
         }
     }
 
