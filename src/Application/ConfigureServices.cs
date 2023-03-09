@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MultiProject.Delivery.Application.Common.Behaviors;
 using System.Reflection;
 
@@ -13,10 +12,13 @@ public static class ConfigureServices
 
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-        services.AddMediatR(Assembly.GetExecutingAssembly());
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TraceLogBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddMediatR(cfg =>
+                            {
+                                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                                cfg.AddOpenBehavior(typeof(UnhandledExceptionBehavior<,>));
+                                cfg.AddOpenBehavior(typeof(TraceLogBehavior<,>));
+                                cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+                            });
 
         return services;
     }
