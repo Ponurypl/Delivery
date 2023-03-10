@@ -13,24 +13,29 @@ namespace MultiProject.Delivery.Application.Tests.Integration.Dictionaries.Comma
 
 public class CreateUnitOfMeasureCommandTest
 {
+    private readonly ContainerSetup _services;
+    private readonly Mock<IUnitOfMeasureRepository> _repoMock;
+
+    public CreateUnitOfMeasureCommandTest()
+    {
+        _repoMock = new Mock<IUnitOfMeasureRepository>();
+        _services = ContainerSetup.CreateNew()
+                                  .AddDefaultValidators()
+                                  .AddMediatR()
+                                  .AddLogging()
+                                  .AddScoped(Mock.Of<IUnitOfWork>())
+                                  .AddScoped(_repoMock.Object);
+    }
 
     [Fact]
     public async void CreateUnitOfMeasureCommand_WhenValidDataProvided_ThenReturnsId()
     {
         //Arrange
         const int unitId = 1;
-        Mock<IUnitOfMeasureRepository> repoMock = new();
-        repoMock.Setup(s => s.Add(It.IsAny<UnitOfMeasure>()))
-                .Callback((UnitOfMeasure u) => u.SetId(new UnitOfMeasureId(unitId)));
+        _repoMock.Setup(s => s.Add(It.IsAny<UnitOfMeasure>()))
+                .Callback<UnitOfMeasure>(unit => unit.SetId(new UnitOfMeasureId(unitId)));
 
-        var provider = ContainerSetup.CreateNew()
-                                     .AddDefaultValidators()
-                                     .AddMediatR()
-                                     .AddLogging()
-                                     .AddScoped(Mock.Of<IUnitOfWork>())
-                                     .AddScoped(repoMock.Object)
-                                     .Build();
-
+        var provider = _services.Build();
         var sender = provider.GetRequiredService<ISender>();
 
         //Act
