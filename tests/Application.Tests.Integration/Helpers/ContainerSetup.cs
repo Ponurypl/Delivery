@@ -20,14 +20,9 @@ public class ContainerSetup
         return new ContainerSetup();
     }
 
-    public ContainerSetup AddDefaultValidators()
-    {
-        _services.AddValidatorsFromAssemblyContaining(typeof(ConfigureServices));
-        return this;
-    }
-
     public ContainerSetup AddMediatR()
     {
+        _services.AddValidatorsFromAssemblyContaining(typeof(ConfigureServices));
         _services.AddMediatR(c =>
                             {
                                 c.RegisterServicesFromAssemblyContaining(typeof(ConfigureServices));

@@ -15,15 +15,17 @@ public class CreateUnitOfMeasureCommandTest
 {
     private readonly ContainerSetup _services;
     private readonly Mock<IUnitOfMeasureRepository> _repoMock;
+    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
     public CreateUnitOfMeasureCommandTest()
     {
         _repoMock = new Mock<IUnitOfMeasureRepository>();
+        _unitOfWorkMock = new Mock<IUnitOfWork>();
+
         _services = ContainerSetup.CreateNew()
-                                  .AddDefaultValidators()
                                   .AddMediatR()
                                   .AddLogging()
-                                  .AddScoped(Mock.Of<IUnitOfWork>())
+                                  .AddScoped(_unitOfWorkMock.Object)
                                   .AddScoped(_repoMock.Object);
     }
 
@@ -44,6 +46,6 @@ public class CreateUnitOfMeasureCommandTest
         //Assert
         result.IsError.Should().BeFalse();
         result.Value.Id.Should().Be(unitId);
-
+        _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.AtLeastOnce);
     }
 }
