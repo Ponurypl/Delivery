@@ -1,4 +1,5 @@
-﻿using MultiProject.Delivery.Domain.Deliveries.Entities;
+﻿using MultiProject.Delivery.Domain.Common;
+using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
@@ -17,13 +18,13 @@ public class TransportUnitTests
     }
 
     [Fact]
-    public void Create_UniqueUnitTypeTransportUnit_WhenValidDataProvided_ThenValidObjectReturned()
+    public void Create_UniqueUnitTransportUnit_WhenValidDataProvided_ThenValidObjectReturned()
     {
         //Arrange
-        string number = "number";
-        string? additionalInformation = "additionalInformation";
-        string description = "Description";
-        string? barcode = "Barcode1234";
+        string number = DomainFixture.TransportUnits.number;
+        string additionalInformation = DomainFixture.TransportUnits.additionalInformation;
+        string description = DomainFixture.TransportUnits.description;
+        string barcode = DomainFixture.TransportUnits.barcode;
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, barcode, null, null, _transport);
@@ -52,10 +53,10 @@ public class TransportUnitTests
     public void Create_MultiUnitTransportUnit_WhenValidDataProvided_ThenValidObjectReturned()
     {
         //Arrange
-        string number = "number";
-        string? additionalInformation = "additionalInformation";
-        string description = "Description";
-        double? amount = 234.3D;
+        string number = DomainFixture.TransportUnits.number;
+        string additionalInformation = DomainFixture.TransportUnits.additionalInformation;
+        string description = DomainFixture.TransportUnits.description;
+        double amount = DomainFixture.TransportUnits.amount;
         UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetRandomId();
 
         //Act
@@ -81,4 +82,128 @@ public class TransportUnitTests
         obj.MultiUnitDetails.Id.Should().Be(MultiUnitDetailsId.Empty);
         obj.MultiUnitDetails.TransportUnit.Should().Be(obj);
     }
+
+    [Theory]
+    [ClassData(typeof(TransportUnitCreateWrongData))]
+    public void Create_UniqueUnitTransportUnit_WhenInvalidDataProvided_ThenFailureReturned(string number, string additionalInformation, string description)
+    {
+        //Arrange
+        string barcode = DomainFixture.TransportUnits.barcode;
+
+        //Act
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, barcode, null, null, _transport);
+
+        //Arrange
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+    }
+    [Theory]
+    [ClassData(typeof(TransportUnitCreateWrongData))]
+    public void Create_MultiUnitTransportUnit_WhenInvalidDataProvided_ThenFailureReturned(string number, string additionalInformation, string description)
+    {
+        //Arrange
+        double amount = DomainFixture.TransportUnits.amount;
+        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetRandomId();
+
+        //Act
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, _transport);
+
+        //Arrange
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+    }
+
+    [Theory]
+    [ClassData(typeof(TransportUnitCreateWrongTransportUnitDetailsData))]
+    public void Create_WhenInvalidTransportUnitDetailsDataProvided_ThenFailureReturned(string? barcode, double? amount, int? rawUnitOfMeasureId)
+    {
+        //Arrange
+        UnitOfMeasureId? unitOfMeasureId = rawUnitOfMeasureId is null ? null : new UnitOfMeasureId((int)rawUnitOfMeasureId);
+
+        //Act
+        ErrorOr<TransportUnit> result = TransportUnit.Create(DomainFixture.TransportUnits.number,
+                                                             DomainFixture.TransportUnits.additionalInformation,
+                                                             DomainFixture.TransportUnits.description, _recipient, barcode,
+                                                             amount, unitOfMeasureId, _transport);
+
+        //Arrange
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Deliveries.InvalidTransportUnitDetails);
+    }
+
+    [Fact]
+    public void Create_UniqueUnitTransportUnit_WhenParentObjectNotProvided_ThenFailureReturned()
+    {
+        //Arrange
+        string number = DomainFixture.TransportUnits.number;
+        string additionalInformation = DomainFixture.TransportUnits.additionalInformation;
+        string description = DomainFixture.TransportUnits.description;
+        string barcode = DomainFixture.TransportUnits.barcode;
+
+        //Act
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, barcode, null, null, null!);
+
+        //Arrange
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+    }
+
+    [Fact]
+    public void Create_MultiUnitTransportUnit_WhenParentObjectNotProvided_ThenFailureReturned()
+    {
+        //Arrange
+        string number = DomainFixture.TransportUnits.number;
+        string additionalInformation = DomainFixture.TransportUnits.additionalInformation;
+        string description = DomainFixture.TransportUnits.description;
+        double amount = DomainFixture.TransportUnits.amount;
+        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetRandomId();
+
+        //Act
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, null!);
+
+        //Arrange
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Common.MissingParentObject);
+    }
+
+    [Fact]
+    public void Create_UniqueUnitTransportUnit_WhenChildObjectNotProvided_ThenFailureReturned()
+    {
+        //Arrange
+        string number = DomainFixture.TransportUnits.number;
+        string additionalInformation = DomainFixture.TransportUnits.additionalInformation;
+        string description = DomainFixture.TransportUnits.description;
+        string barcode = DomainFixture.TransportUnits.barcode;
+
+        //Act
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, null!, barcode, null, null, _transport);
+
+        //Arrange
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Common.MissingChildObject);
+    }
+
+    [Fact]
+    public void Create_MultiUnitTransportUnit_WhenChildObjectNotProvided_ThenFailureReturned()
+    {
+        //Arrange
+        string number = DomainFixture.TransportUnits.number;
+        string additionalInformation = DomainFixture.TransportUnits.additionalInformation;
+        string description = DomainFixture.TransportUnits.description;
+        double amount = DomainFixture.TransportUnits.amount;
+        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetRandomId();
+
+        //Act
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, null!, null, amount, unitOfMeasureId, _transport);
+
+        //Arrange
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Common.MissingChildObject);
+    }
+
+
 }

@@ -6,6 +6,7 @@ internal static class DomainFailures
     {
         public static Error MissingRequiredDependency => Error.Unexpected(nameof(MissingRequiredDependency));
         public static Error MissingParentObject => Error.Validation(nameof(MissingParentObject));
+        public static Error MissingChildObject => Error.Validation(nameof(MissingChildObject));
     }
     
     public static class Geolocations

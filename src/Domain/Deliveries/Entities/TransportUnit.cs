@@ -38,14 +38,15 @@ public sealed class TransportUnit : Entity<TransportUnitId>
     public static ErrorOr<TransportUnit> Create(string number, string? additionalInformation, string description, Recipient recipient, 
                                        string? barcode, double? amount, UnitOfMeasureId? unitOfMeasureId, Transport transport)
     {
-        if (string.IsNullOrWhiteSpace(number) || string.IsNullOrWhiteSpace(description) || recipient is null)
+        if (transport is null) return DomainFailures.Common.MissingParentObject;
+        if (recipient is null) return DomainFailures.Common.MissingChildObject;
+        
+        if (string.IsNullOrWhiteSpace(number) || string.IsNullOrWhiteSpace(description))
         {
             return DomainFailures.Deliveries.InvalidTransportUnit;
         }
 
-        if (transport is null) return DomainFailures.Common.MissingParentObject;
-
-        if (string.IsNullOrWhiteSpace(barcode) && (amount is null or <= 0 || unitOfMeasureId is null))
+        if (string.IsNullOrWhiteSpace(barcode) && (amount is null or <= 0 || unitOfMeasureId is null || unitOfMeasureId == UnitOfMeasureId.Empty))
         {
             return DomainFailures.Deliveries.InvalidTransportUnitDetails;
         }
