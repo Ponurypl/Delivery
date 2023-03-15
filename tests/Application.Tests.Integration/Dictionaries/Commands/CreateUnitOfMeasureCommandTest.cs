@@ -4,7 +4,6 @@ using MultiProject.Delivery.Application.Dictionaries.Commands.CreateUnitOfMeasur
 using MultiProject.Delivery.Application.Tests.Integration.Helpers;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
-using MultiProject.Delivery.Application.Common.Failures;
 
 namespace MultiProject.Delivery.Application.Tests.Integration.Dictionaries.Commands;
 
