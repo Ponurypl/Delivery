@@ -96,6 +96,7 @@ public class TransportUnitTests
         //Arrange
         result.IsError.Should().BeTrue();
         result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Deliveries.InvalidTransportUnitDetails);
     }
     [Theory]
     [ClassData(typeof(TransportUnitCreateWrongData))]
@@ -111,6 +112,7 @@ public class TransportUnitTests
         //Arrange
         result.IsError.Should().BeTrue();
         result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Deliveries.InvalidTransportUnitDetails);
     }
 
     [Theory]
@@ -147,6 +149,7 @@ public class TransportUnitTests
         //Arrange
         result.IsError.Should().BeTrue();
         result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Common.MissingParentObject);
     }
 
     [Fact]
