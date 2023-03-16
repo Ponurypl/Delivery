@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moq;
 using MultiProject.Delivery.Application.Common.Behaviors;
 
 namespace MultiProject.Delivery.Application.Tests.Integration.Helpers;
@@ -40,6 +38,18 @@ public class ContainerSetup
     public ContainerSetup AddScoped<T>(Func<IServiceProvider, T> func) where T : class
     {
         _services.AddScoped(func);
+        return this;
+    }
+
+    public ContainerSetup AddTransient<T>(T instance) where T : class
+    {
+        _services.AddTransient(_ => instance);
+        return this;
+    }
+
+    public ContainerSetup AddTransient<T>(Func<IServiceProvider, T> func) where T : class
+    {
+        _services.AddTransient(func);
         return this;
     }
 

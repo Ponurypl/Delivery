@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using MultiProject.Delivery.Application.Common.Persistence;
+﻿using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Application.Dictionaries.Commands.CreateUnitOfMeasure;
 using MultiProject.Delivery.Application.Tests.Integration.Helpers;
@@ -47,5 +43,35 @@ public class CreateUnitOfMeasureCommandTest
         result.IsError.Should().BeFalse();
         result.Value.Id.Should().Be(unitId);
         _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.AtLeastOnce);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(null!, null!)]
+    [InlineData(" ", " ")]
+    [InlineData("", "ABC")]
+    [InlineData("  ", "ABC")]
+    [InlineData(null!, "ABC")]
+    [InlineData("DEF", "")]
+    [InlineData("DEF", "  ")]
+    [InlineData("DEF", null!)]
+    public async void CreateUnitOfMeasureCommand_WhenInvalidDataProvided_ThenFailureReturned(string name, string symbol)
+    {
+        //Arrange
+        IServiceProvider provider = _services.Build();
+        ISender sender = provider.GetService<ISender>()!;
+
+        //Act
+        ErrorOr<UnitOfMeasureCreatedDto> result = await sender.Send(new CreateUnitOfMeasureCommand() { Name = name, Symbol = symbol });
+
+        //Assert
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().AllSatisfy(x =>
+                                          {
+                                              x.Type.Should().Be(ErrorType.Validation);
+                                              x.Should().Be(Failure.InvalidMessage);
+                                          });
+        _repoMock.Verify(v => v.Add(It.IsAny<UnitOfMeasure>()), Times.Never);
+        _unitOfWorkMock.Verify(v => v.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 }

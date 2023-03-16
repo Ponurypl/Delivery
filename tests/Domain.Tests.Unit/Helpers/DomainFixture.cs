@@ -77,6 +77,12 @@ internal static class DomainFixture
     }
     public static class TransportUnits
     {
+        public static readonly string number = "number";
+        public static readonly string additionalInformation = "additionalInformation";
+        public static readonly string description = "Description";
+        public static readonly double amount = 234.3D;
+        public static readonly string barcode = "Barcode1234";
+
         public static TransportUnitId GetId() => new(1);
         public static TransportUnitId GetRandomId() => new(Random.Shared.Next(1, 100));
         public static TransportUnitId GetEmptyId() => TransportUnitId.Empty;

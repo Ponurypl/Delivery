@@ -22,6 +22,6 @@ internal class GetUnitOfMeasureQueryHandler : IQueryHandler<GetUnitOfMeasureQuer
             return Failure.UnitOfMeasureNotExists;
         }
 
-        return new GetUnitOfMeasureDto() { Name = unitOfMeasure.Name, Symbol = unitOfMeasure.Name, Description = unitOfMeasure.Description };
+        return new GetUnitOfMeasureDto() { Name = unitOfMeasure.Name, Symbol = unitOfMeasure.Symbol, Description = unitOfMeasure.Description };
     }
 }
