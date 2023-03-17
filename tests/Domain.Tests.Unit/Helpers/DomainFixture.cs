@@ -4,6 +4,7 @@ using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.DTO;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
+using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.Entities;
 using MultiProject.Delivery.Domain.Scans.ValueTypes;
@@ -14,7 +15,7 @@ using System.Reflection;
 
 namespace MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 
-internal static class DomainFixture
+public static class DomainFixture
 {
     public class Users
     {
@@ -26,8 +27,17 @@ internal static class DomainFixture
         public static UserId GetRandomId() => new(Guid.NewGuid());
         public static UserId GetEmptyId() => UserId.Empty;
 
-        public static User GetUser(UserRole role = UserRole.Deliverer) =>
-            User.Create(role, Username, Password, PhoneNumber).Value;
+        public static User GetUser(UserRole role = UserRole.Deliverer)
+        {
+            var user = EntityBuilder.Create<User, UserId>(GetId());
+            user.Set(x => x.IsActive, true);
+            user.Set(x => x.Role, role);
+            user.Set(x => x.Username, Username);
+            user.Set(x => x.Password, Password);
+            user.Set(x => x.PhoneNumber, PhoneNumber);
+
+            return user;
+        }
     }
 
     public static class Scans
@@ -74,14 +84,25 @@ internal static class DomainFixture
         public static UnitOfMeasureId GetId() => new(1);
         public static UnitOfMeasureId GetRandomId() => new(Random.Shared.Next(1, 100));
         public static UnitOfMeasureId GetEmptyId() => UnitOfMeasureId.Empty;
+
+        public static UnitOfMeasure GetUnitOfMeasure()
+        {
+            var unit = EntityBuilder.Create<UnitOfMeasure, UnitOfMeasureId>(GetId());
+            unit.Name = Name;
+            unit.Symbol = Symbol;
+            unit.Description = Description;
+
+            return unit;
+        }
     }
+
     public static class TransportUnits
     {
-        public static readonly string number = "number";
-        public static readonly string additionalInformation = "additionalInformation";
-        public static readonly string description = "Description";
-        public static readonly double amount = 234.3D;
-        public static readonly string barcode = "Barcode1234";
+        public static readonly string Number = "number";
+        public static readonly string AdditionalInformation = "additionalInformation";
+        public static readonly string Description = "Description";
+        public static readonly double Amount = 234.3D;
+        public static readonly string Barcode = "Barcode1234";
 
         public static TransportUnitId GetId() => new(1);
         public static TransportUnitId GetRandomId() => new(Random.Shared.Next(1, 100));
@@ -108,7 +129,7 @@ internal static class DomainFixture
 
         public static Transport GetEmptyTransport()
         {
-            return Activator.CreateInstance(typeof(Transport), BindingFlags.NonPublic | BindingFlags.Instance,null,new object[] {GetId()}, null) as Transport;
+            return EntityBuilder.Create<Transport, TransportId>(GetId());
         }
     }
 

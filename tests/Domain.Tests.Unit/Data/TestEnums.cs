@@ -1,4 +1,4 @@
-﻿namespace MultiProject.Delivery.Domain.Tests.Unit.Helpers;
+﻿namespace MultiProject.Delivery.Domain.Tests.Unit.Data;
 
 [Flags]
 public enum WithFlags

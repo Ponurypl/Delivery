@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace MultiProject.Delivery.Domain.Tests.Unit.Helpers;
+namespace MultiProject.Delivery.Domain.Tests.Unit.Data;
 public class RecipientCreateWrongData : IEnumerable<object[]>
 {
     //companyName, country, flatNumber, lastName, name, phoneNumber, postCode, street, streetNumber, town

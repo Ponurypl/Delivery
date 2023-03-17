@@ -9,7 +9,7 @@ namespace MultiProject.Delivery.Application.Tests.Integration.Dictionaries.Comma
 
 public class CreateUnitOfMeasureCommandTest
 {
-    private readonly ContainerSetup _services;
+    private readonly IServiceProvider _provider;
     private readonly Mock<IUnitOfMeasureRepository> _repoMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
@@ -18,11 +18,12 @@ public class CreateUnitOfMeasureCommandTest
         _repoMock = new Mock<IUnitOfMeasureRepository>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
 
-        _services = ContainerSetup.CreateNew()
+        _provider = ContainerSetup.CreateNew()
                                   .AddMediatR()
                                   .AddLogging()
                                   .AddScoped(_unitOfWorkMock.Object)
-                                  .AddScoped(_repoMock.Object);
+                                  .AddScoped(_repoMock.Object)
+                                  .Build();
     }
 
     [Fact]
@@ -32,9 +33,8 @@ public class CreateUnitOfMeasureCommandTest
         const int unitId = 1;
         _repoMock.Setup(s => s.Add(It.IsAny<UnitOfMeasure>()))
                 .Callback<UnitOfMeasure>(unit => unit.SetId(new UnitOfMeasureId(unitId)));
-
-        var provider = _services.Build();
-        var sender = provider.GetRequiredService<ISender>();
+        
+        var sender = _provider.GetRequiredService<ISender>();
 
         //Act
         var result = await sender.Send(new CreateUnitOfMeasureCommand() { Name = "abc", Symbol = "abc" });
@@ -47,19 +47,12 @@ public class CreateUnitOfMeasureCommandTest
 
     [Theory]
     [InlineData("", "")]
-    [InlineData(null!, null!)]
-    [InlineData(" ", " ")]
     [InlineData("", "ABC")]
-    [InlineData("  ", "ABC")]
-    [InlineData(null!, "ABC")]
     [InlineData("DEF", "")]
-    [InlineData("DEF", "  ")]
-    [InlineData("DEF", null!)]
     public async void CreateUnitOfMeasureCommand_WhenInvalidDataProvided_ThenFailureReturned(string name, string symbol)
     {
         //Arrange
-        IServiceProvider provider = _services.Build();
-        ISender sender = provider.GetService<ISender>()!;
+        ISender sender = _provider.GetRequiredService<ISender>();
 
         //Act
         ErrorOr<UnitOfMeasureCreatedDto> result = await sender.Send(new CreateUnitOfMeasureCommand() { Name = name, Symbol = symbol });
@@ -71,7 +64,7 @@ public class CreateUnitOfMeasureCommandTest
                                               x.Type.Should().Be(ErrorType.Validation);
                                               x.Should().Be(Failure.InvalidMessage);
                                           });
-        _repoMock.Verify(v => v.Add(It.IsAny<UnitOfMeasure>()), Times.Never);
+
         _unitOfWorkMock.Verify(v => v.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 }

@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
+using System.Collections;
 
-namespace MultiProject.Delivery.Domain.Tests.Unit.Helpers;
+namespace MultiProject.Delivery.Domain.Tests.Unit.Data;
 public class TransportCreateWrongTransportUnitData : IEnumerable<object[]>
 {
     public IEnumerator<object[]> GetEnumerator()

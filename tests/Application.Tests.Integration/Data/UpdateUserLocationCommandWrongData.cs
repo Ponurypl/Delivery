@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace MultiProject.Delivery.Application.Tests.Integration.Helpers;
+namespace MultiProject.Delivery.Application.Tests.Integration.Data;
 public class UpdateUserLocationCommandWrongData : IEnumerable<object[]>
 {
     //double accuracy, double heading, double latitude, double longitude, double speed, Guid userId

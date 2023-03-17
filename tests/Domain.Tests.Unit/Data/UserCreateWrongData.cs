@@ -1,7 +1,7 @@
 ﻿using MultiProject.Delivery.Domain.Users.Enums;
 using System.Collections;
 
-namespace MultiProject.Delivery.Domain.Tests.Unit.Helpers;
+namespace MultiProject.Delivery.Domain.Tests.Unit.Data;
 
 public class UserCreateWrongData : IEnumerable<object[]>
 {
