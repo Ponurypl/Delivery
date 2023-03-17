@@ -100,7 +100,7 @@ public class EnumExtensionsTests
         //Arrange
 
         //Act
-        var result = ((WithNagativeNumbers)(value)).IsValidForEnum();
+        var result = ((WithNegativeNumbers)(value)).IsValidForEnum();
 
         //Assert
         result.Should().Be(expectedResult);

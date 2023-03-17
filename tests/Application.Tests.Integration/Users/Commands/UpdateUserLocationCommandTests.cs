@@ -86,9 +86,6 @@ public class UpdateUserLocationCommandTests
         double longitude, double speed, Guid userId)
     {
         //Arrange
-        _repositoryMock.Setup(s => s.GetByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
-                       .ReturnsAsync(DomainFixture.Users.GetUser());
-
         ISender sender = _provider.GetRequiredService<ISender>();
 
         //Act

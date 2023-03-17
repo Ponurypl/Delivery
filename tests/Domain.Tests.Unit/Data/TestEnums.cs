@@ -34,7 +34,7 @@ public enum WithoutFirstNumberAssigned
     Fourth // 10
 }
 
-public enum WithNagativeNumbers
+public enum WithNegativeNumbers
 {
     First = -7,
     Second = -8,

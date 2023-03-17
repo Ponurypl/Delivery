@@ -11,7 +11,6 @@ using MultiProject.Delivery.Domain.Scans.ValueTypes;
 using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.Enums;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
-using System.Reflection;
 
 namespace MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 

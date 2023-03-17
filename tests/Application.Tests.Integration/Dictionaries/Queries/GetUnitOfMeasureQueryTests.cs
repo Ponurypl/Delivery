@@ -28,7 +28,7 @@ public class GetUnitOfMeasureQueryTests
     {
         //Arrange
         var unitOfMeasure = DomainFixture.UnitOfMeasures.GetUnitOfMeasure();
-        _repoMock.Setup(s => s.GetByIdAsync(It.IsAny<UnitOfMeasureId>(), It.IsAny<CancellationToken>()))
+        _repoMock.Setup(s => s.GetByIdAsync(It.Is<UnitOfMeasureId>(id => id == unitOfMeasure.Id), It.IsAny<CancellationToken>()))
                  .ReturnsAsync(unitOfMeasure);
         
         ISender sender = _provider.GetRequiredService<ISender>();
