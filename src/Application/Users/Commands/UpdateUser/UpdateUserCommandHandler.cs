@@ -6,14 +6,14 @@ using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Application.Users.Commands.UpdateUser;
-internal class UpdateUserEndpoint : ICommandHandler<UpdateUserCommand>
+internal class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand>
 {
     private readonly IMapper _mapper;
     private readonly IPublisher _publisher;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateUserEndpoint(IMapper mapper, IPublisher publisher, IUserRepository userRepository, IUnitOfWork unitOfWork)
+    public UpdateUserCommandHandler(IMapper mapper, IPublisher publisher, IUserRepository userRepository, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _publisher = publisher;
