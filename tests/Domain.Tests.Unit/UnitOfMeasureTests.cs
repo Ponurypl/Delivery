@@ -1,6 +1,7 @@
 ﻿using MultiProject.Delivery.Domain.Common;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
+using MultiProject.Delivery.Domain.Tests.Unit.Data;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 
 namespace MultiProject.Delivery.Domain.Tests.Unit;
@@ -8,15 +9,7 @@ namespace MultiProject.Delivery.Domain.Tests.Unit;
 public class UnitOfMeasureTests
 {
     [Theory]
-    [InlineData("", "")]
-    [InlineData(null, null)]
-    [InlineData(" ", " ")]
-    [InlineData("abc", " ")]
-    [InlineData("abc", "")]
-    [InlineData("abc", null)]
-    [InlineData("", "abc")]
-    [InlineData(" ", "abc")]
-    [InlineData(null, "abc")]
+    [MemberData(nameof(UnitOfMeasureTestsData.Create_InvalidData), MemberType = typeof(UnitOfMeasureTestsData))]    
     public void Create_WhenRequiredParametersAreNullOrEmpty_ThenFailureIsReturned(string name, string symbol)
     {
         //Arrange

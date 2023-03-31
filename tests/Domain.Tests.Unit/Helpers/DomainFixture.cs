@@ -1,8 +1,9 @@
-﻿using MultiProject.Delivery.Domain.Attachments.Entities;
+﻿using Bogus;
+using MultiProject.Delivery.Domain.Attachments.Entities;
 using MultiProject.Delivery.Domain.Attachments.ValueTypes;
-using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.DTO;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
+using MultiProject.Delivery.Domain.Deliveries.Enums;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.Entities;
 using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
@@ -16,213 +17,173 @@ namespace MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 
 public static class DomainFixture
 {
+    private static readonly Faker _faker = new();
+
+    static DomainFixture()
+    {
+        Randomizer.Seed = new Random(78956987);
+    }
+
     public class Users
     {
-        public static readonly string Username = "SampleUsername";
-        public static readonly string Password = "password@#$hash!!!";
-        public static readonly string PhoneNumber = "1234567890";
+        public static readonly string Username = _faker.Internet.UserName();
+        public static readonly string Password = _faker.Internet.Password();
+        public static readonly string PhoneNumber = _faker.Phone.PhoneNumber();
 
-        public static UserId GetId() => new(Guid.Parse("ec731cb6-0616-401b-8a81-ea13b60bfa05"));
-        public static UserId GetRandomId() => new(Guid.NewGuid());
-        public static UserId GetEmptyId() => UserId.Empty;
+        public static UserId GetId() => new(_faker.Random.Guid());
 
         public static User GetUser(UserRole role = UserRole.Deliverer)
-        {
-            var user = EntityBuilder.Create<User, UserId>(GetId());
-            user.Set(x => x.IsActive, true);
-            user.Set(x => x.Role, role);
-            user.Set(x => x.Username, Username);
-            user.Set(x => x.Password, Password);
-            user.Set(x => x.PhoneNumber, PhoneNumber);
-
-            return user;
-        }
+            => new Faker<User>()
+               .CustomInstantiator(_ => EntityBuilder.Create<User, UserId>(GetId))
+               .RuleFor(x => x.Username, f => f.Internet.UserName())
+               .RuleFor(x => x.Password, f => f.Internet.Password())
+               .RuleFor(x => x.PhoneNumber, f => f.Phone.PhoneNumber())
+               .RuleFor(x => x.Role, role)
+               .RuleFor(x => x.IsActive, true)
+               .Generate();
     }
 
     public static class Scans
     {
-        public static ScanId GetId() => new(1);
-        public static ScanId GetRandomId() => new(Random.Shared.Next(1,100));
-        public static ScanId GetEmptyId() => ScanId.Empty;
+        public static ScanId GetId() => new(_faker.Random.Int(1,100));
 
         public static Scan GetScan()
-        {
-            IDateTime dateTime = Substitute.For<IDateTime>();
-            return GetScan(dateTime);
-        }
-
-        public static Scan GetScan(IDateTime dateTime) => Scan.Create(TransportUnits.GetId(), Users.GetId(), dateTime).Value;
+            => new Faker<Scan>()
+               .CustomInstantiator(_ => EntityBuilder.Create<Scan, ScanId>(GetId))
+               .RuleFor(x => x.TransportUnitId, TransportUnits.GetId)
+               .RuleFor(x => x.LastUpdateDate, f => f.Date.Recent())
+               .Generate();
     }
 
     public static class Attachments
     {
-        public static readonly byte[] Payload = { 54, 4, 3 };
-        public static readonly string AdditionalInformation = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+        public static readonly byte[] Payload = _faker.Random.Bytes(50);
+        public static readonly string AdditionalInformation = _faker.Lorem.Sentence();
 
-        public static AttachmentId GetId() => new(1);
-        public static AttachmentId GetRandomId() => new(Random.Shared.Next(1, 100));
-        public static AttachmentId GetEmptyId() => AttachmentId.Empty;
+        public static AttachmentId GetId() => new(_faker.Random.Int(1,100));
+
         public static Attachment GetAttachment()
-        {
-            IDateTime dateTime = Substitute.For<IDateTime>();
-            return GetAttachment(dateTime);
-        }
-
-        public static Attachment GetAttachment(IDateTime dateTime)
-        {
-            return Attachment.Create(Users.GetId(), Transports.GetId(), Payload, AdditionalInformation, dateTime).Value;
-        }
+            => new Faker<Attachment>()
+               .CustomInstantiator(_ => EntityBuilder.Create<Attachment, AttachmentId>(GetId))
+               .RuleFor(x => x.CreatorId, Users.GetId)
+               .RuleFor(x => x.TransportId, Transports.GetId)
+               .RuleFor(x => x.Payload, f => f.Random.Bytes(50))
+               .RuleFor(x => x.AdditionalInformation, f => f.Lorem.Sentence())
+               .RuleFor(x => x.LastUpdateDate, f => f.Date.Recent())
+               .Generate();
     }
 
     public static class UnitOfMeasures
     {
-        public static readonly string Name = "Kilogram";
-        public static readonly string Symbol = "Kg";
-        public static readonly string Description = "Sample description";
+        private static readonly string[] _names = { "Kilogram", "Ton", "Liter", "Cubic Meter" };
+        private static readonly string[] _symbols = { "Kg", "t", "l", "m3" };
 
-        public static UnitOfMeasureId GetId() => new(1);
-        public static UnitOfMeasureId GetRandomId() => new(Random.Shared.Next(1, 100));
-        public static UnitOfMeasureId GetEmptyId() => UnitOfMeasureId.Empty;
+        public static readonly string Name = _faker.PickRandom(_names);
+        public static readonly string Symbol = _faker.PickRandom(_symbols);
+        public static readonly string Description = _faker.Lorem.Sentence();
+
+        public static UnitOfMeasureId GetId() => new(_faker.Random.Int(1,100));
 
         public static UnitOfMeasure GetUnitOfMeasure()
-        {
-            var unit = EntityBuilder.Create<UnitOfMeasure, UnitOfMeasureId>(GetId());
-            unit.Name = Name;
-            unit.Symbol = Symbol;
-            unit.Description = Description;
-
-            return unit;
-        }
+            => new Faker<UnitOfMeasure>()
+               .CustomInstantiator(_ => EntityBuilder.Create<UnitOfMeasure, UnitOfMeasureId>(GetId))
+               .RuleFor(x => x.Name, f => f.PickRandom(_names))
+               .RuleFor(x => x.Symbol, f => f.PickRandom(_symbols))
+               .RuleFor(x => x.Description, f => f.Lorem.Sentence())
+               .Generate();
     }
 
     public static class TransportUnits
     {
-        public static readonly string Number = "number";
-        public static readonly string AdditionalInformation = "additionalInformation";
-        public static readonly string Description = "Description";
-        public static readonly double Amount = 234.3D;
-        public static readonly string Barcode = "Barcode1234";
+        public static readonly string Number = _faker.Random.Replace("?? ####/##/####/?");
+        public static readonly string AdditionalInformation = _faker.Lorem.Sentence();
+        public static readonly string Description = _faker.Lorem.Sentence();
+        public static readonly double Amount = _faker.Random.Double(1, 200);
+        public static readonly string Barcode = _faker.Commerce.Ean13();
 
-        public static TransportUnitId GetId() => new(1);
-        public static TransportUnitId GetRandomId() => new(Random.Shared.Next(1, 100));
-        public static TransportUnitId GetEmptyId() => TransportUnitId.Empty;
-        //public static TransportUnit GetTransportUnit() => TransportUnit.Create{}
+        public static TransportUnitId GetId() => new(_faker.Random.Int(1, 100));
+
+        public static TransportUnit GetTransportUnit()
+            => new Faker<TransportUnit>()
+               .CustomInstantiator(_ => EntityBuilder.Create<TransportUnit, TransportUnitId>(GetId))
+               .RuleFor(x => x.Number, f => f.Random.Replace("?? ####/##/####/?"))
+               .RuleFor(x => x.AdditionalInformation, f => f.Lorem.Sentence())
+               .RuleFor(x => x.Description, f => f.Lorem.Sentence())
+               .RuleFor(x => x.Status, TransportUnitStatus.New)
+               .RuleFor(x => x.Recipient, Recipients.GetRecipient)
+               .Generate();
+
     }
 
     public static class Transports
     {
-        public static readonly string Number = "ABC123";
-        public static readonly string AdditionalInformation = "asdsfFFSDC";
-        public static readonly double TotalWeight = 34.34d;
+        public static readonly string Number = _faker.Random.Replace("?? ####/##/####/?");
+        public static readonly string AdditionalInformation = _faker.Lorem.Sentence();
+        public static readonly double TotalWeight = _faker.Random.Double(1, 50);
 
-        public static TransportId GetId() => new(1);
-        public static TransportId GetRandomId() => new(Random.Shared.Next(1, 100));
-        public static TransportId GetEmptyId() => TransportId.Empty;
+        public static TransportId GetId() => new(_faker.Random.Int(1,100));
 
-        public static Transport GetTransport(IDateTime dateTime)
-        {
-            return Transport.Create(Users.GetRandomId(), Number, AdditionalInformation, TotalWeight,
-                                    dateTime.UtcNow.AddHours(1), Users.GetRandomId(), dateTime,
-                                    NewTransportUnits.GetFilledList()).Value;
-        }
+        public static Transport GetTransport()
+            => new Faker<Transport>()
+               .CustomInstantiator(_ => EntityBuilder.Create<Transport, TransportId>(GetId))
+               .RuleFor(x => x.DelivererId, Users.GetId)
+               .RuleFor(x => x.Number, f => f.Random.Replace("?? ####/##/####/?"))
+               .RuleFor(x => x.AdditionalInformation, f => f.Lorem.Sentence())
+               .RuleFor(x => x.TotalWeight, f => f.Random.Double(1, 50))
+               .RuleFor(x => x.StartDate, f => f.Date.Soon())
+               .RuleFor(x => x.ManagerId, Users.GetId)
+               .RuleFor("_transportUnits", f => f.Make(6, TransportUnits.GetTransportUnit))
+               .Generate();
 
-        public static Transport GetEmptyTransport()
-        {
-            return EntityBuilder.Create<Transport, TransportId>(GetId());
-        }
-    }
+        public static Transport GetEmptyTransport() => EntityBuilder.Create<Transport, TransportId>(GetId());
 
-    public static class NewTransportUnits
-    {
-        public static List<NewTransportUnit> GetFilledList() => new() { GetPredefinedMultiTransportUnit(), GetPredefinedUniqueTransportUnit(), 
-                                                                        GetRandomUniqueTransportUnit(),GetRandomUniqueTransportUnit(),
-                                                                        GetRandomMultiTransportUnit(), GetRandomMultiTransportUnit()};
-        public static List<NewTransportUnit> GetEmptyList() => new();
-        public static NewTransportUnit GetPredefinedUniqueTransportUnit(string number = "DEF/4352/2245-223/dd", string barcode = "53465456453")
-        {
-            return new NewTransportUnit
-                   {
-                       Description = "Great Success",
-                       Number = number,
-                       AdditionalInformation = "1234ABCD",
-                       RecipientCompanyName = "super name",
-                       RecipientName = "Alberto",
-                       RecipientLastName = "Gerat",
-                       RecipientPhoneNumber = "505483544",
-                       RecipientFlatNumber = "34",
-                       RecipientStreetNumber = "23B-3",
-                       RecipientStreet = "Striite",
-                       RecipientTown = "London",
-                       RecipientCountry = "Moon",
-                       RecipientPostCode = "54-643",
-                       Barcode = barcode
-            };
-        }
+        public static NewTransportUnit GetUniqueTransportUnitDto(string? number = null) =>
+            new Faker<NewTransportUnit>()
+                .Rules((f, o) =>
+                       {
+                           o.Description = f.Lorem.Sentence();
+                           o.Number = number ?? f.Random.Replace("?? ####/##/####/?");
+                           o.AdditionalInformation = f.Lorem.Sentence();
+                           o.RecipientCompanyName = f.Company.CompanyName();
+                           o.RecipientName = f.Person.FirstName;
+                           o.RecipientLastName = f.Person.LastName;
+                           o.RecipientPhoneNumber = f.Phone.PhoneNumber();
+                           o.RecipientFlatNumber = f.Address.BuildingNumber();
+                           o.RecipientStreetNumber = f.Address.BuildingNumber();
+                           o.RecipientStreet = f.Address.StreetName();
+                           o.RecipientTown = f.Address.City();
+                           o.RecipientCountry = f.Address.Country();
+                           o.RecipientPostCode = f.Address.ZipCode();
+                           o.Barcode = f.Commerce.Ean13();
+                       })
+                .Generate();
 
-        public static NewTransportUnit GetPredefinedMultiTransportUnit(string number = "ABC/1244/2023-354/sd")
-        {
-            return new NewTransportUnit
-                   {
-                       Description = "Great Success",
-                       Number = number,
-                       AdditionalInformation = "1234ABCD",
-                       RecipientCompanyName = "super name",
-                       RecipientName = "Alberto",
-                       RecipientLastName = "Gerat",
-                       RecipientPhoneNumber = "505483544",
-                       RecipientFlatNumber = "34",
-                       RecipientStreetNumber = "23B-3",
-                       RecipientStreet = "Striite",
-                       RecipientTown = "London",
-                       RecipientCountry = "Moon",
-                       RecipientPostCode = "54-643",
-                       UnitOfMeasureId = 12,
-                       Amount = 34.53d
-                   };
-        }
+        public static NewTransportUnit GetMultiTransportUnitDto(string? number = null) =>
+            new Faker<NewTransportUnit>()
+                .Rules((f, o) =>
+                       {
+                           o.Description = f.Lorem.Sentence();
+                           o.Number = number ?? f.Random.Replace("?? ####/##/####/?");
+                           o.AdditionalInformation = f.Lorem.Sentence();
+                           o.RecipientCompanyName = f.Company.CompanyName();
+                           o.RecipientName = f.Person.FirstName;
+                           o.RecipientLastName = f.Person.LastName;
+                           o.RecipientPhoneNumber = f.Phone.PhoneNumber();
+                           o.RecipientFlatNumber = f.Address.BuildingNumber();
+                           o.RecipientStreetNumber = f.Address.BuildingNumber();
+                           o.RecipientStreet = f.Address.StreetName();
+                           o.RecipientTown = f.Address.City();
+                           o.RecipientCountry = f.Address.Country();
+                           o.RecipientPostCode = f.Address.ZipCode();
+                           o.UnitOfMeasureId = f.Random.Number(10);
+                           o.Amount = f.Random.Double(10, 50);
+                       })
+                .Generate();
 
-        public static NewTransportUnit GetRandomUniqueTransportUnit(string? number = null, string? barcode = null)
-        {
-            return new NewTransportUnit
-            {
-                Description = "Great Success",
-                Number = number ?? Guid.NewGuid().ToString(),
-                AdditionalInformation = "1234ABCD",
-                RecipientCompanyName = "super name",
-                RecipientName = "Alberto",
-                RecipientLastName = "Gerat",
-                RecipientPhoneNumber = "505483544",
-                RecipientFlatNumber = "34",
-                RecipientStreetNumber = "23B-3",
-                RecipientStreet = "Striite",
-                RecipientTown = "London",
-                RecipientCountry = "Moon",
-                RecipientPostCode = "54-643",
-                Barcode = barcode ?? Guid.NewGuid().ToString()
-            };
-        }
-
-        public static NewTransportUnit GetRandomMultiTransportUnit(string? number = null)
-        {
-            return new NewTransportUnit
-            {
-                Description = "Great Success",
-                Number = number ?? Guid.NewGuid().ToString(),
-                AdditionalInformation = "1234ABCD",
-                RecipientCompanyName = "super name",
-                RecipientName = "Alberto",
-                RecipientLastName = "Gerat",
-                RecipientPhoneNumber = "505483544",
-                RecipientFlatNumber = "34",
-                RecipientStreetNumber = "23B-3",
-                RecipientStreet = "Striite",
-                RecipientTown = "London",
-                RecipientCountry = "Moon",
-                RecipientPostCode = "54-643",
-                UnitOfMeasureId = 12,
-                Amount = 34.53d
-            };
-        }
+        public static List<NewTransportUnit> GetTransportUnitsDtos()
+            => Enumerable.Range(0, 5)
+                         .SelectMany(_ => new[] { GetMultiTransportUnitDto(), GetUniqueTransportUnitDto() })
+                         .ToList();
     }
 
     public static class Recipients

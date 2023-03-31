@@ -16,7 +16,7 @@ public class TransportTests
     {
         //Arrange
 
-        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.NewTransportUnits.GetFilledList();
+        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.Transports.GetTransportUnitsDtos();
         UserId delivererId = DomainFixture.Users.GetId();
         UserId managerId = DomainFixture.Users.GetId();
         string number = DomainFixture.Transports.Number;
@@ -53,15 +53,12 @@ public class TransportTests
     }
 
     [Theory]
-    [ClassData(typeof(TransportCreateWrongData))]
+    [MemberData(nameof(TransportTestsData.Create_InvalidData), MemberType = typeof(TransportTestsData))]
     public void Create_WhenInvalidDataProvided_ThenValidationFailureIsReturned(
-        Guid guidDelivererId, string number, DateTime startDate, Guid guidManagerId,
+        UserId delivererId, string number, DateTime startDate, UserId managerId,
         DateTime creationDate, List<NewTransportUnit> transportUnitsToCreate)
     {
         //Arrange
-        UserId delivererId = new(guidDelivererId);
-        UserId managerId = new(guidManagerId);
-
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
 
@@ -76,17 +73,18 @@ public class TransportTests
     }
 
     [Theory]
-    [ClassData(typeof(TransportCreateWrongTransportUnitData))]
-    public void Create_WhenInvalidTransportUnitsProvided_ThenValidationFailureIsReturned(
-    Guid guidDelivererId, string number, DateTime startDate, Guid guidManagerId,
-    DateTime creationDate, List<NewTransportUnit> transportUnitsToCreate)
+    [MemberData(nameof(TransportTestsData.Create_InvalidTransportUnitsData), MemberType = typeof(TransportTestsData))]
+    public void Create_WhenInvalidTransportUnitsProvided_ThenValidationFailureIsReturned(List<NewTransportUnit> transportUnitsToCreate)
     {
         //Arrange
-        UserId delivererId = new(guidDelivererId);
-        UserId managerId = new(guidManagerId);
+        UserId delivererId = DomainFixture.Users.GetId();
+        UserId managerId = DomainFixture.Users.GetId();
+        string number = DomainFixture.Transports.Number;
+        DateTime startDate = new(2024, 1, 1);
+
 
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
-        dateTimeProvider.UtcNow.Returns(creationDate);
+        dateTimeProvider.UtcNow.Returns(new DateTime(2023, 1, 1));
 
         //Act
         ErrorOr<Transport> result = Transport.Create(delivererId, number, null, null,
@@ -103,12 +101,12 @@ public class TransportTests
     {
         //Arrange
         UserId delivererId = DomainFixture.Users.GetId();
-        string number = "ABC/234/2023-03/434";
+        string number = DomainFixture.Transports.Number;
         DateTime startDate = new(2023, 03, 2, 15, 48, 0);
         UserId managerId = DomainFixture.Users.GetId();
-        string additionalInformation = "Great tests";
-        double totalWeight = 43d;
-        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.NewTransportUnits.GetFilledList();
+        string additionalInformation = DomainFixture.Transports.AdditionalInformation;
+        double totalWeight = DomainFixture.Transports.TotalWeight;
+        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.Transports.GetTransportUnitsDtos();
 
         IDateTime dateTimeProvider = null!;
 

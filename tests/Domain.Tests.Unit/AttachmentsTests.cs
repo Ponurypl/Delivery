@@ -5,6 +5,7 @@ using MultiProject.Delivery.Domain.Common;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.ValueTypes;
+using MultiProject.Delivery.Domain.Tests.Unit.Data;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
@@ -108,19 +109,12 @@ public class AttachmentsTests
     }
 
     [Theory]
-    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 3, new byte[] { 1, 4, 6, 43 }, "")]
-    [InlineData("00000000-0000-0000-0000-000000000000", 4, new byte[] { 1, 4, 6, 43 }, "Lorem ipsum dolor sit amet")]
-    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 0, new byte[] { 1, 4, 6, 43 }, "Lorem ipsum dolor sit amet")]
-    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 5, new byte[] { }, "Lorem ipsum dolor sit amet")]
-    [InlineData("00000000-0000-0000-0000-000000000000", 0, new byte[] { }, "")]
+    [MemberData(nameof(AttachmentsTestsData.Create_WithAdditionalInformationAndPayload_InvalidData), MemberType = typeof(AttachmentsTestsData))]
     public void Create_WithAdditionalInformationAndPayload_WhenInvalidDataProvided_ThenValidationFailureReturned(
-        Guid rawUserId, int rawTransportId, byte[] payload, string additionalInformation)
+        UserId userId, TransportId transportId, byte[] payload, string additionalInformation)
     {
         //Arrange
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
-
-        UserId userId = new(rawUserId);
-        TransportId transportId = new(rawTransportId);
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, additionalInformation,
@@ -133,18 +127,12 @@ public class AttachmentsTests
     }
 
     [Theory]
-    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 3, "")]
-    [InlineData("00000000-0000-0000-0000-000000000000", 4, "Lorem ipsum dolor sit amet")]
-    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 0, "Lorem ipsum dolor sit amet")]
-    [InlineData("00000000-0000-0000-0000-000000000000", 0, "")]
+    [MemberData(nameof(AttachmentsTestsData.Create_WithAdditionalInformation_InvalidData), MemberType = typeof(AttachmentsTestsData))]
     public void Create_WithAdditionalInformation_WhenInvalidDataProvided_ThenValidationFailureReturned(
-    Guid rawUserId, int rawTransportId, string additionalInformation)
+        UserId userId, TransportId transportId, string additionalInformation)
     {
         //Arrange
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
-
-        UserId userId = new(rawUserId);
-        TransportId transportId = new(rawTransportId);
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportId, additionalInformation,
@@ -157,18 +145,12 @@ public class AttachmentsTests
     }
 
     [Theory]
-    [InlineData("00000000-0000-0000-0000-000000000000", 4, new byte[] { 1, 4, 6, 43 })]
-    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 0, new byte[] { 1, 4, 6, 43 })]
-    [InlineData("0f0f1d91-37a5-4957-98fd-6e21f676be64", 5, new byte[] { })]
-    [InlineData("00000000-0000-0000-0000-000000000000", 0, new byte[] { })]
+    [MemberData(nameof(AttachmentsTestsData.Create_WithPayload_InvalidData), MemberType = typeof(AttachmentsTestsData))]
     public void Create_WithPayload_WhenInvalidDataProvided_ThenValidationFailureReturned(
-    Guid rawUserId, int rawTransportId, byte[] payload)
+        UserId userId, TransportId transportId, byte[] payload)
     {
         //Arrange
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
-
-        UserId userId = new(rawUserId);
-        TransportId transportId = new(rawTransportId);
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload,
@@ -184,8 +166,8 @@ public class AttachmentsTests
     public void Create_WithAdditionalInformation_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
     {
         //Arrange
-        UserId userId = DomainFixture.Users.GetRandomId();
-        TransportId transportUnitId = DomainFixture.Transports.GetRandomId();
+        UserId userId = DomainFixture.Users.GetId();
+        TransportId transportUnitId = DomainFixture.Transports.GetId();
         string additionalInformation = DomainFixture.Attachments.AdditionalInformation;
 
         //Act
@@ -201,8 +183,8 @@ public class AttachmentsTests
     public void Create_WithAdditionalInformationAndPayload_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
     {
         //Arrange
-        UserId userId = DomainFixture.Users.GetRandomId();
-        TransportId transportUnitId = DomainFixture.Transports.GetRandomId();
+        UserId userId = DomainFixture.Users.GetId();
+        TransportId transportUnitId = DomainFixture.Transports.GetId();
         string additionalInformation = DomainFixture.Attachments.AdditionalInformation;
         byte[] payload = DomainFixture.Attachments.Payload;
 
@@ -219,8 +201,8 @@ public class AttachmentsTests
     public void Create_WithPayload_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
     {
         //Arrange
-        UserId userId = DomainFixture.Users.GetRandomId();
-        TransportId transportUnitId = DomainFixture.Transports.GetRandomId();
+        UserId userId = DomainFixture.Users.GetId();
+        TransportId transportUnitId = DomainFixture.Transports.GetId();
         byte[] payload = DomainFixture.Attachments.Payload;
 
         //Act
@@ -236,8 +218,9 @@ public class AttachmentsTests
     public void AddScanId_WhenValidDataProvided_ThenScanIdIsUpdated()
     {
         //Arrange
-        ScanId scanId = DomainFixture.Scans.GetRandomId();
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetRandomId();
+        ScanId scanId = DomainFixture.Scans.GetId();
+        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetId();
+
         Attachment sut = DomainFixture.Attachments.GetAttachment();
 
         //Act
@@ -250,14 +233,10 @@ public class AttachmentsTests
     }
 
     [Theory]
-    [InlineData(0, 1)]
-    [InlineData(1, 0)]
-    [InlineData(0, 0)]
-    public void SetScanId_WhenInvalidDataProvided_ThenValidationFailureIsReturned(int rawTransportUnitId, int rawScanId)
+    [MemberData(nameof(AttachmentsTestsData.SetScanId_InvalidData), MemberType = typeof(AttachmentsTestsData))]
+    public void SetScanId_WhenInvalidDataProvided_ThenValidationFailureIsReturned(TransportUnitId transportUnitId, ScanId scanId)
     {
         //Arrange
-        ScanId scanId = new(rawScanId);
-        TransportUnitId transportUnitId = new(rawTransportUnitId);
         Attachment sut = DomainFixture.Attachments.GetAttachment();
 
         //Act
@@ -273,7 +252,7 @@ public class AttachmentsTests
     public void SetTransportUnitId_WhenValidDataIsProvided_ThenTransportUnitIdIsUpdated()
     {
         //Arrange
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetRandomId();
+        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetId();
         Attachment sut = DomainFixture.Attachments.GetAttachment();
         
         //Act
@@ -290,7 +269,7 @@ public class AttachmentsTests
     public void SetTransportUnitId_WhenInvalidDataIsProvided_ThenValidationFailureIsReturned()
     {
         //Arrange
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetEmptyId();
+        TransportUnitId transportUnitId = TransportUnitId.Empty;
         Attachment sut = DomainFixture.Attachments.GetAttachment();
 
         //Act

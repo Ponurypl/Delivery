@@ -1,4 +1,5 @@
-﻿using MultiProject.Delivery.Domain.Common;
+﻿using Bogus;
+using MultiProject.Delivery.Domain.Common;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
@@ -58,7 +59,7 @@ public class TransportUnitTests
         string additionalInformation = DomainFixture.TransportUnits.AdditionalInformation;
         string description = DomainFixture.TransportUnits.Description;
         double amount = DomainFixture.TransportUnits.Amount;
-        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetRandomId();
+        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetId();
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, _transport);
@@ -106,7 +107,7 @@ public class TransportUnitTests
     {
         //Arrange
         double amount = DomainFixture.TransportUnits.Amount;
-        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetRandomId();
+        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetId();
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, _transport);
@@ -162,7 +163,7 @@ public class TransportUnitTests
         string additionalInformation = DomainFixture.TransportUnits.AdditionalInformation;
         string description = DomainFixture.TransportUnits.Description;
         double amount = DomainFixture.TransportUnits.Amount;
-        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetRandomId();
+        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetId();
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, null!);
@@ -199,7 +200,7 @@ public class TransportUnitTests
         string additionalInformation = DomainFixture.TransportUnits.AdditionalInformation;
         string description = DomainFixture.TransportUnits.Description;
         double amount = DomainFixture.TransportUnits.Amount;
-        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetRandomId();
+        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetId();
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, null!, null, amount, unitOfMeasureId, _transport);

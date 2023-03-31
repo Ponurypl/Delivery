@@ -10,7 +10,7 @@ namespace MultiProject.Delivery.Domain.Tests.Unit;
 public class UserTests
 {
     [Theory]
-    [ClassData(typeof(UserCreateWrongData))]
+    [MemberData(nameof(UserTestsData.Create_InvalidData), MemberType = typeof(UserTestsData))]
     public void Create_WhenRequiredParametersAreNullOrEmpty_ThenFailureIsReturned(
         UserRole role, string username, string password, string phone)
     {
@@ -71,15 +71,15 @@ public class UserTests
     [InlineData(-200, -1500, 150, 0, 15, "2023-02-15")]
     public void UpdateGeolocation_WhenValidDataProvided_ThenLocationIsCreated(
         double latitude, double longitude, double accuracy, double heading,
-        double speed, string readDateTime)
+        double speed, string readDateTimeRaw)
     {
         //Arrange
         var sut = DomainFixture.Users.GetUser();
-        var castedDateTime = DateTime.Parse(readDateTime);
+        var readDateTime = DateTime.Parse(readDateTimeRaw);
 
         //Act
         var result = sut.UpdateGeolocation(latitude, longitude, accuracy, heading,
-                                           speed, castedDateTime);
+                                           speed, readDateTime);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -90,7 +90,7 @@ public class UserTests
         sut.Location!.Accuracy.Should().Be(accuracy);
         sut.Location!.Heading.Should().Be(heading);
         sut.Location!.Speed.Should().Be(speed);
-        sut.Location!.LastUpdateDate.Should().Be(castedDateTime);
+        sut.Location!.LastUpdateDate.Should().Be(readDateTime);
     }
 
 
@@ -101,15 +101,15 @@ public class UserTests
     [InlineData(15, 200, 10, 15, -15, "2023-01-01")]
     public void UpdateGeolocation_WhenInvalidDataProvided_ThenErrorIsReturned(
         double latitude, double longitude, double accuracy, double heading,
-        double speed, string readDateTime)
+        double speed, string readDateTimeRaw)
     {
         //Arrange
         var sut = DomainFixture.Users.GetUser();
-        var castedDateTime = DateTime.Parse(readDateTime);
+        var readDateTime = DateTime.Parse(readDateTimeRaw);
 
         //Act
         var result = sut.UpdateGeolocation(latitude, longitude, accuracy, heading,
-                                           speed, castedDateTime);
+                                           speed, readDateTime);
 
         //Assert
         result.IsError.Should().BeTrue();
@@ -123,16 +123,16 @@ public class UserTests
     [InlineData(-200, -1500, 150, 0, 15, "2023-02-15")]
     public void UpdateGeolocation_WhenValidDataProvidedAndLocationIsNotNull_ThenLocationIsReplaced(
         double latitude, double longitude, double accuracy, double heading,
-        double speed, string readDateTime)
+        double speed, string readDateTimeRaw)
     {
         //Arrange
         var sut = DomainFixture.Users.GetUser();
-        var castedDateTime = DateTime.Parse(readDateTime);
-        sut.UpdateGeolocation(1, 1, 1, 1, 1, castedDateTime.AddDays(-1));
+        var readDateTime = DateTime.Parse(readDateTimeRaw);
+        sut.UpdateGeolocation(1, 1, 1, 1, 1, readDateTime.AddDays(-1));
 
         //Act
         var result = sut.UpdateGeolocation(latitude, longitude, accuracy, heading,
-                                           speed, castedDateTime);
+                                           speed, readDateTime);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -143,7 +143,7 @@ public class UserTests
         sut.Location!.Accuracy.Should().Be(accuracy);
         sut.Location!.Heading.Should().Be(heading);
         sut.Location!.Speed.Should().Be(speed);
-        sut.Location!.LastUpdateDate.Should().Be(castedDateTime);
+        sut.Location!.LastUpdateDate.Should().Be(readDateTime);
     }
 
     [Theory]

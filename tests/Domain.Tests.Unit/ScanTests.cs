@@ -4,6 +4,7 @@ using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.Entities;
 using MultiProject.Delivery.Domain.Scans.Enums;
 using MultiProject.Delivery.Domain.Scans.ValueTypes;
+using MultiProject.Delivery.Domain.Tests.Unit.Data;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
@@ -56,15 +57,12 @@ public class ScanTests
     }
 
     [Theory]
-    [InlineData(1, "00000000-0000-0000-0000-000000000000")]
-    [InlineData(0, "80f77817-5a3d-4e1d-b203-6210fae49bf3")]
-    [InlineData(0, "00000000-0000-0000-0000-000000000000")]
-    public void Create_WhenInvalidDataProvided_ThenFailureReturned(int intTransportUnitId, Guid guidDelivererId)
+    [MemberData(nameof(ScanTestsData.Create_InvalidData), MemberType = typeof(ScanTestsData))]
+    public void Create_WhenInvalidDataProvided_ThenFailureReturned(int intTransportUnitId, UserId userId)
     {
         //Arrange
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         TransportUnitId transportUnitId = new(intTransportUnitId);
-        UserId userId = new(guidDelivererId);
 
         //Act
         ErrorOr<Scan> result = Scan.Create(transportUnitId, userId, dateTimeProvider);
