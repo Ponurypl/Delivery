@@ -175,7 +175,7 @@ public static class DomainFixture
                            o.RecipientTown = f.Address.City();
                            o.RecipientCountry = f.Address.Country();
                            o.RecipientPostCode = f.Address.ZipCode();
-                           o.UnitOfMeasureId = f.Random.Number(10);
+                           o.UnitOfMeasureId = f.Random.Number(1, 10);
                            o.Amount = f.Random.Double(10, 50);
                        })
                 .Generate();

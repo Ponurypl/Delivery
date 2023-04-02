@@ -10,7 +10,6 @@ namespace MultiProject.Delivery.Application.Common.Validators;
 /// 123.4500 has an scale of 4 and a precision of 7, but an effective scale
 /// and precision of 2 and 5 respectively.
 /// </summary>
-//TODO: obecna implementacja PrcisionScale nie jest w stanie obsłużyć wartości ujemnych, wypadałoby poprawić
 public class PrecisionScaleValidator<T> : PropertyValidator<T, double>
 {
     private readonly int _scale;
@@ -32,8 +31,9 @@ public class PrecisionScaleValidator<T> : PropertyValidator<T, double>
 
     public override bool IsValid(ValidationContext<T> context, double doubleValue)
     {
-        var scale = GetScale(doubleValue);
-        var precision = GetPrecision(doubleValue, scale);
+        var absoluteDoubleValue = Math.Abs(doubleValue);
+        var scale = GetScale(absoluteDoubleValue);
+        var precision = GetPrecision(absoluteDoubleValue, scale);
         var actualIntegerDigits = precision - scale;
         var expectedIntegerDigits = _precision - _scale;
         if (scale > _scale || actualIntegerDigits > expectedIntegerDigits)
