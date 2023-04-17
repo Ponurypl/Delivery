@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using MultiProject.Delivery.Domain.Attachments.Entities;
 using MultiProject.Delivery.Domain.Attachments.ValueTypes;
+using MultiProject.Delivery.Domain.Common.ValueTypes;
 using MultiProject.Delivery.Domain.Deliveries.DTO;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
@@ -40,6 +41,18 @@ public static class DomainFixture
                .RuleFor(x => x.PhoneNumber, f => f.Phone.PhoneNumber())
                .RuleFor(x => x.Role, role)
                .RuleFor(x => x.IsActive, true)
+               .RuleFor(x => x.Location, Locations.GetAdvancedGeolocation())
+               .Generate();
+    }
+
+    public class Locations
+    {
+        //prawdopodobnie dane nie przejdą przez validator-y
+        public static AdvancedGeolocation GetAdvancedGeolocation()
+            => new Faker<AdvancedGeolocation>()
+               .CustomInstantiator(f => new AdvancedGeolocation(f.Random.Double(), f.Random.Double(),
+                                                                f.Random.Double(), f.Date.Recent(),
+                                                                f.Random.Double(), f.Random.Double()))
                .Generate();
     }
 
