@@ -3,7 +3,6 @@ using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Tests.Integration.Helpers;
 using MultiProject.Delivery.Application.Users.Commands.CreateUser;
 using MultiProject.Delivery.Domain.Users.Entities;
-using MultiProject.Delivery.Domain.Users.ValueTypes;
 using MultiProject.Delivery.Application.Common.Cryptography;
 using MultiProject.Delivery.Application.Tests.Integration.Data;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;

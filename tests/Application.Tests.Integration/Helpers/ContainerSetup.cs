@@ -1,6 +1,9 @@
 ﻿using FluentValidation;
+using Mapster;
+using MapsterMapper;
 using Microsoft.Extensions.Logging;
 using MultiProject.Delivery.Application.Common.Behaviors;
+using System.Reflection;
 
 namespace MultiProject.Delivery.Application.Tests.Integration.Helpers;
 
@@ -26,6 +29,16 @@ public class ContainerSetup
                                 c.RegisterServicesFromAssemblyContaining(typeof(ConfigureServices));
                                 c.AddOpenBehavior(typeof(ValidationBehavior<,>));
                             });
+        return this;
+    }
+
+    public ContainerSetup AddMapper()
+    {
+        TypeAdapterConfig.GlobalSettings.Scan(typeof(ConfigureServices).Assembly);
+        TypeAdapterConfig.GlobalSettings.Compile();
+
+        _services.AddSingleton(TypeAdapterConfig.GlobalSettings);
+        _services.AddScoped<IMapper, ServiceMapper>();
         return this;
     }
 
