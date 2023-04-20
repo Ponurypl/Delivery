@@ -43,7 +43,7 @@ public class RecipientTests
     }
 
     [Theory]
-    [ClassData(typeof(RecipientCreateWrongData))]
+    [MemberData(nameof(RecipientCreateTestData.Create_InvalidData), MemberType = typeof(RecipientCreateTestData))]
     public void Create_WhenInvalidDataProvided_ThenFailureReturned(string? companyName, string country, string? flatNumber, string? lastName,
                                             string? name, string phoneNumber, string postCode, string? street,
                                             string streetNumber, string town)

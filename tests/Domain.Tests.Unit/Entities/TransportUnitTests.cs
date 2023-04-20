@@ -30,7 +30,8 @@ public class TransportUnitTests
         string barcode = _domainFixture.TransportUnits.Barcode;
 
         //Act
-        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, barcode, null, null, _transport);
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient,
+                                                             barcode, null, null, _transport);
 
         //Arrange
         result.IsError.Should().BeFalse();
@@ -63,7 +64,8 @@ public class TransportUnitTests
         UnitOfMeasureId unitOfMeasureId = _domainFixture.UnitOfMeasures.GetId();
 
         //Act
-        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, _transport);
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient,
+                                                             null, amount, unitOfMeasureId, _transport);
 
         //Arrange
         result.IsError.Should().BeFalse();
@@ -87,14 +89,16 @@ public class TransportUnitTests
     }
 
     [Theory]
-    [ClassData(typeof(TransportUnitCreateWrongData))]
-    public void Create_UniqueUnitTransportUnit_WhenInvalidDataProvided_ThenFailureReturned(string number, string additionalInformation, string description)
+    [MemberData(nameof(TransportUnitTestData.Create_InvalidData), MemberType = typeof(TransportUnitTestData))]
+    public void Create_UniqueUnitTransportUnit_WhenInvalidDataProvided_ThenFailureReturned(string number,  string description)
     {
         //Arrange
         string barcode = _domainFixture.TransportUnits.Barcode;
+        string additionalInformation = _domainFixture.TransportUnits.AdditionalInformation;
 
         //Act
-        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, barcode, null, null, _transport);
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient,
+                                                             barcode, null, null, _transport);
 
         //Arrange
         result.IsError.Should().BeTrue();
@@ -103,15 +107,17 @@ public class TransportUnitTests
     }
 
     [Theory]
-    [ClassData(typeof(TransportUnitCreateWrongData))]
-    public void Create_MultiUnitTransportUnit_WhenInvalidDataProvided_ThenFailureReturned(string number, string additionalInformation, string description)
+    [MemberData(nameof(TransportUnitTestData.Create_InvalidData), MemberType = typeof(TransportUnitTestData))]
+    public void Create_MultiUnitTransportUnit_WhenInvalidDataProvided_ThenFailureReturned(string number, string description)
     {
         //Arrange
         double amount = _domainFixture.TransportUnits.Amount;
+        string additionalInformation = _domainFixture.TransportUnits.AdditionalInformation;
         UnitOfMeasureId unitOfMeasureId = _domainFixture.UnitOfMeasures.GetId();
 
         //Act
-        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, _transport);
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient,
+                                                             null, amount, unitOfMeasureId, _transport);
 
         //Arrange
         result.IsError.Should().BeTrue();
@@ -120,17 +126,17 @@ public class TransportUnitTests
     }
 
     [Theory]
-    [ClassData(typeof(TransportUnitCreateWrongTransportUnitDetailsData))]
-    public void Create_WhenInvalidTransportUnitDetailsDataProvided_ThenFailureReturned(string? barcode, double? amount, int? rawUnitOfMeasureId)
+    [MemberData(nameof(TransportUnitTestData.Create_Details_InvalidData), MemberType = typeof(TransportUnitTestData))]
+    public void Create_WhenInvalidTransportUnitDetailsDataProvided_ThenFailureReturned(
+        string? barcode, double? amount, UnitOfMeasureId? unitOfMeasureId)
     {
         //Arrange
-        UnitOfMeasureId? unitOfMeasureId = rawUnitOfMeasureId is null ? null : new UnitOfMeasureId((int)rawUnitOfMeasureId);
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(_domainFixture.TransportUnits.Number,
                                                              _domainFixture.TransportUnits.AdditionalInformation,
-                                                             _domainFixture.TransportUnits.Description, _recipient, barcode,
-                                                             amount, unitOfMeasureId, _transport);
+                                                             _domainFixture.TransportUnits.Description, _recipient,
+                                                             barcode, amount, unitOfMeasureId, _transport);
 
         //Arrange
         result.IsError.Should().BeTrue();
@@ -148,7 +154,8 @@ public class TransportUnitTests
         string barcode = _domainFixture.TransportUnits.Barcode;
 
         //Act
-        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, barcode, null, null, null!);
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient,
+                                                             barcode, null, null, null!);
 
         //Arrange
         result.IsError.Should().BeTrue();
@@ -167,7 +174,8 @@ public class TransportUnitTests
         UnitOfMeasureId unitOfMeasureId = _domainFixture.UnitOfMeasures.GetId();
 
         //Act
-        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, null!);
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient,
+                                                             null, amount, unitOfMeasureId, null!);
 
         //Arrange
         result.IsError.Should().BeTrue();
@@ -185,7 +193,8 @@ public class TransportUnitTests
         string barcode = _domainFixture.TransportUnits.Barcode;
 
         //Act
-        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, null!, barcode, null, null, _transport);
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, null!,
+                                                             barcode, null, null, _transport);
 
         //Arrange
         result.IsError.Should().BeTrue();
@@ -204,13 +213,12 @@ public class TransportUnitTests
         UnitOfMeasureId unitOfMeasureId = _domainFixture.UnitOfMeasures.GetId();
 
         //Act
-        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, null!, null, amount, unitOfMeasureId, _transport);
+        ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, null!,
+                                                             null, amount, unitOfMeasureId, _transport);
 
         //Arrange
         result.IsError.Should().BeTrue();
         result.FirstError.Type.Should().Be(ErrorType.Validation);
         result.FirstError.Should().Be(DomainFailures.Common.MissingChildObject);
     }
-
-
 }

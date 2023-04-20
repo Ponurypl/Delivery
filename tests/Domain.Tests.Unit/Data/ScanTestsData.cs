@@ -3,7 +3,7 @@ using MultiProject.Delivery.Domain.Users.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Tests.Unit.Data;
 
-public class ScanTestsData
+public static class ScanTestsData
 {
     public static IEnumerable<object[]> Create_InvalidData()
     {
