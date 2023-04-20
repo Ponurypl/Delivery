@@ -3,26 +3,27 @@ using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Tests.Unit.Data;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 
-namespace MultiProject.Delivery.Domain.Tests.Unit;
+namespace MultiProject.Delivery.Domain.Tests.Unit.ValueTypes;
 public class RecipientTests
 {
+    private readonly DomainFixture _domainFixture = new();
     [Fact]
     public void Create_WhenValidDataProvided_ThenValidObjectReturned()
     {
         //Arrange
-        string companyName = DomainFixture.Recipients.CompanyName;
-        string country = DomainFixture.Recipients.Country;
-        string flatNumber = DomainFixture.Recipients.FlatNumber;
-        string lastName = DomainFixture.Recipients.LastName;
-        string name = DomainFixture.Recipients.Name;
-        string phoneNumber = DomainFixture.Recipients.PhoneNumber;
-        string postCode = DomainFixture.Recipients.PostCode;
-        string street = DomainFixture.Recipients.Street;
-        string streetNumber = DomainFixture.Recipients.StreetNumber;
-        string town = DomainFixture.Recipients.Town;
+        string companyName = _domainFixture.Recipients.CompanyName;
+        string country = _domainFixture.Recipients.Country;
+        string flatNumber = _domainFixture.Recipients.FlatNumber;
+        string lastName = _domainFixture.Recipients.LastName;
+        string name = _domainFixture.Recipients.Name;
+        string phoneNumber = _domainFixture.Recipients.PhoneNumber;
+        string postCode = _domainFixture.Recipients.PostCode;
+        string street = _domainFixture.Recipients.Street;
+        string streetNumber = _domainFixture.Recipients.StreetNumber;
+        string town = _domainFixture.Recipients.Town;
 
         //Act
-        ErrorOr <Recipient> result = Recipient.Create(companyName, country, flatNumber, lastName, name, phoneNumber, postCode, street, streetNumber, town);
+        ErrorOr<Recipient> result = Recipient.Create(companyName, country, flatNumber, lastName, name, phoneNumber, postCode, street, streetNumber, town);
 
         //Assert
         result.IsError.Should().BeFalse();

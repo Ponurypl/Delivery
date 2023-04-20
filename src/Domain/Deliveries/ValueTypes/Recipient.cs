@@ -1,6 +1,8 @@
-﻿namespace MultiProject.Delivery.Domain.Deliveries.ValueTypes;
+﻿using MultiProject.Delivery.Domain.Common.Abstractions;
 
-public sealed class Recipient
+namespace MultiProject.Delivery.Domain.Deliveries.ValueTypes;
+
+public sealed class Recipient : ValueObject
 {
     public string? CompanyName { get; private set; }
     public string? Name { get; private set; }
@@ -12,6 +14,11 @@ public sealed class Recipient
     public string Town { get; private set; }
     public string Country { get; private set; }
     public string PostCode { get; private set; }
+
+    
+#pragma warning disable CS8618, IDE0051
+    private Recipient() { }
+#pragma warning restore 
 
     private Recipient(string? companyName, string country, string? flatNumber, string? lastName,
                       string? name, string phoneNumber, string postCode, string? street,
@@ -54,5 +61,19 @@ public sealed class Recipient
 
         return new Recipient(companyName, country, flatNumber, lastName, name, phoneNumber, postCode, street,
                              streetNumber, town);
+    }
+
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+        yield return CompanyName;
+        yield return Country;
+        yield return FlatNumber;
+        yield return LastName;
+        yield return Name;
+        yield return PhoneNumber;
+        yield return PostCode;
+        yield return Street;
+        yield return StreetNumber;
+        yield return Town;
     }
 }

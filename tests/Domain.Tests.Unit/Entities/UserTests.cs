@@ -5,10 +5,12 @@ using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.Enums;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
-namespace MultiProject.Delivery.Domain.Tests.Unit;
+namespace MultiProject.Delivery.Domain.Tests.Unit.Entities;
 
 public class UserTests
 {
+    private readonly DomainFixture _fixture = new();
+
     [Theory]
     [MemberData(nameof(UserTestsData.Create_InvalidData), MemberType = typeof(UserTestsData))]
     public void Create_WhenRequiredParametersAreNullOrEmpty_ThenFailureIsReturned(
@@ -30,9 +32,9 @@ public class UserTests
     {
         //Arrange
         var role = UserRole.Deliverer;
-        var username = DomainFixture.Users.Username;
-        var password = DomainFixture.Users.Password;
-        var phone = DomainFixture.Users.PhoneNumber;
+        var username = _fixture.Users.Username;
+        var password = _fixture.Users.Password;
+        var phone = _fixture.Users.PhoneNumber;
 
         //Act
         var result = User.Create(role, username, password, phone);
@@ -54,9 +56,9 @@ public class UserTests
     {
         //Arrange
         var role = UserRole.Deliverer;
-        var username = DomainFixture.Users.Username;
-        var password = DomainFixture.Users.Password;
-        var phone = DomainFixture.Users.PhoneNumber;
+        var username = _fixture.Users.Username;
+        var password = _fixture.Users.Password;
+        var phone = _fixture.Users.PhoneNumber;
 
         //Act
         var result = User.Create(role, username, password, phone);
@@ -74,7 +76,7 @@ public class UserTests
         double speed, string readDateTimeRaw)
     {
         //Arrange
-        var sut = DomainFixture.Users.GetUser();
+        var sut = _fixture.Users.GetUser();
         var readDateTime = DateTime.Parse(readDateTimeRaw);
 
         //Act
@@ -104,7 +106,7 @@ public class UserTests
         double speed, string readDateTimeRaw)
     {
         //Arrange
-        var sut = DomainFixture.Users.GetUser();
+        var sut = _fixture.Users.GetUser();
         var readDateTime = DateTime.Parse(readDateTimeRaw);
 
         //Act
@@ -126,7 +128,7 @@ public class UserTests
         double speed, string readDateTimeRaw)
     {
         //Arrange
-        var sut = DomainFixture.Users.GetUser();
+        var sut = _fixture.Users.GetUser();
         var readDateTime = DateTime.Parse(readDateTimeRaw);
         sut.UpdateGeolocation(1, 1, 1, 1, 1, readDateTime.AddDays(-1));
 
@@ -152,7 +154,7 @@ public class UserTests
     public void CheckIfUserIsDeliverer_WhenUserIsDeliverer_ThenReturnSuccess(UserRole role)
     {
         //Arrange
-        var sut = DomainFixture.Users.GetUser(role);
+        var sut = _fixture.Users.GetUser(role);
 
         //Act
         var result = sut.CheckIfUserIsDeliverer();
@@ -167,7 +169,7 @@ public class UserTests
     public void CheckIfUserIsDeliverer_WhenUserIsNotDeliverer_ThenReturnFailure(UserRole role)
     {
         //Arrange
-        var sut = DomainFixture.Users.GetUser(role);
+        var sut = _fixture.Users.GetUser(role);
 
         //Act
         var result = sut.CheckIfUserIsDeliverer();
@@ -177,14 +179,14 @@ public class UserTests
         result.FirstError.Type.Should().Be(ErrorType.Conflict);
         result.FirstError.Should().Be(DomainFailures.Users.UserDoesNotMeetRole);
     }
-    
+
     [Theory]
     [InlineData(UserRole.Manager)]
     [InlineData(UserRole.Manager | UserRole.Deliverer)]
     public void CheckIfUserIsManager_WhenUserIsManager_ThenReturnSuccess(UserRole role)
     {
         //Arrange
-        var sut = DomainFixture.Users.GetUser(role);
+        var sut = _fixture.Users.GetUser(role);
 
         //Act
         var result = sut.CheckIfUserIsManager();
@@ -199,7 +201,7 @@ public class UserTests
     public void CheckIfUserIsManager_WhenUserIsNotManager_ThenReturnFailure(UserRole role)
     {
         //Arrange
-        var sut = DomainFixture.Users.GetUser(role);
+        var sut = _fixture.Users.GetUser(role);
 
         //Act
         var result = sut.CheckIfUserIsManager();

@@ -9,9 +9,12 @@ using MultiProject.Delivery.Domain.Tests.Unit.Data;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
-namespace MultiProject.Delivery.Domain.Tests.Unit;
+namespace MultiProject.Delivery.Domain.Tests.Unit.Entities;
 public class AttachmentsTests
 {
+    private readonly DomainFixture _domainFixture = new();
+
+
     [Fact]
     public void Create_WithPayload_WhenValidDataProvided_ThenNewObjectReturned()
     {
@@ -20,9 +23,9 @@ public class AttachmentsTests
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
 
-        byte[] payload = DomainFixture.Attachments.Payload;
-        UserId userId = DomainFixture.Users.GetId();
-        TransportId transportId = DomainFixture.Transports.GetId();
+        byte[] payload = _domainFixture.Attachments.Payload;
+        UserId userId = _domainFixture.Users.GetId();
+        TransportId transportId = _domainFixture.Transports.GetId();
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, dateTimeProvider);
@@ -32,7 +35,7 @@ public class AttachmentsTests
 
         Attachment obj = result.Value;
         obj.Should().NotBeNull();
-        obj.Status.Should().Be(AttachmentStatus.Valid);        
+        obj.Status.Should().Be(AttachmentStatus.Valid);
         obj.CreatorId.Should().Be(userId);
         obj.LastUpdateDate.Should().Be(creationDate);
         obj.TransportId.Should().Be(transportId);
@@ -52,9 +55,9 @@ public class AttachmentsTests
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
 
-        string additionalInformation = DomainFixture.Attachments.AdditionalInformation;
-        UserId userId = DomainFixture.Users.GetId();
-        TransportId transportId = DomainFixture.Transports.GetId();
+        string additionalInformation = _domainFixture.Attachments.AdditionalInformation;
+        UserId userId = _domainFixture.Users.GetId();
+        TransportId transportId = _domainFixture.Transports.GetId();
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportId, additionalInformation, dateTimeProvider);
@@ -70,7 +73,7 @@ public class AttachmentsTests
         obj.TransportId.Should().Be(transportId);
         obj.AdditionalInformation.Should().Be(additionalInformation);
         obj.Id.Should().Be(AttachmentId.Empty);
-        obj.TransportUnitId.Should().BeNull();        
+        obj.TransportUnitId.Should().BeNull();
         obj.ScanId.Should().BeNull();
         obj.Payload.Should().BeNull();
     }
@@ -83,10 +86,10 @@ public class AttachmentsTests
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
 
-        byte[] payload = DomainFixture.Attachments.Payload;
-        string additionalInformation = DomainFixture.Attachments.AdditionalInformation;
-        UserId userId = DomainFixture.Users.GetId();
-        TransportId transportId = DomainFixture.Transports.GetId();
+        byte[] payload = _domainFixture.Attachments.Payload;
+        string additionalInformation = _domainFixture.Attachments.AdditionalInformation;
+        UserId userId = _domainFixture.Users.GetId();
+        TransportId transportId = _domainFixture.Transports.GetId();
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, additionalInformation, dateTimeProvider);
@@ -162,13 +165,13 @@ public class AttachmentsTests
         result.FirstError.Should().Be(DomainFailures.Attachments.InvalidAttachment);
     }
 
-    [Fact] 
+    [Fact]
     public void Create_WithAdditionalInformation_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
     {
         //Arrange
-        UserId userId = DomainFixture.Users.GetId();
-        TransportId transportUnitId = DomainFixture.Transports.GetId();
-        string additionalInformation = DomainFixture.Attachments.AdditionalInformation;
+        UserId userId = _domainFixture.Users.GetId();
+        TransportId transportUnitId = _domainFixture.Transports.GetId();
+        string additionalInformation = _domainFixture.Attachments.AdditionalInformation;
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, additionalInformation, null!);
@@ -179,14 +182,14 @@ public class AttachmentsTests
         result.FirstError.Should().Be(DomainFailures.Common.MissingRequiredDependency);
     }
 
-    [Fact] 
+    [Fact]
     public void Create_WithAdditionalInformationAndPayload_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
     {
         //Arrange
-        UserId userId = DomainFixture.Users.GetId();
-        TransportId transportUnitId = DomainFixture.Transports.GetId();
-        string additionalInformation = DomainFixture.Attachments.AdditionalInformation;
-        byte[] payload = DomainFixture.Attachments.Payload;
+        UserId userId = _domainFixture.Users.GetId();
+        TransportId transportUnitId = _domainFixture.Transports.GetId();
+        string additionalInformation = _domainFixture.Attachments.AdditionalInformation;
+        byte[] payload = _domainFixture.Attachments.Payload;
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, payload, additionalInformation, null!);
@@ -201,9 +204,9 @@ public class AttachmentsTests
     public void Create_WithPayload_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
     {
         //Arrange
-        UserId userId = DomainFixture.Users.GetId();
-        TransportId transportUnitId = DomainFixture.Transports.GetId();
-        byte[] payload = DomainFixture.Attachments.Payload;
+        UserId userId = _domainFixture.Users.GetId();
+        TransportId transportUnitId = _domainFixture.Transports.GetId();
+        byte[] payload = _domainFixture.Attachments.Payload;
 
         //Act
         ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, payload, null!);
@@ -218,10 +221,10 @@ public class AttachmentsTests
     public void AddScanId_WhenValidDataProvided_ThenScanIdIsUpdated()
     {
         //Arrange
-        ScanId scanId = DomainFixture.Scans.GetId();
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetId();
+        ScanId scanId = _domainFixture.Scans.GetId();
+        TransportUnitId transportUnitId = _domainFixture.TransportUnits.GetId();
 
-        Attachment sut = DomainFixture.Attachments.GetAttachment();
+        Attachment sut = _domainFixture.Attachments.GetAttachment();
 
         //Act
         ErrorOr<Updated> result = sut.SetScan(transportUnitId, scanId);
@@ -237,7 +240,7 @@ public class AttachmentsTests
     public void SetScanId_WhenInvalidDataProvided_ThenValidationFailureIsReturned(TransportUnitId transportUnitId, ScanId scanId)
     {
         //Arrange
-        Attachment sut = DomainFixture.Attachments.GetAttachment();
+        Attachment sut = _domainFixture.Attachments.GetAttachment();
 
         //Act
         ErrorOr<Updated> result = sut.SetScan(transportUnitId, scanId);
@@ -252,9 +255,9 @@ public class AttachmentsTests
     public void SetTransportUnitId_WhenValidDataIsProvided_ThenTransportUnitIdIsUpdated()
     {
         //Arrange
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetId();
-        Attachment sut = DomainFixture.Attachments.GetAttachment();
-        
+        TransportUnitId transportUnitId = _domainFixture.TransportUnits.GetId();
+        Attachment sut = _domainFixture.Attachments.GetAttachment();
+
         //Act
         ErrorOr<Updated> result = sut.SetTransportUnit(transportUnitId);
 
@@ -270,7 +273,7 @@ public class AttachmentsTests
     {
         //Arrange
         TransportUnitId transportUnitId = TransportUnitId.Empty;
-        Attachment sut = DomainFixture.Attachments.GetAttachment();
+        Attachment sut = _domainFixture.Attachments.GetAttachment();
 
         //Act
         ErrorOr<Updated> result = sut.SetTransportUnit(transportUnitId);

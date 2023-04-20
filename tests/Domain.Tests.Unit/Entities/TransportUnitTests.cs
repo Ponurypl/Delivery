@@ -7,26 +7,27 @@ using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
 using MultiProject.Delivery.Domain.Tests.Unit.Data;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 
-namespace MultiProject.Delivery.Domain.Tests.Unit;
+namespace MultiProject.Delivery.Domain.Tests.Unit.Entities;
 public class TransportUnitTests
 {
+    private readonly DomainFixture _domainFixture = new();
     private readonly Transport _transport;
     private readonly Recipient _recipient;
 
     public TransportUnitTests()
     {
-        _transport = DomainFixture.Transports.GetEmptyTransport();
-        _recipient = DomainFixture.Recipients.GetRecipient();
+        _transport = _domainFixture.Transports.GetEmptyTransport();
+        _recipient = _domainFixture.Recipients.GetRecipient();
     }
 
     [Fact]
     public void Create_UniqueUnitTransportUnit_WhenValidDataProvided_ThenValidObjectReturned()
     {
         //Arrange
-        string number = DomainFixture.TransportUnits.Number;
-        string additionalInformation = DomainFixture.TransportUnits.AdditionalInformation;
-        string description = DomainFixture.TransportUnits.Description;
-        string barcode = DomainFixture.TransportUnits.Barcode;
+        string number = _domainFixture.TransportUnits.Number;
+        string additionalInformation = _domainFixture.TransportUnits.AdditionalInformation;
+        string description = _domainFixture.TransportUnits.Description;
+        string barcode = _domainFixture.TransportUnits.Barcode;
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, barcode, null, null, _transport);
@@ -55,11 +56,11 @@ public class TransportUnitTests
     public void Create_MultiUnitTransportUnit_WhenValidDataProvided_ThenValidObjectReturned()
     {
         //Arrange
-        string number = DomainFixture.TransportUnits.Number;
-        string additionalInformation = DomainFixture.TransportUnits.AdditionalInformation;
-        string description = DomainFixture.TransportUnits.Description;
-        double amount = DomainFixture.TransportUnits.Amount;
-        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetId();
+        string number = _domainFixture.TransportUnits.Number;
+        string additionalInformation = _domainFixture.TransportUnits.AdditionalInformation;
+        string description = _domainFixture.TransportUnits.Description;
+        double amount = _domainFixture.TransportUnits.Amount;
+        UnitOfMeasureId unitOfMeasureId = _domainFixture.UnitOfMeasures.GetId();
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, _transport);
@@ -90,7 +91,7 @@ public class TransportUnitTests
     public void Create_UniqueUnitTransportUnit_WhenInvalidDataProvided_ThenFailureReturned(string number, string additionalInformation, string description)
     {
         //Arrange
-        string barcode = DomainFixture.TransportUnits.Barcode;
+        string barcode = _domainFixture.TransportUnits.Barcode;
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, barcode, null, null, _transport);
@@ -106,8 +107,8 @@ public class TransportUnitTests
     public void Create_MultiUnitTransportUnit_WhenInvalidDataProvided_ThenFailureReturned(string number, string additionalInformation, string description)
     {
         //Arrange
-        double amount = DomainFixture.TransportUnits.Amount;
-        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetId();
+        double amount = _domainFixture.TransportUnits.Amount;
+        UnitOfMeasureId unitOfMeasureId = _domainFixture.UnitOfMeasures.GetId();
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, _transport);
@@ -126,9 +127,9 @@ public class TransportUnitTests
         UnitOfMeasureId? unitOfMeasureId = rawUnitOfMeasureId is null ? null : new UnitOfMeasureId((int)rawUnitOfMeasureId);
 
         //Act
-        ErrorOr<TransportUnit> result = TransportUnit.Create(DomainFixture.TransportUnits.Number,
-                                                             DomainFixture.TransportUnits.AdditionalInformation,
-                                                             DomainFixture.TransportUnits.Description, _recipient, barcode,
+        ErrorOr<TransportUnit> result = TransportUnit.Create(_domainFixture.TransportUnits.Number,
+                                                             _domainFixture.TransportUnits.AdditionalInformation,
+                                                             _domainFixture.TransportUnits.Description, _recipient, barcode,
                                                              amount, unitOfMeasureId, _transport);
 
         //Arrange
@@ -141,10 +142,10 @@ public class TransportUnitTests
     public void Create_UniqueUnitTransportUnit_WhenParentObjectNotProvided_ThenFailureReturned()
     {
         //Arrange
-        string number = DomainFixture.TransportUnits.Number;
-        string additionalInformation = DomainFixture.TransportUnits.AdditionalInformation;
-        string description = DomainFixture.TransportUnits.Description;
-        string barcode = DomainFixture.TransportUnits.Barcode;
+        string number = _domainFixture.TransportUnits.Number;
+        string additionalInformation = _domainFixture.TransportUnits.AdditionalInformation;
+        string description = _domainFixture.TransportUnits.Description;
+        string barcode = _domainFixture.TransportUnits.Barcode;
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, barcode, null, null, null!);
@@ -159,11 +160,11 @@ public class TransportUnitTests
     public void Create_MultiUnitTransportUnit_WhenParentObjectNotProvided_ThenFailureReturned()
     {
         //Arrange
-        string number = DomainFixture.TransportUnits.Number;
-        string additionalInformation = DomainFixture.TransportUnits.AdditionalInformation;
-        string description = DomainFixture.TransportUnits.Description;
-        double amount = DomainFixture.TransportUnits.Amount;
-        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetId();
+        string number = _domainFixture.TransportUnits.Number;
+        string additionalInformation = _domainFixture.TransportUnits.AdditionalInformation;
+        string description = _domainFixture.TransportUnits.Description;
+        double amount = _domainFixture.TransportUnits.Amount;
+        UnitOfMeasureId unitOfMeasureId = _domainFixture.UnitOfMeasures.GetId();
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, _recipient, null, amount, unitOfMeasureId, null!);
@@ -178,10 +179,10 @@ public class TransportUnitTests
     public void Create_UniqueUnitTransportUnit_WhenChildObjectNotProvided_ThenFailureReturned()
     {
         //Arrange
-        string number = DomainFixture.TransportUnits.Number;
-        string additionalInformation = DomainFixture.TransportUnits.AdditionalInformation;
-        string description = DomainFixture.TransportUnits.Description;
-        string barcode = DomainFixture.TransportUnits.Barcode;
+        string number = _domainFixture.TransportUnits.Number;
+        string additionalInformation = _domainFixture.TransportUnits.AdditionalInformation;
+        string description = _domainFixture.TransportUnits.Description;
+        string barcode = _domainFixture.TransportUnits.Barcode;
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, null!, barcode, null, null, _transport);
@@ -196,11 +197,11 @@ public class TransportUnitTests
     public void Create_MultiUnitTransportUnit_WhenChildObjectNotProvided_ThenFailureReturned()
     {
         //Arrange
-        string number = DomainFixture.TransportUnits.Number;
-        string additionalInformation = DomainFixture.TransportUnits.AdditionalInformation;
-        string description = DomainFixture.TransportUnits.Description;
-        double amount = DomainFixture.TransportUnits.Amount;
-        UnitOfMeasureId unitOfMeasureId = DomainFixture.UnitOfMeasures.GetId();
+        string number = _domainFixture.TransportUnits.Number;
+        string additionalInformation = _domainFixture.TransportUnits.AdditionalInformation;
+        string description = _domainFixture.TransportUnits.Description;
+        double amount = _domainFixture.TransportUnits.Amount;
+        UnitOfMeasureId unitOfMeasureId = _domainFixture.UnitOfMeasures.GetId();
 
         //Act
         ErrorOr<TransportUnit> result = TransportUnit.Create(number, additionalInformation, description, null!, null, amount, unitOfMeasureId, _transport);

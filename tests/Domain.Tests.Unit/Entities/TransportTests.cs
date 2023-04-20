@@ -8,20 +8,22 @@ using MultiProject.Delivery.Domain.Tests.Unit.Data;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
-namespace MultiProject.Delivery.Domain.Tests.Unit;
+namespace MultiProject.Delivery.Domain.Tests.Unit.Entities;
 public class TransportTests
 {
+    private readonly DomainFixture _fixture = new();
+
     [Fact]
     public void Create_WhenValidDataProvided_ThenNewObjectReturned()
     {
         //Arrange
 
-        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.Transports.GetTransportUnitsDtos();
-        UserId delivererId = DomainFixture.Users.GetId();
-        UserId managerId = DomainFixture.Users.GetId();
-        string number = DomainFixture.Transports.Number;
-        string additionalInformation = DomainFixture.Transports.AdditionalInformation;
-        double totalWeight = DomainFixture.Transports.TotalWeight;
+        List<NewTransportUnit> transportUnitsToCreate = _fixture.Transports.GetMixedTransportUnitsDto();
+        UserId delivererId = _fixture.Users.GetId();
+        UserId managerId = _fixture.Users.GetId();
+        string number = _fixture.Transports.Number;
+        string additionalInformation = _fixture.Transports.AdditionalInformation;
+        double totalWeight = _fixture.Transports.TotalWeight;
         DateTime startDate = new(2023, 03, 2, 15, 48, 0);
 
         DateTime creationDate = startDate.AddHours(-1);
@@ -77,11 +79,10 @@ public class TransportTests
     public void Create_WhenInvalidTransportUnitsProvided_ThenValidationFailureIsReturned(List<NewTransportUnit> transportUnitsToCreate)
     {
         //Arrange
-        UserId delivererId = DomainFixture.Users.GetId();
-        UserId managerId = DomainFixture.Users.GetId();
-        string number = DomainFixture.Transports.Number;
+        UserId delivererId = _fixture.Users.GetId();
+        UserId managerId = _fixture.Users.GetId();
+        string number = _fixture.Transports.Number;
         DateTime startDate = new(2024, 1, 1);
-
 
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(new DateTime(2023, 1, 1));
@@ -100,13 +101,13 @@ public class TransportTests
     public void Create_DependencyIsNotProvided_ThenUnexpectedFailureIsReturned()
     {
         //Arrange
-        UserId delivererId = DomainFixture.Users.GetId();
-        string number = DomainFixture.Transports.Number;
+        UserId delivererId = _fixture.Users.GetId();
+        string number = _fixture.Transports.Number;
         DateTime startDate = new(2023, 03, 2, 15, 48, 0);
-        UserId managerId = DomainFixture.Users.GetId();
-        string additionalInformation = DomainFixture.Transports.AdditionalInformation;
-        double totalWeight = DomainFixture.Transports.TotalWeight;
-        List<NewTransportUnit> transportUnitsToCreate = DomainFixture.Transports.GetTransportUnitsDtos();
+        UserId managerId = _fixture.Users.GetId();
+        string additionalInformation = _fixture.Transports.AdditionalInformation;
+        double totalWeight = _fixture.Transports.TotalWeight;
+        List<NewTransportUnit> transportUnitsToCreate = _fixture.Transports.GetMixedTransportUnitsDto();
 
         IDateTime dateTimeProvider = null!;
 

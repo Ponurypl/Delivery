@@ -4,16 +4,17 @@ using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
 using MultiProject.Delivery.Domain.Tests.Unit.Data;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 
-namespace MultiProject.Delivery.Domain.Tests.Unit;
+namespace MultiProject.Delivery.Domain.Tests.Unit.Entities;
 
 public class UnitOfMeasureTests
 {
+    private readonly DomainFixture _domainFixture = new();
     [Theory]
-    [MemberData(nameof(UnitOfMeasureTestsData.Create_InvalidData), MemberType = typeof(UnitOfMeasureTestsData))]    
+    [MemberData(nameof(UnitOfMeasureTestsData.Create_InvalidData), MemberType = typeof(UnitOfMeasureTestsData))]
     public void Create_WhenRequiredParametersAreNullOrEmpty_ThenFailureIsReturned(string name, string symbol)
     {
         //Arrange
-        
+
         //Act
         var result = UnitOfMeasure.Create(name, symbol, null);
 
@@ -27,9 +28,9 @@ public class UnitOfMeasureTests
     public void Create_WhenValidDataProvided_ThenNewValidObjectCreated()
     {
         //Arrange
-        var name = DomainFixture.UnitOfMeasures.Name;
-        var symbol = DomainFixture.UnitOfMeasures.Symbol;
-        var description = DomainFixture.UnitOfMeasures.Description;
+        var name = _domainFixture.UnitOfMeasures.Name;
+        var symbol = _domainFixture.UnitOfMeasures.Symbol;
+        var description = _domainFixture.UnitOfMeasures.Description;
 
         //Act
         var result = UnitOfMeasure.Create(name, symbol, description);

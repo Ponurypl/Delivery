@@ -8,9 +8,11 @@ using MultiProject.Delivery.Domain.Tests.Unit.Data;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
 
-namespace MultiProject.Delivery.Domain.Tests.Unit;
+namespace MultiProject.Delivery.Domain.Tests.Unit.Entities;
 public class ScanTests
 {
+    private readonly DomainFixture _domainFixture = new();
+
 
     [Fact]
     public void Create_WhenValidDataProvided_ThenNewValidObjectReturned()
@@ -20,8 +22,8 @@ public class ScanTests
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
 
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetId();
-        UserId userId = DomainFixture.Users.GetId();
+        TransportUnitId transportUnitId = _domainFixture.TransportUnits.GetId();
+        UserId userId = _domainFixture.Users.GetId();
 
         //Act
         ErrorOr<Scan> result = Scan.Create(transportUnitId, userId, dateTimeProvider);
@@ -44,8 +46,8 @@ public class ScanTests
     public void Create_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
     {
         //Arrange
-        TransportUnitId transportUnitId = DomainFixture.TransportUnits.GetId();
-        UserId userId = DomainFixture.Users.GetId();
+        TransportUnitId transportUnitId = _domainFixture.TransportUnits.GetId();
+        UserId userId = _domainFixture.Users.GetId();
 
         //Act
         ErrorOr<Scan> result = Scan.Create(transportUnitId, userId, null!);
@@ -66,7 +68,7 @@ public class ScanTests
 
         //Act
         ErrorOr<Scan> result = Scan.Create(transportUnitId, userId, dateTimeProvider);
-        
+
         //Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Type.Should().Be(ErrorType.Validation);
@@ -81,7 +83,7 @@ public class ScanTests
     public void SetGeolocation_WhenValidDataProvided_ThenScanIsCreated(double latitude, double longitude, double accuracy)
     {
         //Arrange
-        Scan sut = DomainFixture.Scans.GetScan();
+        Scan sut = _domainFixture.Scans.GetScan();
 
         //Act
         ErrorOr<Updated> result = sut.SetGeolocation(latitude, longitude, accuracy);
@@ -101,7 +103,7 @@ public class ScanTests
     public void SetGeolocation_WhenInValidDataProvided_ThenFailureIsReturned(double latitude, double longitude, double accuracy)
     {
         //Arrange
-        Scan sut = DomainFixture.Scans.GetScan();
+        Scan sut = _domainFixture.Scans.GetScan();
 
         //Act
         ErrorOr<Updated> result = sut.SetGeolocation(latitude, longitude, accuracy);
@@ -121,7 +123,7 @@ public class ScanTests
     public void SetQuantity_WhenValidDataProvided_ThenScanQuantityIsUpdated(double quantity)
     {
         //Arrange
-        Scan sut = DomainFixture.Scans.GetScan();
+        Scan sut = _domainFixture.Scans.GetScan();
 
         //Act
         ErrorOr<Updated> result = sut.SetQuantity(quantity);
@@ -141,7 +143,7 @@ public class ScanTests
     public void SetQuantity_WhenInvalidDataProvided_ThenFailureIsReturned(double quantity)
     {
         //Arrange
-        Scan sut = DomainFixture.Scans.GetScan();
+        Scan sut = _domainFixture.Scans.GetScan();
 
         //Act
         ErrorOr<Updated> result = sut.SetQuantity(quantity);

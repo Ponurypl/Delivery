@@ -7,6 +7,7 @@ public static class UserTestsData
 {
     public static IEnumerable<object[]> Create_InvalidData()
     {
+        var fixture = new DomainFixture();
         //// Role, Username, Password, PhoneNumber
         yield return new object[] { UserRole.Deliverer, "", "", "" };
         yield return new object[] { UserRole.Deliverer, " ", " ", " " };
@@ -17,14 +18,14 @@ public static class UserTestsData
         yield return new object[] { (UserRole)(-5), "", "", "" };
         yield return new object[] { (UserRole)(-5), " ", " ", " " };
         yield return new object[] { (UserRole)(-5), null!, null!, null! };
-        yield return new object[] { UserRole.Deliverer, DomainFixture.Users.Username, DomainFixture.Users.Password, null! };
-        yield return new object[] { UserRole.Deliverer, DomainFixture.Users.Username, DomainFixture.Users.Password, "" };
-        yield return new object[] { UserRole.Deliverer, DomainFixture.Users.Username, DomainFixture.Users.Password, " " };
-        yield return new object[] { UserRole.Deliverer, null!, DomainFixture.Users.Password, DomainFixture.Users.PhoneNumber };
-        yield return new object[] { UserRole.Deliverer, "", DomainFixture.Users.Password, DomainFixture.Users.PhoneNumber };
-        yield return new object[] { UserRole.Deliverer, " ", DomainFixture.Users.Password, DomainFixture.Users.PhoneNumber };
-        yield return new object[] { UserRole.Deliverer, DomainFixture.Users.Username, null!, DomainFixture.Users.PhoneNumber };
-        yield return new object[] { UserRole.Deliverer, DomainFixture.Users.Username, "", DomainFixture.Users.PhoneNumber };
-        yield return new object[] { UserRole.Deliverer, DomainFixture.Users.Username, " ", DomainFixture.Users.PhoneNumber };
+        yield return new object[] { UserRole.Deliverer, fixture.Users.Username, fixture.Users.Password, null! };
+        yield return new object[] { UserRole.Deliverer, fixture.Users.Username, fixture.Users.Password, "" };
+        yield return new object[] { UserRole.Deliverer, fixture.Users.Username, fixture.Users.Password, " " };
+        yield return new object[] { UserRole.Deliverer, null!, fixture.Users.Password, fixture.Users.PhoneNumber };
+        yield return new object[] { UserRole.Deliverer, "", fixture.Users.Password, fixture.Users.PhoneNumber };
+        yield return new object[] { UserRole.Deliverer, " ", fixture.Users.Password, fixture.Users.PhoneNumber };
+        yield return new object[] { UserRole.Deliverer, fixture.Users.Username, null!, fixture.Users.PhoneNumber };
+        yield return new object[] { UserRole.Deliverer, fixture.Users.Username, "", fixture.Users.PhoneNumber };
+        yield return new object[] { UserRole.Deliverer, fixture.Users.Username, " ", fixture.Users.PhoneNumber };
     }
 }

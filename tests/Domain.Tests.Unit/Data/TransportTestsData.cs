@@ -8,93 +8,94 @@ public static class TransportTestsData
 {
     public static IEnumerable<object[]> Create_InvalidData()
     {
+        var fixture = new DomainFixture();
         // delivererId,
         // number,
         // startDate,
         // guidManagerId,
         // creationDate,
         // transportUnitsToCreate
-        
+
         yield return new object[] //start date before creation date
                      {
-                         DomainFixture.Users.GetId(), 
-                         DomainFixture.Transports.Number, 
+                         fixture.Users.GetId(),
+                         fixture.Transports.Number,
                          new DateTime(2021, 1, 1),
-                         DomainFixture.Users.GetId(),
+                         fixture.Users.GetId(),
                          new DateTime(2023, 1, 1),
-                         DomainFixture.Transports.GetTransportUnitsDtos()
+                         fixture.Transports.GetMixedTransportUnitsDto()
                      };
-        
+
         yield return new object[] //null start date
                      {
-                         DomainFixture.Users.GetId(),
-                         DomainFixture.Transports.Number,
+                         fixture.Users.GetId(),
+                         fixture.Transports.Number,
                          null!,
-                         DomainFixture.Users.GetId(),
+                         fixture.Users.GetId(),
                          new DateTime(2023, 1, 1),
-                         DomainFixture.Transports.GetTransportUnitsDtos()
+                         fixture.Transports.GetMixedTransportUnitsDto()
                      };
-        
+
         yield return new object[] //empty delivererId
                      {
                          UserId.Empty,
-                         DomainFixture.Transports.Number,
+                         fixture.Transports.Number,
                          new DateTime(2023, 1, 2),
-                         DomainFixture.Users.GetId(),
+                         fixture.Users.GetId(),
                          new DateTime(2023, 1, 1),
-                         DomainFixture.Transports.GetTransportUnitsDtos()
+                         fixture.Transports.GetMixedTransportUnitsDto()
                      };
-        
+
         yield return new object[] //empty managerId
                      {
-                         DomainFixture.Users.GetId(),
-                         DomainFixture.Transports.Number,
+                         fixture.Users.GetId(),
+                         fixture.Transports.Number,
                          new DateTime(2023, 1, 2),
                          UserId.Empty,
                          new DateTime(2023, 1, 1),
-                         DomainFixture.Transports.GetTransportUnitsDtos()
+                         fixture.Transports.GetMixedTransportUnitsDto()
                      };
-        
+
         yield return new object[] //empty number
                      {
-                         DomainFixture.Users.GetId(),
+                         fixture.Users.GetId(),
                          string.Empty,
                          new DateTime(2023, 1, 2),
-                         DomainFixture.Users.GetId(),
+                         fixture.Users.GetId(),
                          new DateTime(2023, 1, 1),
-                         DomainFixture.Transports.GetTransportUnitsDtos()
+                         fixture.Transports.GetMixedTransportUnitsDto()
                      };
-        
+
         yield return new object[] //null number
                      {
-                         DomainFixture.Users.GetId(),
+                         fixture.Users.GetId(),
                          null!,
                          new DateTime(2023, 1, 2),
-                         DomainFixture.Users.GetId(),
+                         fixture.Users.GetId(),
                          new DateTime(2023, 1, 1),
-                         DomainFixture.Transports.GetTransportUnitsDtos()
+                         fixture.Transports.GetMixedTransportUnitsDto()
                      };
-        
+
         yield return new object[] //empty List<NewTransportUnit>
                      {
-                         DomainFixture.Users.GetId(),
-                         DomainFixture.Transports.Number,
+                         fixture.Users.GetId(),
+                         fixture.Transports.Number,
                          new DateTime(2023, 1, 2),
-                         DomainFixture.Users.GetId(),
+                         fixture.Users.GetId(),
                          new DateTime(2023, 1, 1),
                          new List<NewTransportUnit>()
                      };
-        
+
         yield return new object[] //null List<NewTransportUnit>
                      {
-                         DomainFixture.Users.GetId(),
-                         DomainFixture.Transports.Number,
+                         fixture.Users.GetId(),
+                         fixture.Transports.Number,
                          new DateTime(2023, 1, 2),
-                         DomainFixture.Users.GetId(),
+                         fixture.Users.GetId(),
                          new DateTime(2023, 1, 1),
                          null!
                      };
-        
+
         yield return new object[] //mix
                      {
                          UserId.Empty,
@@ -104,7 +105,7 @@ public static class TransportTestsData
                          new DateTime(2023, 1, 1),
                          null!
                      };
-        
+
         yield return new object[] //mix
                      {
                          UserId.Empty,
@@ -112,21 +113,22 @@ public static class TransportTestsData
                          new DateTime(2021, 1, 1),
                          UserId.Empty,
                          new DateTime(2023, 1, 1),
-                         DomainFixture.Transports.GetTransportUnitsDtos()
+                         fixture.Transports.GetMixedTransportUnitsDto()
                      };
     }
 
     public static IEnumerable<object[]> Create_InvalidTransportUnitsData()
     {
-        var multiDto = DomainFixture.Transports.GetMultiTransportUnitDto();
+        var fixture = new DomainFixture();
+        var multiDto = fixture.Transports.GetMultiTransportUnitDto();
 
         yield return new object[] //duplicate number on MultiTransportUnits
                      {
                          new List<NewTransportUnit> { multiDto, multiDto }
                      };
 
-        var uniqueDto1 = DomainFixture.Transports.GetUniqueTransportUnitDto();
-        var uniqueDto2 = DomainFixture.Transports.GetUniqueTransportUnitDto("12345ABC/123");
+        var uniqueDto1 = fixture.Transports.GetUniqueTransportUnitDto();
+        var uniqueDto2 = fixture.Transports.GetUniqueTransportUnitDto("12345ABC/123");
         uniqueDto2.Barcode = uniqueDto1.Barcode;
         yield return new object[] //duplicate barcode on UniqueTransportUnits
                      {
