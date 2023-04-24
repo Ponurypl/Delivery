@@ -18,6 +18,7 @@ public partial class DomainFixture
                          .RuleFor(x => x.Username, f => f.Internet.UserName())
                          .RuleFor(x => x.Password, f => f.Internet.Password())
                          .RuleFor(x => x.PhoneNumber, f => f.Phone.PhoneNumber())
+                         .RuleFor(x => x.Location, Fixture.Locations.GetAdvancedGeolocation())
                          .RuleFor(x => x.IsActive, true);
         }
 

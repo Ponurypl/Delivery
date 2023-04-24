@@ -6,7 +6,11 @@ public sealed class AdvancedGeolocation : Geolocation
     public double Heading { get; private set; }
     public double Speed { get; private set; }
 
-    public AdvancedGeolocation(double latitude, double longitude, double accuracy, DateTime lastUpdateDate,
+#pragma warning disable CS8618, IDE0051
+    private AdvancedGeolocation() { }
+#pragma warning restore 
+
+    private AdvancedGeolocation(double latitude, double longitude, double accuracy, DateTime lastUpdateDate,
                                double heading, double speed)
         : base(latitude, longitude, accuracy)
     {
@@ -25,5 +29,13 @@ public sealed class AdvancedGeolocation : Geolocation
 
         return new AdvancedGeolocation(latitude, longitude, accuracy, lastUpdateDate,
                                        heading, speed);
+    }
+
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+        yield return LastUpdateDate;
+        yield return Heading;
+        yield return Speed;
+        yield return base.GetAtomicValues();
     }
 }

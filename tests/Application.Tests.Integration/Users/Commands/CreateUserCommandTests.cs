@@ -14,6 +14,7 @@ public class CreateUserCommandTests
     private readonly Mock<IUserRepository> _repoMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IHashService> _hashService;
+    private readonly DomainFixture _fixture = new();
 
     public CreateUserCommandTests()
     {
@@ -32,7 +33,7 @@ public class CreateUserCommandTests
     public async void CreateUserCommand_WhenValidDataProvided_ThenReturnsId()
     {
         //Arrange
-        var userId = DomainFixture.Users.GetId();
+        var userId = _fixture.Users.GetId();
         _repoMock.Setup(x => x.Add(It.IsAny<User>())).Callback<User>(u => u.SetId(userId));
         _hashService.Setup(s => s.Hash(It.IsAny<string>())).Returns("hashedPassword");
         
@@ -58,7 +59,7 @@ public class CreateUserCommandTests
     {
         //Arrange
         _repoMock.Setup(s => s.GetByUsernameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(DomainFixture.Users.GetUser());
+                 .ReturnsAsync(_fixture.Users.GetUser());
         
         ISender sender = _provider.GetRequiredService<ISender>();
 

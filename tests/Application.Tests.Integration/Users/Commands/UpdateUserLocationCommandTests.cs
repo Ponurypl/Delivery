@@ -13,6 +13,7 @@ public class UpdateUserLocationCommandTests
     private readonly IServiceProvider _provider;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IUserRepository> _repositoryMock;
+    private readonly DomainFixture _fixture = new();
 
     public UpdateUserLocationCommandTests()
     {
@@ -25,16 +26,15 @@ public class UpdateUserLocationCommandTests
                                   .AddScoped(_unitOfWorkMock.Object)
                                   .AddScoped(_repositoryMock.Object)
                                   .Build();
-
     }
 
     [Fact]
     public async void UpdateUserLocationCommand_WhenValidDataProvided_ThenSuccessReturned()
     {
         //Arrange
-        var user = DomainFixture.Users.GetUser();
+        var user = _fixture.Users.GetUser();
         _repositoryMock.Setup(s => s.GetByIdAsync(It.Is<UserId>(id => id == user.Id), It.IsAny<CancellationToken>()))
-                       .ReturnsAsync(DomainFixture.Users.GetUser());
+                       .ReturnsAsync(_fixture.Users.GetUser());
         
         ISender sender = _provider.GetRequiredService<ISender>();
 

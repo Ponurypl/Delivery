@@ -12,6 +12,7 @@ public class GetUserQueryTests
 {
     private readonly IServiceProvider _provider;
     private readonly Mock<IUserRepository> _repoMock;
+    private readonly DomainFixture _fixture = new();
 
     public GetUserQueryTests()
     {
@@ -28,7 +29,7 @@ public class GetUserQueryTests
     public async void GetUserQuery_WhenValidDataProvided_ThenUserReturned()
     {
         //Arrange
-        User user = DomainFixture.Users.GetUser();
+        User user = _fixture.Users.GetUser();
         _repoMock.Setup(s => s.GetByIdAsync(It.Is<UserId>(id => id == user.Id), It.IsAny<CancellationToken>())).ReturnsAsync(user);
 
         ISender sender = _provider.GetRequiredService<ISender>();
@@ -48,7 +49,7 @@ public class GetUserQueryTests
     public async void GetUserQuery_WhenQueryUserNotExists_ThenFailureReturned()
     {
         //Arrange
-        UserId id = DomainFixture.Users.GetId();
+        UserId id = _fixture.Users.GetId();
         ISender sender = _provider.GetRequiredService<ISender>();
 
         //Act

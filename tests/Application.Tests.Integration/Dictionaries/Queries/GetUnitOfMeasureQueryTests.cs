@@ -11,6 +11,7 @@ public class GetUnitOfMeasureQueryTests
 {
     private readonly IServiceProvider _provider;
     private readonly Mock<IUnitOfMeasureRepository> _repoMock;
+    private readonly DomainFixture _fixture = new();
 
     public GetUnitOfMeasureQueryTests()
     {
@@ -27,7 +28,7 @@ public class GetUnitOfMeasureQueryTests
     public async void GetUnitOfMeasureQuery_WhenValidDataProvided_ThenUnitOfMeasureReturned()
     {
         //Arrange
-        var unitOfMeasure = DomainFixture.UnitOfMeasures.GetUnitOfMeasure();
+        var unitOfMeasure = _fixture.UnitOfMeasures.GetUnitOfMeasure();
         _repoMock.Setup(s => s.GetByIdAsync(It.Is<UnitOfMeasureId>(id => id == unitOfMeasure.Id), It.IsAny<CancellationToken>()))
                  .ReturnsAsync(unitOfMeasure);
         

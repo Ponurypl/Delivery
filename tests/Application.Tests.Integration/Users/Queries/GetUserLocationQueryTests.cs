@@ -5,13 +5,13 @@ using MultiProject.Delivery.Application.Users.Queries.GetUserLocation;
 using MultiProject.Delivery.Domain.Tests.Unit.Helpers;
 using MultiProject.Delivery.Domain.Users.Entities;
 using MultiProject.Delivery.Domain.Users.ValueTypes;
-using static MultiProject.Delivery.Domain.Tests.Unit.Helpers.DomainFixture;
 
 namespace MultiProject.Delivery.Application.Tests.Integration.Users.Queries;
 public class GetUserLocationQueryTests
 {
     private readonly IServiceProvider _provider;
     private readonly Mock<IUserRepository> _repoMock;
+    private readonly DomainFixture _fixture = new();
 
     public GetUserLocationQueryTests()
     {
@@ -28,7 +28,7 @@ public class GetUserLocationQueryTests
     public async void GetUserLocationQuery_WhenValidDataProvided_ThenUserLocationReturned()
     {
         //Assert
-        User user = DomainFixture.Users.GetUser();
+        User user = _fixture.Users.GetUser();
         _repoMock.Setup(s => s.GetByIdAsync(It.Is<UserId>(id => id == user.Id), It.IsAny<CancellationToken>()))
                               .ReturnsAsync(user);
 
@@ -54,7 +54,7 @@ public class GetUserLocationQueryTests
         ISender sender = _provider.GetRequiredService<ISender>();
 
         //Act
-        ErrorOr<GetUserLocationDto> result = await sender.Send(new GetUserLocationQuery() { UserId = DomainFixture.Users.GetId().Value });
+        ErrorOr<GetUserLocationDto> result = await sender.Send(new GetUserLocationQuery() { UserId = _fixture.Users.GetId().Value });
 
         //Assert
         result.IsError.Should().BeTrue();
