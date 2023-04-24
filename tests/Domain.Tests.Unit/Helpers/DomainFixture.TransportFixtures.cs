@@ -8,46 +8,53 @@ public partial class DomainFixture
 {
     public class TransportFixtures : BaseFixture
     {
-        private readonly Faker<NewTransportUnit> _uniqueUnitFaker;
-        private readonly Faker<NewTransportUnit> _multiUnitFaker;
+        private const string UniqueUnitRuleSet = "Unique";
+        private const string MultiUnitRuleSet = "Multi";
+
+        private readonly Faker<NewTransportUnit> _unitFaker;
         private readonly Faker<Transport> _transportFaker;
 
         public TransportFixtures(DomainFixture fixture) : base(fixture)
         {
-            _uniqueUnitFaker = new Faker<NewTransportUnit>()
-                               .UseSeed(6587895)
-                               .RuleFor(x => x.Description, f => f.Lorem.Sentence())
-                               .RuleFor(x => x.Number, f => f.Random.Replace("?? ####/##/####/?"))
-                               .RuleFor(x => x.AdditionalInformation, f => f.Lorem.Sentence())
-                               .RuleFor(x => x.RecipientCompanyName, f => f.Company.CompanyName())
-                               .RuleFor(x => x.RecipientName, f => f.Person.FirstName)
-                               .RuleFor(x => x.RecipientLastName, f => f.Person.LastName)
-                               .RuleFor(x => x.RecipientPhoneNumber, f => f.Phone.PhoneNumber())
-                               .RuleFor(x => x.RecipientFlatNumber, f => f.Address.BuildingNumber())
-                               .RuleFor(x => x.RecipientStreetNumber, f => f.Address.BuildingNumber())
-                               .RuleFor(x => x.RecipientStreet, f => f.Address.StreetName())
-                               .RuleFor(x => x.RecipientTown, f => f.Address.City())
-                               .RuleFor(x => x.RecipientCountry, f => f.Address.Country())
-                               .RuleFor(x => x.RecipientPostCode, f => f.Address.ZipCode())
-                               .RuleFor(x => x.Barcode, f => f.Commerce.Ean13());
-
-            _multiUnitFaker = new Faker<NewTransportUnit>()
-                              .UseSeed(124587)
-                              .RuleFor(x => x.Description, f => f.Lorem.Sentence())
-                              .RuleFor(x => x.Number, f => f.Random.Replace("?? ####/##/####/?"))
-                              .RuleFor(x => x.AdditionalInformation, f => f.Lorem.Sentence())
-                              .RuleFor(x => x.RecipientCompanyName, f => f.Company.CompanyName())
-                              .RuleFor(x => x.RecipientName, f => f.Person.FirstName)
-                              .RuleFor(x => x.RecipientLastName, f => f.Person.LastName)
-                              .RuleFor(x => x.RecipientPhoneNumber, f => f.Phone.PhoneNumber())
-                              .RuleFor(x => x.RecipientFlatNumber, f => f.Address.BuildingNumber())
-                              .RuleFor(x => x.RecipientStreetNumber, f => f.Address.BuildingNumber())
-                              .RuleFor(x => x.RecipientStreet, f => f.Address.StreetName())
-                              .RuleFor(x => x.RecipientTown, f => f.Address.City())
-                              .RuleFor(x => x.RecipientCountry, f => f.Address.Country())
-                              .RuleFor(x => x.RecipientPostCode, f => f.Address.ZipCode())
-                              .RuleFor(x => x.UnitOfMeasureId, f => f.Random.Number(1, 10))
-                              .RuleFor(x => x.Amount, f => f.Random.Double(10, 50));
+            _unitFaker = new Faker<NewTransportUnit>()
+                         .UseSeed(6587895)
+                         .RuleSet(UniqueUnitRuleSet,
+                                  set =>
+                                  {
+                                      set.RuleFor(x => x.Description, f => f.Lorem.Sentence())
+                                         .RuleFor(x => x.Number, f => f.Random.Replace("?? ####/##/####/?"))
+                                         .RuleFor(x => x.AdditionalInformation, f => f.Lorem.Sentence())
+                                         .RuleFor(x => x.RecipientCompanyName, f => f.Company.CompanyName())
+                                         .RuleFor(x => x.RecipientName, f => f.Person.FirstName)
+                                         .RuleFor(x => x.RecipientLastName, f => f.Person.LastName)
+                                         .RuleFor(x => x.RecipientPhoneNumber, f => f.Phone.PhoneNumber())
+                                         .RuleFor(x => x.RecipientFlatNumber, f => f.Address.BuildingNumber())
+                                         .RuleFor(x => x.RecipientStreetNumber, f => f.Address.BuildingNumber())
+                                         .RuleFor(x => x.RecipientStreet, f => f.Address.StreetName())
+                                         .RuleFor(x => x.RecipientTown, f => f.Address.City())
+                                         .RuleFor(x => x.RecipientCountry, f => f.Address.Country())
+                                         .RuleFor(x => x.RecipientPostCode, f => f.Address.ZipCode())
+                                         .RuleFor(x => x.Barcode, f => f.Commerce.Ean13());
+                                  })
+                         .RuleSet(MultiUnitRuleSet,
+                                  set =>
+                                  {
+                                      set.RuleFor(x => x.Description, f => f.Lorem.Sentence())
+                                         .RuleFor(x => x.Number, f => f.Random.Replace("?? ####/##/####/?"))
+                                         .RuleFor(x => x.AdditionalInformation, f => f.Lorem.Sentence())
+                                         .RuleFor(x => x.RecipientCompanyName, f => f.Company.CompanyName())
+                                         .RuleFor(x => x.RecipientName, f => f.Person.FirstName)
+                                         .RuleFor(x => x.RecipientLastName, f => f.Person.LastName)
+                                         .RuleFor(x => x.RecipientPhoneNumber, f => f.Phone.PhoneNumber())
+                                         .RuleFor(x => x.RecipientFlatNumber, f => f.Address.BuildingNumber())
+                                         .RuleFor(x => x.RecipientStreetNumber, f => f.Address.BuildingNumber())
+                                         .RuleFor(x => x.RecipientStreet, f => f.Address.StreetName())
+                                         .RuleFor(x => x.RecipientTown, f => f.Address.City())
+                                         .RuleFor(x => x.RecipientCountry, f => f.Address.Country())
+                                         .RuleFor(x => x.RecipientPostCode, f => f.Address.ZipCode())
+                                         .RuleFor(x => x.UnitOfMeasureId, f => f.Random.Number(1, 10))
+                                         .RuleFor(x => x.Amount, f => f.Random.Double(10, 50));
+                                  });
 
             _transportFaker = new Faker<Transport>()
                               .UseSeed(3692581)
@@ -74,7 +81,7 @@ public partial class DomainFixture
 
         public NewTransportUnit GetUniqueTransportUnitDto(string? number = null)
         {
-            NewTransportUnit transport = _uniqueUnitFaker.Generate();
+            NewTransportUnit transport = _unitFaker.Generate(UniqueUnitRuleSet);
             if (number is not null)
             {
                 transport.Number = number;
@@ -85,7 +92,7 @@ public partial class DomainFixture
 
         public NewTransportUnit GetMultiTransportUnitDto(string? number = null)
         {
-            NewTransportUnit transport = _multiUnitFaker.Generate();
+            NewTransportUnit transport = _unitFaker.Generate(MultiUnitRuleSet);
             if (number is not null)
             {
                 transport.Number = number;
@@ -98,10 +105,10 @@ public partial class DomainFixture
         {
             List<NewTransportUnit> list = new();
             int uniqueCount = (int)Math.Floor(count / 2d);
-            list.AddRange(_uniqueUnitFaker.Generate(uniqueCount));
-            list.AddRange(_multiUnitFaker.Generate(count - uniqueCount));
+            list.AddRange(_unitFaker.Generate(uniqueCount, UniqueUnitRuleSet));
+            list.AddRange(_unitFaker.Generate(count - uniqueCount, MultiUnitRuleSet));
 
-            return list.OrderBy(_ => Faker.Random.Guid()).ToList();
+            return list.OrderBy(u => u.Number).ToList();
         }
     }
 }
