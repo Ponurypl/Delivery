@@ -22,6 +22,9 @@ internal sealed class CryptoService : ICryptoService
 
     public string Encrypt(string plainText, string passPhrase)
     {
+        ArgumentException.ThrowIfNullOrEmpty(plainText);
+        ArgumentException.ThrowIfNullOrEmpty(passPhrase);
+
         var saltStringBytes = RandomNumberGenerator.GetBytes(_keyBytes);
         var ivStringBytes = RandomNumberGenerator.GetBytes(_blockBytes);
 
@@ -53,6 +56,9 @@ internal sealed class CryptoService : ICryptoService
 
     public string Decrypt(string hashedValue, string passPhrase)
     {
+        ArgumentException.ThrowIfNullOrEmpty(hashedValue);
+        ArgumentException.ThrowIfNullOrEmpty(passPhrase);
+
         var cipherTextBytesWithSaltAndIv = Convert.FromBase64String(hashedValue);
         var saltStringBytes = cipherTextBytesWithSaltAndIv[.._keyBytes];
         var ivStringBytes = cipherTextBytesWithSaltAndIv[_keyBytes..(_keyBytes + _blockBytes)];
