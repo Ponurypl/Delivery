@@ -25,8 +25,11 @@ public sealed class UpdateUserLocationCommandHandler : ICommandHandler<UpdateUse
         User? updatedUser = await _userRepository.GetByIdAsync(new UserId(request.UserId), cancellationToken);
         if (updatedUser is null) return Failure.UserNotExists;
 
-        updatedUser.UpdateGeolocation(request.Latitude, request.Longitude, request.Accuracy, request.Heading,
-                                      request.Speed, _dateTime.UtcNow);
+        ErrorOr<Updated> updateResult = updatedUser.UpdateGeolocation(request.Latitude, request.Longitude, 
+                                                                      request.Accuracy, request.Heading,
+                                                                      request.Speed, _dateTime.UtcNow);
+        if (updateResult.IsError) return updateResult.Errors;
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success;
     }
