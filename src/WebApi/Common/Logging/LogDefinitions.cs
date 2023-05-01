@@ -7,21 +7,26 @@ public partial class LogDefinitions
 
     
     
-    private const string requestEntryTraceMessage = """
-                                Request:
-                                	Headers: {requestHeaders}
-                                	Path: {requestPath}
-                                    Query: {requestQuery}
-                                    Method: {requestMethod}
-                                	Body: {requestBody}
-
-                                Response:
-                                    Headers: {responseHeaders}
-                                    Body: {responseBody}
-                                    StatusCode: {responseStatusCode}
+    private const string _requestEntryTraceMessage = """
+                                {{
+                                    "Request":
+                                    {{
+                                	        "Headers": "{requestHeaders}",
+                                	        "Path": "{requestPath}",
+                                            "Query": "{requestQuery}",
+                                            "Method": "{requestMethod}",
+                                	        "Body": "{requestBody}"
+                                    }},
+                                    "Response":
+                                    {{
+                                            "Headers": "{responseHeaders}",
+                                            "Body": "{responseBody}",
+                                            "StatusCode": {responseStatusCode}
+                                    }}
+                                }}
                                 """;
 
-    [LoggerMessage(0, LogLevel.Trace, requestEntryTraceMessage)]
+    [LoggerMessage(0, LogLevel.Trace, _requestEntryTraceMessage)]
     public static partial void RequestEntryTrace(ILogger logger, string requestHeaders, string requestPath,
                                                  string requestQuery, string requestMethod, string requestBody,
                                                  string responseHeaders, string responseBody,
