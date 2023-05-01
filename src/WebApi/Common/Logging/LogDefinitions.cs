@@ -26,4 +26,46 @@ public partial class LogDefinitions
                                                  string requestQuery, string requestMethod, string requestBody,
                                                  string responseHeaders, string responseBody,
                                                  int responseStatusCode);
+
+    
+    private const string _requestCanonicalLogMessage = """
+                                {{
+                                    "request":
+                                    {{
+                                        "remoteIp": "{ipAddress}",
+                                        "localIP" : "{localIp}"
+                                        "userID": "{userId}",
+                                        "path": "{requestPath}",
+                                        "query": "{query}",
+                                        "method": "{requestMethod}",
+                                        "traceIdentifier": "{traceIdentifier}"
+                                    }},
+                                    "response":
+                                    {{
+                                        "statusCode": {responseStatusCode},
+                                        "duration": {requestDuration}
+                                    }},
+                                    "host":
+                                    {{
+                                        "name": "{hostName}"
+                                    }},
+                                    "enviroment":
+                                    {{
+                                        "machineName": "{machineName}"
+                                    }},
+                                    application:
+                                    {{
+                                        "version": "{appVersion}",
+                                        "name": "{appName}"
+                                    }},
+                                    "logLevel": "{logLevel}"
+                                }}
+                                """;
+
+    [LoggerMessage(299, LogLevel.Information, _requestCanonicalLogMessage)]
+    public static partial void RequestCanonicalLog(ILogger logger, string? ipAddress, string? userId,
+                                                   string? requestPath,
+                                                   string requestMethod, int responseStatusCode, long requestDuration,
+                                                   string? localIp, string traceIdentifier, string hostName,
+                                                   string machineName, string? appVersion, string? appName, string logLevel, string query);
 }

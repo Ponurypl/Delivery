@@ -99,6 +99,7 @@ try
     
     var app = builder.Build();
     app.UseTraceLogging();
+    app.UseInformationLogging();
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseFastEndpoints(c =>
