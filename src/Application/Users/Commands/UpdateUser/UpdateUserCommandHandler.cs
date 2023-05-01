@@ -8,14 +8,12 @@ using MultiProject.Delivery.Domain.Users.ValueTypes;
 namespace MultiProject.Delivery.Application.Users.Commands.UpdateUser;
 internal class UpdateUserCommandHandler : ICommandHandler<UpdateUserCommand>
 {
-    private readonly IMapper _mapper;
     private readonly IPublisher _publisher;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateUserCommandHandler(IMapper mapper, IPublisher publisher, IUserRepository userRepository, IUnitOfWork unitOfWork)
+    public UpdateUserCommandHandler(IPublisher publisher, IUserRepository userRepository, IUnitOfWork unitOfWork)
     {
-        _mapper = mapper;
         _publisher = publisher;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
