@@ -28,4 +28,13 @@ public static class UserTestsData
         yield return new object[] { UserRole.Deliverer, fixture.Users.Username, "", fixture.Users.PhoneNumber };
         yield return new object[] { UserRole.Deliverer, fixture.Users.Username, " ", fixture.Users.PhoneNumber };
     }
+
+    public static IEnumerable<object[]> Update_InvalidData()
+    {
+        //roleToUpdate, isActiveToUpdate, phoneNumberToUpdate
+        yield return new object[] { UserRole.Manager, false, "" };
+        yield return new object[] { (UserRole)342, false, "123" };
+        yield return new object[] { (UserRole)342, false, "  " };
+    }
+    
 }

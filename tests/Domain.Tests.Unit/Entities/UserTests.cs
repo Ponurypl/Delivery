@@ -211,4 +211,48 @@ public class UserTests
         result.FirstError.Type.Should().Be(ErrorType.Conflict);
         result.FirstError.Should().Be(DomainFailures.Users.UserDoesNotMeetRole);
     }
+
+    [Fact]
+    public void Update_WhenValidDataProvided_ThenUpdatedReturned()
+    {
+        //Arrange
+        User sut = _fixture.Users.GetUser();
+        UserRole roleToUpdate = UserRole.Manager;
+        bool isActiveToUpdate = false;
+        string phoneNumberToUpdate = _fixture.Users.PhoneNumber;
+
+        //Act
+        ErrorOr<Updated> result = sut.UpdateUser(roleToUpdate, isActiveToUpdate, phoneNumberToUpdate);
+
+
+        //Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(Result.Updated);
+        sut.Role.Should().Be(roleToUpdate);
+        sut.IsActive.Should().Be(isActiveToUpdate);
+        sut.PhoneNumber.Should().Be(phoneNumberToUpdate);
+    }
+
+
+    [Theory]
+    [MemberData(nameof(UserTestsData.Update_InvalidData), MemberType = typeof(UserTestsData))]
+    public void Update_WhenInValidDataProvided_ThenErrorReturned(UserRole roleToUpdate, bool isActiveToUpdate, string phoneNumberToUpdate)
+    {
+        //Arrange
+        User sut = _fixture.Users.GetUser();
+        //TODO: Da się w prosty sposób sprawdzić czy na pewno nie zmieniliśmy Usera przy niewłaściwych danych?
+        //"User sutBeforeUpdate = sut" to zrobi referencję do sut-a, więc trzeba jakieś specjalne cuda pisać?
+
+        //Act
+        ErrorOr<Updated> result = sut.UpdateUser(roleToUpdate, isActiveToUpdate, phoneNumberToUpdate);
+
+
+        //Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Users.InvalidUser);
+        sut.Role.Should().NotBe(roleToUpdate);
+        sut.IsActive.Should().NotBe(isActiveToUpdate);
+        sut.PhoneNumber.Should().NotBe(phoneNumberToUpdate);
+    }
 }

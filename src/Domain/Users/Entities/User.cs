@@ -69,8 +69,25 @@ public sealed class User : AggregateRoot<UserId>
         return (Role & UserRole.Manager) == UserRole.Manager ? Result.Success : DomainFailures.Users.UserDoesNotMeetRole;
     }
 
-    public void UpdateUser(UserRole requestRole, bool requestIsActive, string requestPhoneNumber)
+    public ErrorOr<Updated> UpdateUser(UserRole newRole, bool newIsActive, string newPhoneNumber)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(newPhoneNumber)) return DomainFailures.Users.InvalidUser;
+        if (!newRole.IsValidForEnum()) return DomainFailures.Users.InvalidUser;
+
+        Role = newRole;
+        IsActive = newIsActive;
+        PhoneNumber = newPhoneNumber;
+        return Result.Updated;
+    }
+
+    public ErrorOr<Updated> ChangePassword(string newPassword)
+    {
+        if (string.IsNullOrWhiteSpace(newPassword))
+        {
+            return DomainFailures.Users.InvalidUser;
+        }
+
+        Password = newPassword;
+        return Result.Updated;
     }
 }
