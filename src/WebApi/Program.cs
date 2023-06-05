@@ -91,7 +91,7 @@ try
                            },
                            js =>
                            {
-                               js.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                               js.PropertyNamingPolicy = JsonNamingPolicy.CamelCase; //TODO: sprawdź gdzie zmienić ustawienie casa
                                js.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                            },
                            shortSchemaNames: true, maxEndpointVersion: 1, addJWTBearerAuth: false);

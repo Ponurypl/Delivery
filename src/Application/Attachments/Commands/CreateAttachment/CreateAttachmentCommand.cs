@@ -6,6 +6,8 @@ public sealed record CreateAttachmentCommand : ICommand<AttachmentCreatedDto>
     public required int TransportId { get; init; }
     public int? ScanId { get; init; }
     public int? TransportUnitId { get; init; }
-    public byte[]? Payload { get; init; }
+    public byte[]? Payload { get; set; }
+    public string? FileName { get; set; }
+    public string? FileExtension { get; set; }
     public string? AdditionalInformation { get; init; }
 }
