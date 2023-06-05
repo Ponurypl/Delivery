@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Application.Common.Failures;
+using MultiProject.Delivery.Application.Common.Persistence.Models;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Domain.Attachments.Entities;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
@@ -35,7 +36,7 @@ public sealed class GetTransportDetailsQueryHandler : IQueryHandler<GetTransport
         List<Attachment> attachments =
             await _attachmentRepository.GetAllByTransportIdAsync(transport.Id, cancellationToken);
 
-        result.Attachements.AddRange(attachments.Select(a => a.Id.Value));
+        result.Attachments.AddRange(attachments.Select(a => a.Id.Value));
 
         foreach (TransportUnit transportUnit in transport.TransportUnits)
         {
@@ -48,7 +49,49 @@ public sealed class GetTransportDetailsQueryHandler : IQueryHandler<GetTransport
 
             result.TransportUnits.Add(uDto);
         }
-        
+
+        //TODO: Do przetestowania czy działa - implementacja dapperowa
+        //var transportId = new TransportId(request.Id);
+
+        //var transport = await _transportRepository.GetTransportAsync(transportId);
+
+        //if (transport is null)
+        //{
+        //    return Failure.TransportNotExists;
+        //}
+
+        //var attachments = await _transportRepository.GetAttachmentsAsync(transportId);
+        //var transportUnits = await _transportRepository.GetTransportUnitsAsync(transportId);
+
+        //var result = new TransportDetailsDto // do zrobienia mapperem
+        //             {
+        //                 Id = transport.Id,
+        //                 Number = transport.Number,
+        //                 CreationDate = transport.CreationDate,
+        //                 AdditionalInformation = transport.AdditionalInformation,
+        //                 DelivererId = transport.DelivererId,
+        //                 ManagerId = transport.ManagerId,
+        //                 StartDate = transport.StartDate,
+        //                 Status = transport.Status,
+        //                 TotalWeight = transport.TotalWeight,
+        //                 Attachments = attachments
+        //             };
+
+        //foreach (TransportUnitDbModel unit in transportUnits)
+        //{
+        //    var dto = new TransportUnitDto()
+        //              {
+        //                  Number = unit.Number, AdditionalInformation = unit.AdditionalInformation,// tu reszta mapowania
+        //              };
+
+        //    TransportUnitId unitId = new(unit.Id);
+        //    dto.Scans.AddRange(await _transportRepository.GetScansAsync(transportId, unitId));
+        //    dto.Attachments.AddRange(await _transportRepository.GetAttachmentsAsync(transportId, unitId));
+
+        //    result.TransportUnits.Add(dto);
+        //}
+
+
         return result;
     }
 }

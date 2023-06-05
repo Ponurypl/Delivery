@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Reflection;
 
 namespace MultiProject.Delivery.Infrastructure.Persistence;
@@ -6,7 +7,10 @@ namespace MultiProject.Delivery.Infrastructure.Persistence;
 internal sealed class ApplicationDbContext : DbContext
 {
     private readonly IConnectionStringProvider _connectionStringProvider;
-    
+
+    public IDbConnection Connection => Database.GetDbConnection();
+
+
     public ApplicationDbContext(DbContextOptions options, IConnectionStringProvider connectionStringProvider)
         : base(options)
     {

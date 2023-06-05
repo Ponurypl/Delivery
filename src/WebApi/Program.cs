@@ -25,7 +25,6 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
-        .MinimumLevel.Verbose()
         .Enrich.FromLogContext()
         .WriteTo.File("logs/Delivery_.log", rollingInterval: RollingInterval.Day, 
                       outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u4}] {SourceContext}: {Message:lj}{NewLine}{Exception}")

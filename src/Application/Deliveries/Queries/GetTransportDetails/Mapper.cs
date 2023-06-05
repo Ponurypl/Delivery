@@ -22,7 +22,7 @@ public sealed class Mapper : IRegister
               .Map(d => d.Status, s => s.Status.ToString())
               .Map(d => d.DelivererId, s => s.DelivererId.Value)
               .Map(d => d.ManagerId, s => s.ManagerId.Value)
-              .Ignore(d => d.Attachements)
+              .Ignore(d => d.Attachments)
               .Ignore(d => d.TransportUnits);
 
     }

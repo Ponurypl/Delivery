@@ -8,12 +8,6 @@ public static class RequestCultureMiddlewareExtensions
         return builder.UseMiddleware<TraceLogMiddleware>();
     }
 
-    public static IApplicationBuilder UseDebugLogging(
-        this IApplicationBuilder builder)
-    {
-        return builder.UseMiddleware<DebugLogMiddleware>();
-    }
-
     public static IApplicationBuilder UseInformationLogging(
         this IApplicationBuilder builder)
     {
