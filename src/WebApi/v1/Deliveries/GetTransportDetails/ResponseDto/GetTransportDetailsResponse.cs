@@ -12,5 +12,5 @@ public sealed record GetTransportDetailsResponse
     public DateTime StartDate { get; init; }
     public Guid ManagerId { get; init; }
     public List<ResponseTransportUnitDto> TransportUnits { get; init; } = new();
-    public List<int> Attachements { get; init; } = new();
+    public List<int> Attachments { get; init; } = new();
 }
