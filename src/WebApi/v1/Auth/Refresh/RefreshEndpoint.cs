@@ -3,7 +3,7 @@ using MultiProject.Delivery.WebApi.v1.Auth.Services;
 
 namespace MultiProject.Delivery.WebApi.v1.Auth.Refresh;
 
-public sealed class RefreshEndpoint : EndpointWithoutRequest<RefreshResponse>
+public sealed class RefreshEndpoint : Endpoint<RefreshRequest, RefreshResponse>
 {
     private readonly ITokenService _tokenService;
 
@@ -20,9 +20,9 @@ public sealed class RefreshEndpoint : EndpointWithoutRequest<RefreshResponse>
         Version(1);
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(RefreshRequest req, CancellationToken ct)
     {
-        var refreshToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+        var refreshToken = req.RefreshToken.Replace("Bearer ", "");
 
         if (!await _tokenService.ExistsAsync(refreshToken, ct))
         {

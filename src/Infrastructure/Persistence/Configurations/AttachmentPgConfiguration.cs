@@ -45,7 +45,7 @@ internal sealed class AttachmentPgConfiguration : IEntityTypeConfiguration<Attac
                .HasColumnName("scan_id")
                .HasConversion<ScanId.EfCoreValueConverter>()
                .HasComment("id from table scans");
-        builder.Property(x => x.Payload).HasColumnName("payload");
+        builder.Property(x => x.FileExtension).HasColumnName("fileExtension").HasMaxLength(6);
         builder.Property(x => x.AdditionalInformation).HasColumnName("additional_information").HasMaxLength(2000);
 
         builder.HasKey(x => x.Id);

@@ -10,55 +10,15 @@ public static class AttachmentsTestsData
     public static IEnumerable<object[]> Create_WithAdditionalInformationAndPayload_InvalidData()
     {
         var fixture = new DomainFixture();
-        //userId, transportId, payload, additionalInformation
+        //userId, transportId, fileExtension, additionalInformation
         yield return new object[] { UserId.Empty, fixture.Transports.GetId(),
-                                      fixture.Attachments.Payload, fixture.Attachments.AdditionalInformation };
+                                      "jpg", fixture.Attachments.AdditionalInformation };
 
         yield return new object[] { fixture.Users.GetId(), TransportId.Empty,
-                                      fixture.Attachments.Payload, fixture.Attachments.AdditionalInformation };
-
-        yield return new object[] { fixture.Users.GetId(), fixture.Transports.GetId(),
-                                      Array.Empty<byte>(), fixture.Attachments.AdditionalInformation };
-
-        yield return new object[] { fixture.Users.GetId(), fixture.Transports.GetId(),
-                                      fixture.Attachments.Payload, string.Empty };
+                                      "jpg", fixture.Attachments.AdditionalInformation };
 
         yield return new object[] { UserId.Empty, TransportId.Empty,
-                                      Array.Empty<byte>(), string.Empty };
-    }
-
-    public static IEnumerable<object[]> Create_WithAdditionalInformation_InvalidData()
-    {
-        var fixture = new DomainFixture();
-        //userId, transportId, additionalInformation
-        yield return new object[] { UserId.Empty, fixture.Transports.GetId(),
-                                     fixture.Attachments.AdditionalInformation };
-
-        yield return new object[] { fixture.Users.GetId(), TransportId.Empty,
-                                      fixture.Attachments.AdditionalInformation };
-
-        yield return new object[] { fixture.Users.GetId(), fixture.Transports.GetId(),
-                                      string.Empty };
-
-        yield return new object[] { UserId.Empty, TransportId.Empty,
-                                      string.Empty };
-    }
-
-    public static IEnumerable<object[]> Create_WithPayload_InvalidData()
-    {
-        var fixture = new DomainFixture();
-        //userId, transportId, payload
-        yield return new object[] { UserId.Empty, fixture.Transports.GetId(),
-                                      fixture.Attachments.Payload };
-
-        yield return new object[] { fixture.Users.GetId(), TransportId.Empty,
-                                      fixture.Attachments.Payload };
-
-        yield return new object[] { fixture.Users.GetId(), fixture.Transports.GetId(),
-                                      Array.Empty<byte>() };
-
-        yield return new object[] { UserId.Empty, TransportId.Empty,
-                                      Array.Empty<byte>() };
+                                      string.Empty, string.Empty };
     }
 
     public static IEnumerable<object[]> SetScanId_InvalidData()

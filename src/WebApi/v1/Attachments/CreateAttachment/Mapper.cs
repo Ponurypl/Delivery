@@ -7,7 +7,7 @@ public sealed class Mapper : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<CreateAttachmentRequest, CreateAttachmentCommand>()
-              .Ignore(d => d.Payload!, d => d.FileName!, d => d.FileExtension!);
+              .Ignore(d => d.FileExtension!);
         config.NewConfig<AttachmentCreatedDto, CreateAttachmentResponse>();
     }
 }

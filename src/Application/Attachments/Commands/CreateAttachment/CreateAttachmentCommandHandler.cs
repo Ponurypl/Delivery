@@ -49,24 +49,7 @@ internal class CreateAttachmentCommandHandler : ICommandHandler<CreateAttachment
             return Failure.TransportNotExists;
         }
 
-        ErrorOr<Attachment> attachmentResult;
-        if (request.Payload != null && request.AdditionalInformation is not null)
-        {
-            attachmentResult = Attachment.Create(creatorId, transportId, request.Payload, request.AdditionalInformation, _dateTime);
-        }
-        else if (request.Payload != null && request.AdditionalInformation is null)
-        {
-            attachmentResult = Attachment.Create(creatorId, transportId, request.Payload, _dateTime);
-        }
-        else if (request.Payload == null && request.AdditionalInformation is not null)
-        {
-            attachmentResult = Attachment.Create(creatorId, transportId, request.AdditionalInformation, _dateTime);
-        }
-        else
-        {
-            return Failure.InvalidAttachmentInput;
-        }
-
+        ErrorOr<Attachment> attachmentResult = Attachment.Create(creatorId, transportId, _dateTime, request.FileExtension, request.AdditionalInformation);
         if (attachmentResult.IsError)
         {
             return attachmentResult.Errors;

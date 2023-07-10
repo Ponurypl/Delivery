@@ -6,6 +6,6 @@ public sealed class Mapper : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<AttachmentDto, GetAttachmentResponse>();
+        config.NewConfig<AttachmentDto, GetAttachmentResponse>().Ignore(x => x.FileUrl);
     }
 }

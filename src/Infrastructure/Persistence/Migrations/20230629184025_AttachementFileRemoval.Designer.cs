@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MultiProject.Delivery.Infrastructure.Persistence;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MultiProject.Delivery.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230629184025_AttachementFileRemoval")]
+    partial class AttachementFileRemoval
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,10 +44,9 @@ namespace MultiProject.Delivery.Infrastructure.Persistence.Migrations
                         .HasColumnName("creator_id")
                         .HasComment("id from table users");
 
-                    b.Property<string>("FileExtension")
-                        .HasMaxLength(6)
-                        .HasColumnType("character varying(6)")
-                        .HasColumnName("fileExtension");
+                    b.Property<bool>("File")
+                        .HasColumnType("boolean")
+                        .HasColumnName("file");
 
                     b.Property<DateTime>("LastUpdateDate")
                         .HasColumnType("timestamp with time zone")

@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="files\**" />
     <None Remove="logs\**" />
   </ItemGroup>
 

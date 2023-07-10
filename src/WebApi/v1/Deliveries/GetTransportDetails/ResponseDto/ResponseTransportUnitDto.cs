@@ -7,7 +7,7 @@ public class ResponseTransportUnitDto
     public string Description { get; init; } = default!;
     public string Status { get; init; } = default!;
     public string? AdditionalInformation { get; init; }
-    public ResponseRecipientDto Recipient { get; init; }
+    public ResponseRecipientDto Recipient { get; init; } = null!;
     public string? Barcode { get; init; }
     public int? UnitOfMeasureId { get; init; }
     public double? Amount { get; init; }

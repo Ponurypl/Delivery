@@ -16,7 +16,7 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
     public TransportUnitId? TransportUnitId { get; private set; }
     public AttachmentStatus Status { get; private set; }
     public DateTime LastUpdateDate { get; private set; }
-    public byte[]? Payload { get; private set; }
+    public string? FileExtension { get; private set; }
     public string? AdditionalInformation { get; private set; }
 
 #pragma warning disable CS8618, IDE0051
@@ -34,38 +34,23 @@ public sealed class Attachment : AggregateRoot<AttachmentId>
         LastUpdateDate = lastUpdateDate;
     }
 
-    private static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, IDateTime dateTimeProvider,
-                                             byte[]? payload = null, string? additionalInformation = null)
+    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, IDateTime dateTimeProvider,
+                                             string? fileExtension = null, string? additionalInformation = null)
     {
         if (dateTimeProvider is null) return DomainFailures.Common.MissingRequiredDependency;
         if (creatorId == UserId.Empty || transportId == TransportId.Empty) return DomainFailures.Attachments.InvalidAttachment;
+        if (string.IsNullOrWhiteSpace(additionalInformation) && string.IsNullOrWhiteSpace(fileExtension))
+        {
+            return DomainFailures.Attachments.InvalidAttachment;
+        }
 
         Attachment newAttachment = new(AttachmentId.Empty, creatorId, transportId, AttachmentStatus.Valid,
                                        dateTimeProvider.UtcNow)
                                    {
-                                       Payload = payload, AdditionalInformation = additionalInformation
+                                       FileExtension = fileExtension, AdditionalInformation = additionalInformation
                                    };
 
         return newAttachment;
-    }
-
-    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, string additionalInformation, 
-                                             IDateTime dateTimeProvider)
-    {
-        if (string.IsNullOrWhiteSpace(additionalInformation)) return DomainFailures.Attachments.InvalidAttachment;
-        return Create(creatorId, transportId, dateTimeProvider, additionalInformation: additionalInformation);
-    }
-    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, byte[] payload, IDateTime dateTimeProvider)
-    {
-        if (payload.Length == 0) return DomainFailures.Attachments.InvalidAttachment;
-        return Create(creatorId, transportId, dateTimeProvider, payload);
-    }
-
-    public static ErrorOr<Attachment> Create(UserId creatorId, TransportId transportId, byte[] payload, string additionalInformation, 
-                                             IDateTime dateTimeProvider)
-    {
-        if (string.IsNullOrWhiteSpace(additionalInformation) || payload.Length == 0) return DomainFailures.Attachments.InvalidAttachment;
-        return Create(creatorId, transportId, dateTimeProvider, payload, additionalInformation);
     }
 
     public ErrorOr<Updated> SetScan(TransportUnitId transportUnitId, ScanId scanId)

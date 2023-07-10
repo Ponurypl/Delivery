@@ -16,12 +16,10 @@ public partial class DomainFixture
                                .CustomInstantiator(_ => DomainObjectBuilder.Create<Attachment, AttachmentId>(GetId))
                                .RuleFor(x => x.CreatorId, Fixture.Users.GetId)
                                .RuleFor(x => x.TransportId, Fixture.Transports.GetId)
-                               .RuleFor(x => x.Payload, f => f.Random.Bytes(50))
+                               .RuleFor(x => x.FileExtension, "jpg")
                                .RuleFor(x => x.AdditionalInformation, f => f.Lorem.Sentence())
                                .RuleFor(x => x.LastUpdateDate, f => f.Date.Recent());
         }
-
-        public byte[] Payload => Faker.Random.Bytes(50);
         public string AdditionalInformation => Faker.Lorem.Sentence();
 
         public AttachmentId GetId() => new(Faker.Random.Int(1, 100));

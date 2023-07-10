@@ -1,5 +1,7 @@
 ﻿using MultiProject.Delivery.Application.Attachments.Queries.GetAttachment;
 using MultiProject.Delivery.Application.Common.Failures;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MultiProject.Delivery.WebApi.v1.Attachments.GetAttachment;
 
@@ -36,6 +38,15 @@ public sealed class GetAttachmentEndpoint : Endpoint<GetAttachmentRequest, GetAt
         }
         ValidationFailures.AddErrorsAndThrowIfNeeded(result);
 
-        await SendOkAsync(_mapper.Map<GetAttachmentResponse>(result.Value), ct);
+        var response = _mapper.Map<GetAttachmentResponse>(result.Value);
+
+        if (result.Value.FileExtension is not null)
+        {
+            using var sha1 = SHA1.Create();
+            string hash = Convert.ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(result.Value.Id.ToString()))).ToLower();
+            response.FileUrl = $"/api/v1/attachments/files/{hash}.{result.Value.FileExtension}";
+        }
+
+        await SendOkAsync(response, ct);
     }
 }

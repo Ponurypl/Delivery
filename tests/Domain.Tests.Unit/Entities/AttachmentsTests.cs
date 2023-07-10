@@ -13,22 +13,21 @@ namespace MultiProject.Delivery.Domain.Tests.Unit.Entities;
 public class AttachmentsTests
 {
     private readonly DomainFixture _domainFixture = new();
-
-
+    
     [Fact]
-    public void Create_WithPayload_WhenValidDataProvided_ThenNewObjectReturned()
+    public void Create_WithFileExtension_WhenValidDataProvided_ThenNewObjectReturned()
     {
         //Arrange
         DateTime creationDate = new(2023, 3, 1, 20, 7, 0);
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
-
-        byte[] payload = _domainFixture.Attachments.Payload;
+        const string fileExtension = "jpg";
+        
         UserId userId = _domainFixture.Users.GetId();
         TransportId transportId = _domainFixture.Transports.GetId();
 
         //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, dateTimeProvider);
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, dateTimeProvider, fileExtension: fileExtension);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -41,10 +40,9 @@ public class AttachmentsTests
         obj.TransportId.Should().Be(transportId);
         obj.Id.Should().Be(AttachmentId.Empty);
         obj.TransportUnitId.Should().BeNull();
-        obj.AdditionalInformation.Should().BeNull();
+        obj.AdditionalInformation.Should().BeNullOrEmpty();
         obj.ScanId.Should().BeNull();
-        obj.Payload.Should().NotBeNull();
-        obj.Payload.Should().Equal(payload);
+        obj.FileExtension.Should().Be(fileExtension);
     }
 
     [Fact]
@@ -60,7 +58,7 @@ public class AttachmentsTests
         TransportId transportId = _domainFixture.Transports.GetId();
 
         //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, additionalInformation, dateTimeProvider);
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, dateTimeProvider, additionalInformation: additionalInformation);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -75,24 +73,27 @@ public class AttachmentsTests
         obj.Id.Should().Be(AttachmentId.Empty);
         obj.TransportUnitId.Should().BeNull();
         obj.ScanId.Should().BeNull();
-        obj.Payload.Should().BeNull();
+        obj.FileExtension.Should().BeNullOrEmpty();
     }
 
     [Fact]
-    public void Create_WithAdditionalInformationAndPayload_WhenValidDataProvided_ThenNewObjectReturned()
+    public void Create_WithAdditionalInformationAndFileExtension_WhenValidDataProvided_ThenNewObjectReturned()
     {
         //Arrange
         DateTime creationDate = new(2023, 3, 1, 20, 7, 0);
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
         dateTimeProvider.UtcNow.Returns(creationDate);
+        const string fileExtension = "jpg";
 
-        byte[] payload = _domainFixture.Attachments.Payload;
+
         string additionalInformation = _domainFixture.Attachments.AdditionalInformation;
         UserId userId = _domainFixture.Users.GetId();
         TransportId transportId = _domainFixture.Transports.GetId();
 
         //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, additionalInformation, dateTimeProvider);
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, dateTimeProvider,
+                                                       fileExtension: fileExtension,
+                                                       additionalInformation: additionalInformation);
 
         //Assert
         result.IsError.Should().BeFalse();
@@ -107,57 +108,21 @@ public class AttachmentsTests
         obj.Id.Should().Be(AttachmentId.Empty);
         obj.TransportUnitId.Should().BeNull();
         obj.ScanId.Should().BeNull();
-        obj.Payload.Should().NotBeNull();
-        obj.Payload.Should().Equal(payload);
+        obj.FileExtension.Should().Be(fileExtension);
     }
 
     [Theory]
     [MemberData(nameof(AttachmentsTestsData.Create_WithAdditionalInformationAndPayload_InvalidData), MemberType = typeof(AttachmentsTestsData))]
-    public void Create_WithAdditionalInformationAndPayload_WhenInvalidDataProvided_ThenValidationFailureReturned(
-        UserId userId, TransportId transportId, byte[] payload, string additionalInformation)
+    public void Create_WithAdditionalInformationAndFile_WhenInvalidDataProvided_ThenValidationFailureReturned(
+        UserId userId, TransportId transportId, string fileExtension, string additionalInformation)
     {
         //Arrange
         IDateTime dateTimeProvider = Substitute.For<IDateTime>();
 
         //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload, additionalInformation,
-                                                       dateTimeProvider);
-
-        //Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Type.Should().Be(ErrorType.Validation);
-        result.FirstError.Should().Be(DomainFailures.Attachments.InvalidAttachment);
-    }
-
-    [Theory]
-    [MemberData(nameof(AttachmentsTestsData.Create_WithAdditionalInformation_InvalidData), MemberType = typeof(AttachmentsTestsData))]
-    public void Create_WithAdditionalInformation_WhenInvalidDataProvided_ThenValidationFailureReturned(
-        UserId userId, TransportId transportId, string additionalInformation)
-    {
-        //Arrange
-        IDateTime dateTimeProvider = Substitute.For<IDateTime>();
-
-        //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, additionalInformation,
-                                                       dateTimeProvider);
-
-        //Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Type.Should().Be(ErrorType.Validation);
-        result.FirstError.Should().Be(DomainFailures.Attachments.InvalidAttachment);
-    }
-
-    [Theory]
-    [MemberData(nameof(AttachmentsTestsData.Create_WithPayload_InvalidData), MemberType = typeof(AttachmentsTestsData))]
-    public void Create_WithPayload_WhenInvalidDataProvided_ThenValidationFailureReturned(
-        UserId userId, TransportId transportId, byte[] payload)
-    {
-        //Arrange
-        IDateTime dateTimeProvider = Substitute.For<IDateTime>();
-
-        //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, payload,
-                                                       dateTimeProvider);
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportId, dateTimeProvider, 
+                                                       fileExtension: fileExtension,
+                                                       additionalInformation: additionalInformation);
 
         //Assert
         result.IsError.Should().BeTrue();
@@ -174,42 +139,7 @@ public class AttachmentsTests
         string additionalInformation = _domainFixture.Attachments.AdditionalInformation;
 
         //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, additionalInformation, null!);
-
-        //Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Type.Should().Be(ErrorType.Unexpected);
-        result.FirstError.Should().Be(DomainFailures.Common.MissingRequiredDependency);
-    }
-
-    [Fact]
-    public void Create_WithAdditionalInformationAndPayload_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
-    {
-        //Arrange
-        UserId userId = _domainFixture.Users.GetId();
-        TransportId transportUnitId = _domainFixture.Transports.GetId();
-        string additionalInformation = _domainFixture.Attachments.AdditionalInformation;
-        byte[] payload = _domainFixture.Attachments.Payload;
-
-        //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, payload, additionalInformation, null!);
-
-        //Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Type.Should().Be(ErrorType.Unexpected);
-        result.FirstError.Should().Be(DomainFailures.Common.MissingRequiredDependency);
-    }
-
-    [Fact]
-    public void Create_WithPayload_WhenDependencyNotProvided_ThenUnexpectedFailureReturned()
-    {
-        //Arrange
-        UserId userId = _domainFixture.Users.GetId();
-        TransportId transportUnitId = _domainFixture.Transports.GetId();
-        byte[] payload = _domainFixture.Attachments.Payload;
-
-        //Act
-        ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, payload, null!);
+        ErrorOr<Attachment> result = Attachment.Create(userId, transportUnitId, null!, "jpg", additionalInformation);
 
         //Assert
         result.IsError.Should().BeTrue();

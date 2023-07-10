@@ -9,6 +9,6 @@ public sealed record GetAttachmentResponse
     public int? TransportUnitId { get; init; }
     public int Status { get; init; }
     public DateTime LastUpdateDate { get; init; }
-    public byte[]? Payload { get; init; }
+    public string FileUrl { get; set; } 
     public string? AdditionalInformation { get; init; }
 }

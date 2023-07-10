@@ -1,13 +1,17 @@
-﻿using MultiProject.Delivery.Application.Attachments.Commands.CreateAttachment;
+﻿using Microsoft.AspNetCore.StaticFiles;
+using MultiProject.Delivery.Application.Attachments.Commands.CreateAttachment;
 using MultiProject.Delivery.WebApi.v1.Attachments.GetAttachment;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace MultiProject.Delivery.WebApi.v1.Attachments.CreateAttachment;
 
 public sealed class CreateAttachmentEndpoint : Endpoint<CreateAttachmentRequest, CreateAttachmentResponse>
 {
+    private readonly FileExtensionContentTypeProvider _contentTypeProvider = new();
     private readonly IMapper _mapper;
     private readonly ISender _sender;
+
     public CreateAttachmentEndpoint(IMapper mapper, ISender sender)
     {
         _mapper = mapper;
@@ -24,37 +28,53 @@ public sealed class CreateAttachmentEndpoint : Endpoint<CreateAttachmentRequest,
 
     public override async Task HandleAsync(CreateAttachmentRequest req, CancellationToken ct)
     {
-        var command = _mapper.Map<CreateAttachmentCommand>(req);
+        CreateAttachmentCommand command = _mapper.Map<CreateAttachmentCommand>(req);
+        string extension = string.Empty;
         
         if (req.File is not null)
         {
-            using var sr = new StreamReader(req.File.OpenReadStream());
-            command.Payload = Encoding.UTF8.GetBytes(await sr.ReadToEndAsync(ct));
-            command.FileExtension = MapToFileExtensionFormat(req.File.ContentType);
-            command.FileName = req.File.FileName;
+            _contentTypeProvider.TryGetContentType(req.File.FileName, out string? contentType);
+            if (contentType != req.File.ContentType)
+            {
+                ThrowError("File content type does not match the file extension");
+            }
+
+            extension = req.File.FileName.Split('.').Last();
+            command.FileExtension = extension;
         }
 
         ErrorOr<AttachmentCreatedDto> result = await _sender.Send(command, ct);
         
         ValidationFailures.AddErrorsAndThrowIfNeeded(result);
-        await SendCreatedAtAsync<GetAttachmentEndpoint>(
-            new { AttachmentId = result.Value.Id, TransportId = req.TransportId },
-            _mapper.Map<CreateAttachmentResponse>(result.Value),
-            generateAbsoluteUrl: true,
-            cancellation: ct);
-    }
+        
+        if (req.File is not null)
+        {
+            using var sha1 = SHA1.Create();
+            string hash = Convert.ToHexString(sha1.ComputeHash(Encoding.UTF8.GetBytes(result.Value.Id.ToString()))).ToLower();
 
-    private string MapToFileExtensionFormat(string contentType)
-    {
-        //TODO: Zmiana na słownik wspólny z walidatorem
-        return contentType switch
-               {
-                   "image/jpeg" => "jpg",
-                   "image/png" => "png",
-                   "application/pdf" => "pdf",
-                   "video/mp4" => "mp4",
-                   "text/plain" => "txt",
-                   _ => throw new ArgumentException("Unsupported file type", nameof(contentType))
-               };
+            string path = "files";
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            path = Path.Join(path, hash[..2]);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            
+            path = Path.Join(path, $"{hash[2..]}.{extension}");
+
+            await using FileStream fileStream = new(path, FileMode.CreateNew);
+            await using Stream incomingStream = req.File.OpenReadStream();
+
+            await incomingStream.CopyToAsync(fileStream, ct);
+        }
+
+        await SendCreatedAtAsync<GetAttachmentEndpoint>(new { AttachmentId = result.Value.Id, req.TransportId },
+                                                        _mapper.Map<CreateAttachmentResponse>(result.Value),
+                                                        cancellation: ct);
     }
 }
