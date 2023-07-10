@@ -37,7 +37,7 @@ public sealed class GetTransportDetailsQueryHandler : IQueryHandler<GetTransport
             TransportUnitDto dto = _mapper.Map<TransportUnitDto>(unit);
 
             TransportUnitId unitId = new(unit.Id);
-            dto.Scans.AddRange(await _transportRepository.GetScansAsync(transportId, unitId));
+            dto.Scans.AddRange(await _transportRepository.GetScansAsync(unitId));
             dto.Attachments.AddRange(await _transportRepository.GetAttachmentsAsync(transportId, unitId));
 
             result.TransportUnits.Add(dto);

@@ -85,22 +85,17 @@ internal sealed class TransportRepository : ITransportRepository
         return result.AsList();
     }
 
-    public async Task<List<int>> GetScansAsync(TransportId id, TransportUnitId truId)
+    public async Task<List<int>> GetScansAsync(TransportUnitId truId)
     {
                 var query = """
                     select 
                         s.scan_id
                     from 
-                        transports t 
-                        join transport_units tu on
-                            tu.transport_id = t.transport_id
-                        join scans s on 
-                            tu.transport_unit_id = s.transport_unit_id 
+                         scans s 
                     where 
-                        t.transport_id = :id 
-                        and s.transport_unit_id = :truId
+                        s.transport_unit_id = :id
                     """;
-        var result = await _connection.QueryAsync<int>(query, new { id = id.Value, truId = truId.Value });
+        var result = await _connection.QueryAsync<int>(query, new { id = truId.Value });
         return result.AsList();
     }
 

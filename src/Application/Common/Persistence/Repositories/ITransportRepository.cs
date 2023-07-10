@@ -1,5 +1,4 @@
 ﻿using MultiProject.Delivery.Application.Common.Persistence.Models;
-using MultiProject.Delivery.Application.Deliveries.Queries.GetTransportDetails;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 
@@ -13,7 +12,7 @@ public interface ITransportRepository
 
     Task<TransportDbModel?> GetTransportAsync(TransportId id);
     Task<List<int>> GetAttachmentsAsync(TransportId id, TransportUnitId? truId = null);
-    Task<List<int>> GetScansAsync(TransportId id, TransportUnitId truId);
+    Task<List<int>> GetScansAsync(TransportUnitId truId);
     Task<List<TransportUnitDbModel>> GetTransportUnitsAsync(TransportId id);
     
     
