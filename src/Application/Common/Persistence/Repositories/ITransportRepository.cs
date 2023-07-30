@@ -6,10 +6,12 @@ namespace MultiProject.Delivery.Application.Common.Persistence.Repositories;
 
 public interface ITransportRepository
 {
+    //EntityFramework
     void Add(Transport transport);
     Task<List<Transport>> GetListByDateAsync(DateTime dateFrom, DateTime dateTo, CancellationToken cancellationToken = default);
     Task<Transport?> GetByIdAsync(TransportId id, CancellationToken cancellationToken = default);
 
+    //Dapper
     Task<TransportDbModel?> GetTransportAsync(TransportId id);
     Task<List<int>> GetAttachmentsAsync(TransportId id, TransportUnitId? truId = null);
     Task<List<int>> GetScansAsync(TransportUnitId truId);

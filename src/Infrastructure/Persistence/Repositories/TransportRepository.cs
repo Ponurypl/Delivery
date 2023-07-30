@@ -36,7 +36,7 @@ internal sealed class TransportRepository : ITransportRepository
 
     public async Task<TransportDbModel?> GetTransportAsync(TransportId id)
     {
-        var query = """
+        const string query = """
                     select 
                         t.transport_id as Id, 
                         t.deliverer_id as DelivererId, 
@@ -53,14 +53,14 @@ internal sealed class TransportRepository : ITransportRepository
                         t.transport_id = :id
                     """;
 
-        var result = await _connection.QueryFirstOrDefaultAsync<TransportDbModel>(query, new { id = id.Value });
+        TransportDbModel? result = await _connection.QueryFirstOrDefaultAsync<TransportDbModel>(query, new { id = id.Value });
         
         return result;
     }
 
     public async Task<List<int>> GetAttachmentsAsync(TransportId id, TransportUnitId? truId = null)
     {
-        var query = """
+        string query = """
                     select 
                         a.attachment_id
                     from 
@@ -81,13 +81,13 @@ internal sealed class TransportRepository : ITransportRepository
             parameters.Add("truId", truId.Value.Value);
         }
 
-        var result = await _connection.QueryAsync<int>(query, parameters);
+        IEnumerable<int>? result = await _connection.QueryAsync<int>(query, parameters);
         return result.AsList();
     }
 
     public async Task<List<int>> GetScansAsync(TransportUnitId truId)
     {
-                var query = """
+                const string query = """
                     select 
                         s.scan_id
                     from 
@@ -95,13 +95,13 @@ internal sealed class TransportRepository : ITransportRepository
                     where 
                         s.transport_unit_id = :id
                     """;
-        var result = await _connection.QueryAsync<int>(query, new { id = truId.Value });
+        IEnumerable<int>? result = await _connection.QueryAsync<int>(query, new { id = truId.Value });
         return result.AsList();
     }
 
     public async Task<List<TransportUnitDbModel>> GetTransportUnitsAsync(TransportId id)
     {
-        var query = """
+        const string query = """
                     select 
                         tu.transport_unit_id as Id, 
                         tu."number", 
@@ -133,7 +133,7 @@ internal sealed class TransportRepository : ITransportRepository
                     where
                         t.transport_id = :id
                     """;
-        var result =
+        IEnumerable<TransportUnitDbModel>? result =
             await _connection.QueryAsync<TransportUnitDbModel, RecipientDbModel, TransportUnitDbModel>(query,
                 (tu, r) =>
                 {

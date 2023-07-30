@@ -1,4 +1,6 @@
-﻿public sealed record TransportDbModel
+﻿namespace MultiProject.Delivery.Application.Common.Persistence.Models;
+
+public sealed record TransportDbModel
 {
     public int Id { get; init; }
     public Guid DelivererId { get; init; }

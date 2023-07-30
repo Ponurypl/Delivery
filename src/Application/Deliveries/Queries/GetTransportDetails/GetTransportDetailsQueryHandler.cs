@@ -18,7 +18,7 @@ public sealed class GetTransportDetailsQueryHandler : IQueryHandler<GetTransport
 
     public async Task<ErrorOr<TransportDetailsDto>> Handle(GetTransportDetailsQuery request, CancellationToken cancellationToken)
     {
-        TransportId transportId = new TransportId(request.Id);
+        TransportId transportId = new(request.Id);
         TransportDbModel? transport = await _transportRepository.GetTransportAsync(transportId);
 
         if (transport is null)
