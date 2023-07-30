@@ -13,6 +13,7 @@ public interface ITransportRepository
 
     //Dapper
     Task<TransportDbModel?> GetTransportAsync(TransportId id);
+    Task<List<TransportDbModel>> GetTransportListAsync(DateTime dateFrom, DateTime dateTo);
     Task<List<int>> GetAttachmentsAsync(TransportId id, TransportUnitId? truId = null);
     Task<List<int>> GetScansAsync(TransportUnitId truId);
     Task<List<TransportUnitDbModel>> GetTransportUnitsAsync(TransportId id);

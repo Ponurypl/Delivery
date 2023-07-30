@@ -1,6 +1,6 @@
 ﻿using MultiProject.Delivery.Application.Common.Failures;
+using MultiProject.Delivery.Application.Common.Persistence.Models;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
-using MultiProject.Delivery.Domain.Deliveries.Entities;
 
 namespace MultiProject.Delivery.Application.Deliveries.Queries.GetTransports;
 
@@ -17,8 +17,8 @@ public sealed class GetTransportsQueryHandler : IQueryHandler<GetTransportsQuery
 
     public async Task<ErrorOr<List<TransportDto>>> Handle(GetTransportsQuery request, CancellationToken cancellationToken)
     {
-        List<Transport> transports = await _transportRepository.GetListByDateAsync(request.DateFrom, request.DateTo, cancellationToken);
-        if(transports is null || transports.Count == 0)
+        List<TransportDbModel> transports = await _transportRepository.GetTransportListAsync(request.DateFrom, request.DateTo);
+        if (transports.Count == 0)
         {
             return Failure.TransportNotExists;
         }

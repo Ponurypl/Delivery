@@ -57,6 +57,33 @@ internal sealed class TransportRepository : ITransportRepository
         
         return result;
     }
+    
+    public async Task<List<TransportDbModel>> GetTransportListAsync(DateTime dateFrom, DateTime dateTo)
+    {
+        const string query = """
+                    select 
+                        t.transport_id as Id, 
+                        t.deliverer_id as DelivererId, 
+                        t.status, 
+                        t."number" ,
+                        t.additional_information as AdditionalInformation, 
+                        t.total_weight as TotalWeight,
+                        t.creation_date as CreationDate, 
+                        t.start_date as StartDate, 
+                        t.manager_id as ManagerId
+                    from 
+                        transports t 
+                    where 
+                        date_trunc('day', t.creation_date) >= :dateFrom
+                        and date_trunc('day', t.creation_date) <= :dateTo
+                    """;
+        DynamicParameters parameters = new();
+        parameters.Add("dateFrom", dateFrom.Date);
+        parameters.Add("dateTo", dateTo.Date);
+
+        IEnumerable<TransportDbModel>? result = await _connection.QueryAsync<TransportDbModel>(query, parameters);
+        return result.AsList();
+    }
 
     public async Task<List<int>> GetAttachmentsAsync(TransportId id, TransportUnitId? truId = null)
     {
