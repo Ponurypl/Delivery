@@ -221,4 +221,71 @@ public class TransportUnitTests
         result.FirstError.Type.Should().Be(ErrorType.Validation);
         result.FirstError.Should().Be(DomainFailures.Common.MissingChildObject);
     }
+
+    [Theory]
+    [InlineData(TransportUnitStatus.New)]
+    [InlineData(TransportUnitStatus.PartiallyDelivered)]
+    public void CheckIfScanAble_WhenScannable_ThenSuccessReturned(TransportUnitStatus status)
+    {
+        //Arrange
+        TransportUnit transportUnit = _domainFixture.TransportUnits.GetTransportUnit(status);
+
+        //Act
+        ErrorOr<Success> result = transportUnit.CheckIfScannable();
+
+        //Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(Result.Success);
+    }
+
+    [Theory]
+    [InlineData(TransportUnitStatus.Deleted)]
+    [InlineData(TransportUnitStatus.Delivered)]
+    [InlineData((TransportUnitStatus)99999)]
+    public void CheckIfScanAble_WhenNotScannable_ThenFailureReturned(TransportUnitStatus status)
+    {
+        //Arrange
+        TransportUnit transportUnit = _domainFixture.TransportUnits.GetTransportUnit(status);
+
+        //Act
+        ErrorOr<Success> result = transportUnit.CheckIfScannable();
+
+        //Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Conflict);
+        result.FirstError.Should().Be(DomainFailures.Deliveries.TransportUnitStatusError);
+    }
+
+    [Fact]
+    public void UpdateStatus_WhenValidStatusProvided_ThenStatusUpdated()
+    {
+        //Arrange
+        TransportUnit sut = _domainFixture.TransportUnits.GetTransportUnit();
+        const TransportUnitStatus statusToChange = TransportUnitStatus.Delivered;
+
+        //Act
+        ErrorOr<Updated> result = sut.UpdateStatus(statusToChange);
+
+        //Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(Result.Updated);
+        sut.Status.Should().Be(statusToChange);
+    }
+
+    [Fact]
+    public void UpdateStatus_WhenInValidStatusProvided_ThenStatusUpdated()
+    {
+        //Arrange
+        TransportUnit sut = _domainFixture.TransportUnits.GetTransportUnit();
+        const TransportUnitStatus statusToChange = (TransportUnitStatus) 99999;
+
+        //Act
+        ErrorOr<Updated> result = sut.UpdateStatus(statusToChange);
+
+        //Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(DomainFailures.Deliveries.InvalidTransportUnit);
+        sut.Status.Should().NotBe(statusToChange);
+    }
 }

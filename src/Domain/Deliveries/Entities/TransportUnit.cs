@@ -1,4 +1,5 @@
 ﻿using MultiProject.Delivery.Domain.Common.Abstractions;
+using MultiProject.Delivery.Domain.Common.Extensions;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Dictionaries.ValueTypes;
@@ -60,7 +61,7 @@ public sealed class TransportUnit : Entity<TransportUnitId>
         
         if (barcode is not null)
         {
-            var result = UniqueUnitDetails.Create(barcode, newTransportUnit);
+            ErrorOr<UniqueUnitDetails> result = UniqueUnitDetails.Create(barcode, newTransportUnit);
             if (result.IsError)
             {
                 return result.Errors;
@@ -70,7 +71,7 @@ public sealed class TransportUnit : Entity<TransportUnitId>
         }
         else
         {
-            var result = MultiUnitDetails.Create(amount!.Value, unitOfMeasureId!.Value, newTransportUnit);
+            ErrorOr<MultiUnitDetails> result = MultiUnitDetails.Create(amount!.Value, unitOfMeasureId!.Value, newTransportUnit);
             if (result.IsError)
             {
                 return result.Errors;
@@ -80,5 +81,25 @@ public sealed class TransportUnit : Entity<TransportUnitId>
         }
 
         return newTransportUnit;
+    }
+
+    public ErrorOr<Updated> UpdateStatus(TransportUnitStatus status)
+    {
+        if (!status.IsValidForEnum())
+        {
+            return DomainFailures.Deliveries.InvalidTransportUnit;
+        }
+
+        Status = status;
+        return Result.Updated;
+    }
+
+    public ErrorOr<Success> CheckIfScannable()
+    {
+        if (Status != TransportUnitStatus.New && Status != TransportUnitStatus.PartiallyDelivered)
+        {
+            return DomainFailures.Deliveries.TransportUnitStatusError;
+        }
+        return Result.Success;
     }
 }

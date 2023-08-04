@@ -23,7 +23,8 @@ internal static class DomainFailures
         public static Error InvalidTransport => Error.Validation(nameof(InvalidTransport));
         public static Error InvalidTransportUnitDetails => Error.Validation(nameof(InvalidTransportUnitDetails));
         public static Error InvalidRecipient => Error.Validation(nameof(InvalidRecipient));
-
+        public static Error TransportUnitStatusError => Error.Conflict(nameof(TransportUnitStatusError));
+        public static Error TransportStatusError => Error.Conflict(nameof(TransportStatusError));
     }
 
     public static class Dictionaries
