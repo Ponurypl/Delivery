@@ -120,4 +120,37 @@ public class TransportTests
         result.FirstError.Type.Should().Be(ErrorType.Unexpected);
         result.FirstError.Should().Be(DomainFailures.Common.MissingRequiredDependency);
     }
+
+    [Theory]
+    [InlineData(TransportStatus.New)]
+    [InlineData(TransportStatus.Processing)]
+    public void CheckIfScanAble_WhenScannable_ThenSuccessReturned(TransportStatus status)
+    {
+        //Arrange
+        Transport transport = _fixture.Transports.GetTransport(status);
+
+        //Act
+        ErrorOr<Success> result = transport.CheckIfScannable();
+
+        //Assert
+        result.IsError.Should().BeFalse();
+        result.Value.Should().Be(Result.Success);
+    }
+
+    [Theory]
+    [InlineData(TransportStatus.Deleted)]
+    [InlineData(TransportStatus.Finished)]
+    public void CheckIfScanAble_WhenNotScannable_ThenFailureReturned(TransportStatus status)
+    {
+        //Arrange
+        Transport transport = _fixture.Transports.GetTransport(status);
+
+        //Act
+        ErrorOr<Success> result = transport.CheckIfScannable();
+
+        //Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Type.Should().Be(ErrorType.Conflict);
+        result.FirstError.Should().Be(DomainFailures.Deliveries.TransportStatusError);
+    }
 }

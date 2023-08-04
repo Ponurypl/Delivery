@@ -1,5 +1,6 @@
 ﻿using MultiProject.Delivery.Domain.Deliveries.DTO;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
+using MultiProject.Delivery.Domain.Deliveries.Enums;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 
 namespace MultiProject.Delivery.Domain.Tests.Unit.Helpers;
@@ -75,7 +76,7 @@ public partial class DomainFixture
 
         public TransportId GetId() => new(Faker.Random.Int(1, 100));
 
-        public Transport GetTransport() => _transportFaker.Generate();
+        public Transport GetTransport(TransportStatus status = TransportStatus.New) => _transportFaker.RuleFor(x => x.Status, status).Generate();
 
         public Transport GetEmptyTransport() => DomainObjectBuilder.Create<Transport, TransportId>(GetId());
 

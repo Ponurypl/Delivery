@@ -3,6 +3,7 @@ using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
+using MultiProject.Delivery.Domain.Deliveries.Enums;
 using MultiProject.Delivery.Domain.Deliveries.ValueTypes;
 using MultiProject.Delivery.Domain.Scans.Entities;
 using MultiProject.Delivery.Domain.Users.Entities;
@@ -41,13 +42,24 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
         {
             return Failure.TransportNotExists;
         }
-        
+        ErrorOr<Success> transportStatusCheck = transport.CheckIfScannable();
+        if (transportStatusCheck.IsError)
+        {
+            return transportStatusCheck.Errors;
+        }
+
         TransportUnit? transportUnit = transport.TransportUnits.FirstOrDefault(u => u.Id == new TransportUnitId(request.TransportUnitId));
         if (transportUnit is null)
         {
             return Failure.TransportUnitNotExists;
         }
-        
+
+        ErrorOr<Success> transportUnitStatusCheck = transportUnit.CheckIfScannable();
+        if (transportUnitStatusCheck.IsError)
+        {
+            return transportUnitStatusCheck.Errors;
+        }
+
         ErrorOr<Scan> scanCreateResult = Scan.Create(transportUnit.Id, deliverer.Id, _dateTime);
         if (scanCreateResult.IsError)
         {
@@ -57,6 +69,7 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
         Scan scan = scanCreateResult.Value;
 
         List<Scan> existingScans = await _scanRepository.GetAllByTransportUnitIdAsync(transportUnit.Id, cancellationToken);
+
 
         if (transportUnit.MultiUnitDetails is not null)
         {
@@ -78,6 +91,16 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
             {
                 return result.Errors;
             }
+
+            if (request.Quantity == amountAvailableForScan)
+            {
+                transportUnit.UpdateStatus(TransportUnitStatus.Delivered);
+            }
+            else if (transportUnit.Status is TransportUnitStatus.New)
+            {
+                transportUnit.UpdateStatus(TransportUnitStatus.PartiallyDelivered);
+            }
+
         }
         else
         {
@@ -85,6 +108,8 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
             {
                 return Failure.ScanAlreadyExists;
             }
+
+            transportUnit.UpdateStatus(TransportUnitStatus.Delivered);
         }
 
         if (request.Location is not null)

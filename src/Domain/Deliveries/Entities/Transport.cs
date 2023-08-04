@@ -124,6 +124,13 @@ public sealed class Transport : AggregateRoot<TransportId>
         return Result.Created;
     }
 
-
+    public ErrorOr<Success> CheckIfScannable()
+    {
+        if (Status is TransportStatus.Deleted or TransportStatus.Finished)
+        {
+            return DomainFailures.Deliveries.TransportStatusError;
+        }
+        return Result.Success;
+    }
 
 }

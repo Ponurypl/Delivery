@@ -31,6 +31,6 @@ public partial class DomainFixture
 
         public TransportUnitId GetId() => new(Faker.Random.Int(1, 100));
 
-        public TransportUnit GetTransportUnit() => _transportUnitFaker.Generate();
+        public TransportUnit GetTransportUnit(TransportUnitStatus status = TransportUnitStatus.New) => _transportUnitFaker.RuleFor(x => x.Status, status).Generate();
     }
 }
