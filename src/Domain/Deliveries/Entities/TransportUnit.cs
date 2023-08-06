@@ -98,8 +98,10 @@ public sealed class TransportUnit : Entity<TransportUnitId>
     {
         if (Status != TransportUnitStatus.New && Status != TransportUnitStatus.PartiallyDelivered)
         {
-            return DomainFailures.Deliveries.TransportUnitStatusError;
+            return DomainFailures.Deliveries.WrongTransportUnitStatus;
         }
         return Result.Success;
     }
+
+
 }

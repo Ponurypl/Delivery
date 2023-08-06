@@ -128,9 +128,9 @@ public sealed class Transport : AggregateRoot<TransportId>
     {
         if (Status is TransportStatus.Deleted or TransportStatus.Finished)
         {
-            return DomainFailures.Deliveries.TransportStatusError;
+            return DomainFailures.Deliveries.WrongTransportStatus;
         }
         return Result.Success;
     }
-
+    
 }
