@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="ErrorOr" Version="1.2.1" />
+    <PackageReference Include="Microsoft.AspNet.WebHooks.Custom" Version="1.2.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="StronglyTypedId" Version="1.0.0-beta06" />
