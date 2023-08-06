@@ -151,6 +151,6 @@ public class TransportTests
         //Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Type.Should().Be(ErrorType.Conflict);
-        result.FirstError.Should().Be(DomainFailures.Deliveries.TransportStatusError);
+        result.FirstError.Should().Be(DomainFailures.Deliveries.WrongTransportStatus);
     }
 }
