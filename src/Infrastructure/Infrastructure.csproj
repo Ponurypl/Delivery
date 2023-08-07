@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Delivery.Infrastructure.Tests.Unit" />
+    <InternalsVisibleTo Include="Delivery.WebApi.Tests.Integration" />
   </ItemGroup>
 
 </Project>

@@ -112,6 +112,11 @@ try
                          });
     app.UseSwaggerGen();
 
+    if (app.Environment.IsDevelopment())
+    {
+        await app.Services.InitializeDatabaseAsync();
+    }
+
     app.Run();
 }
 catch(Exception ex)
@@ -122,3 +127,5 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+public partial class Program { }
