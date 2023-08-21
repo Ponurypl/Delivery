@@ -4,18 +4,18 @@ using System.Net.Http.Json;
 
 namespace MultiProject.Delivery.WebApi.Tests.Integration.v1.Auth;
 
-public class LoginEndpointTests
+[Collection("Default")]
+public class LoginEndpointTests : IAsyncLifetime
 {
     private readonly HttpClient _client;
     private readonly Func<Task> _seedDatabase;
+    private readonly Func<Task> _resetDatabase;
 
-    public LoginEndpointTests()
+    public LoginEndpointTests(CustomWebApplicationFactory app)
     {
-        var app = new CustomWebApplicationFactory();
-        app.InitializeAsync().Wait();
-
-        _client = app.CreateClient();
+        _client = app.HttpClient;
         _seedDatabase = app.SeedDatabaseAsync;
+        _resetDatabase = app.ResetDatabaseAsync;
     }
 
     [Fact]
@@ -47,6 +47,9 @@ public class LoginEndpointTests
         
         loginResponse.RefreshToken.Should().NotBeNull();
         loginResponse.AccessToken.Should().NotBeNull();
-
     }
+
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    public async Task DisposeAsync() => await _resetDatabase();
 }

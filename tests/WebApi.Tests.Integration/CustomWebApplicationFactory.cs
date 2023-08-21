@@ -5,7 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MultiProject.Delivery.Infrastructure.Persistence;
 using Npgsql;
-using System.Data;
+using Respawn;
+using System.Data.Common;
 using Testcontainers.PostgreSql;
 
 namespace MultiProject.Delivery.WebApi.Tests.Integration;
@@ -13,6 +14,12 @@ namespace MultiProject.Delivery.WebApi.Tests.Integration;
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _container;
+    
+    private Respawner _respawner = null!;
+    private DbConnection _dbConnection = null!;
+
+    public HttpClient HttpClient { get; private set; } = null!;
+
 
     public CustomWebApplicationFactory()
     {
@@ -35,6 +42,17 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
     public async Task InitializeAsync()
     {
         await _container.StartAsync();
+        HttpClient = CreateClient();
+
+        _dbConnection = new NpgsqlConnection(_container.GetConnectionString());
+        await _dbConnection.OpenAsync();
+
+        _respawner = await Respawner.CreateAsync(_dbConnection,
+                                                 new RespawnerOptions
+                                                 {
+                                                     DbAdapter = DbAdapter.Postgres,
+                                                     SchemasToInclude = new[] { "public" }
+                                                 });
     }
 
     public new async Task DisposeAsync()
@@ -44,10 +62,13 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
 
     public async Task SeedDatabaseAsync()
     {
-        IDbConnection conn = new NpgsqlConnection(_container.GetConnectionString());
-
         var script = await File.ReadAllTextAsync("../../../Persistence/Users.sql");
+        
+        await _dbConnection.ExecuteAsync(script);
+    }
 
-        await conn.ExecuteAsync(script);
+    public async Task ResetDatabaseAsync()
+    {
+        await _respawner.ResetAsync(_dbConnection);
     }
 }
