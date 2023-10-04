@@ -96,11 +96,11 @@ public sealed class TransportUnit : Entity<TransportUnitId>
 
     public ErrorOr<Success> CheckIfScannable()
     {
-        if (Status != TransportUnitStatus.New && Status != TransportUnitStatus.PartiallyDelivered)
+        if (Status is TransportUnitStatus.New or TransportUnitStatus.PartiallyDelivered)
         {
-            return DomainFailures.Deliveries.WrongTransportUnitStatus;
+            return Result.Success;
         }
-        return Result.Success;
+        return DomainFailures.Deliveries.WrongTransportUnitStatus;
     }
 
 

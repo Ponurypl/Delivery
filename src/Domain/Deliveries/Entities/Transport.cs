@@ -21,6 +21,11 @@ public sealed class Transport : AggregateRoot<TransportId>
     public DateTime StartDate { get; private set; }
     public UserId ManagerId { get; private set; }
     public IReadOnlyList<TransportUnit> TransportUnits => _transportUnits;
+    public int TransportUnitCount => TransportUnits.Count;
+    public int UncompletedTransportUnits => TransportUnits.Count(x => x.CheckIfScannable() == Result.Success);
+    public int CompletedTransportUnits => TransportUnitCount - UncompletedTransportUnits;
+    public double? CompletionPercent => TransportUnitCount == 0 ? null : Math.Round(CompletedTransportUnits / TransportUnitCount * 100d, 2, MidpointRounding.AwayFromZero);
+
 
 #pragma warning disable CS8618, IDE0051
     private Transport(TransportId id) : base(id)
@@ -126,11 +131,11 @@ public sealed class Transport : AggregateRoot<TransportId>
 
     public ErrorOr<Success> CheckIfScannable()
     {
-        if (Status is TransportStatus.Deleted or TransportStatus.Finished)
+        if (Status is TransportStatus.New or TransportStatus.Processing)
         {
-            return DomainFailures.Deliveries.WrongTransportStatus;
+            return Result.Success; 
         }
-        return Result.Success;
+        return DomainFailures.Deliveries.WrongTransportStatus;
     }
     
 }
