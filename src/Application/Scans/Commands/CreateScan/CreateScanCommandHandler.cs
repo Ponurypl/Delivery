@@ -1,6 +1,8 @@
-﻿using MultiProject.Delivery.Application.Common.Failures;
+﻿using MediatR;
+using MultiProject.Delivery.Application.Common.Failures;
 using MultiProject.Delivery.Application.Common.Persistence;
 using MultiProject.Delivery.Application.Common.Persistence.Repositories;
+using MultiProject.Delivery.Application.Webhooks.Events.ScanCreated;
 using MultiProject.Delivery.Domain.Common.DateTimeProvider;
 using MultiProject.Delivery.Domain.Deliveries.Entities;
 using MultiProject.Delivery.Domain.Deliveries.Enums;
@@ -18,15 +20,19 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
     private readonly IScanRepository _scanRepository;
     private readonly ITransportRepository _transportRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IPublisher _publisher;
+    private readonly IMapper _mapper;
 
     public CreateScanCommandHandler(IUnitOfWork unitOfWork, IDateTime dateTime, IScanRepository scanRepository,
-                                    ITransportRepository transportRepository, IUserRepository userRepository)
+                                    ITransportRepository transportRepository, IUserRepository userRepository, IMapper mapper, IPublisher publisher)
     {
         _unitOfWork = unitOfWork;
         _dateTime = dateTime;
         _scanRepository = scanRepository;
         _transportRepository = transportRepository;
         _userRepository = userRepository;
+        _mapper = mapper;
+        _publisher = publisher;
     }
 
     public async Task<ErrorOr<ScanCreatedDto>> Handle(CreateScanCommand request, CancellationToken cancellationToken)
@@ -124,7 +130,7 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
 
         _scanRepository.Add(scan);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _publisher.Publish(_mapper.Map<ScanCreatedEvent>(transport));
         return new ScanCreatedDto { Id = scan.Id.Value };
     }
 }
-
