@@ -130,7 +130,11 @@ public sealed class CreateScanCommandHandler : ICommandHandler<CreateScanCommand
 
         _scanRepository.Add(scan);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        await _publisher.Publish(_mapper.Map<ScanCreatedEvent>(transport));
+
+        ScanCreatedEvent eventTopublish = _mapper.Map<ScanCreatedEvent>(transport);
+        eventTopublish.EvenDate = _dateTime.UtcNow;
+        await _publisher.Publish(eventTopublish);
+
         return new ScanCreatedDto { Id = scan.Id.Value };
     }
 }

@@ -16,6 +16,7 @@ public static class ConfigureServices
         services.AddScoped<IMapper, ServiceMapper>();
 
         services.AddDistributedMemoryCache();
+        services.AddHttpClient();
         
         services.AddScoped<ITokenService, TokenService>();
 
