@@ -16,12 +16,5 @@ public sealed record ScanCreatedEvent : IEvent
     public int UncompletedTransportUnits { get; init; }
     public int CompletedTransportUnits { get; init; }
     public double? CompletionPercent { get; init; }
-}
-
-public enum TransportStatus
-{
-    New,
-    Processing,
-    Finished,
-    Deleted
+    public DateTime EvenDate { get; set; }
 }

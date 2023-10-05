@@ -32,6 +32,7 @@ try
 
     var services = builder.Services;
 
+
     services.AddApplicationLayerServices();
     services.AddInfrastructureLayerServices(builder.Configuration);
     services.AddWebApiLayerServices();

@@ -7,7 +7,7 @@ public sealed class WebhookEndpointGroup : Group
     public WebhookEndpointGroup()
     {
 
-        Configure("deliveries", ep =>
+        Configure("Webhooks", ep =>
                                   {
                                       ep.Description(d =>
                                                          {
