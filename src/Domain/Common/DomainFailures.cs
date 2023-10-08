@@ -47,4 +47,9 @@ internal static class DomainFailures
     {
         public static Error InvalidAttachment => Error.Validation(nameof(InvalidAttachment));
     }
+
+    public class Webhooks
+    {
+        public static Error InvalidWebhook => Error.Validation(nameof(InvalidWebhook));
+    }
 }
