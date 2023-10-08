@@ -1,7 +1,9 @@
 ﻿namespace MultiProject.Delivery.Application.Webhooks.Commands.CreateWebhook;
 
 [Flags]
-public enum EventType
+public enum EventTypeEnum
 {
-    ScanCreated
+    ScanCreated,
+    UserUpdated,
+    UserDeactivated
 }

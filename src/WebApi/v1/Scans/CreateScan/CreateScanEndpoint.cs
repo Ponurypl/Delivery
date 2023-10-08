@@ -1,5 +1,4 @@
 ﻿using MultiProject.Delivery.Application.Scans.Commands.CreateScan;
-using MultiProject.Delivery.Domain.Scans.ValueTypes;
 using MultiProject.Delivery.WebApi.v1.Scans.GetScan;
 
 namespace MultiProject.Delivery.WebApi.v1.Scans.CreateScan;

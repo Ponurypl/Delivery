@@ -9,7 +9,7 @@ internal class Mapper : IRegister
 
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<Transport, ScanCreatedEvent>()
+        config.NewConfig<Transport, TransportDto>()
               .Map(d => d.Id, s => s.Id.Value)
               .Map(d => d.DelivererId, s => s.DelivererId.Value)
               .Map(d => d.ManagerId, s => s.ManagerId.Value)
@@ -18,6 +18,7 @@ internal class Mapper : IRegister
 
         config.NewConfig<Scan, CreatedScanDto>()
               .Map(d => d.Id, s => s.Id.Value)
+              .Map(d => d.TransportUnitId, s => s.TransportUnitId.Value)
               .Map(d => d.DelivererId, s => s.DelivererId.Value);
         config.NewConfig<TransportUnit, TransportUnitDto>()
               .Map(d => d.Id, s => s.Id.Value);
