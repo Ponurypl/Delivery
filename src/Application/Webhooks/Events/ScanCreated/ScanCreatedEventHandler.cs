@@ -1,7 +1,5 @@
-﻿using MediatR;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace MultiProject.Delivery.Application.Webhooks.Events.ScanCreated;
 internal class ScanCreatedEventHandler : IEventHandler<ScanCreatedEvent>
