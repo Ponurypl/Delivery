@@ -6,7 +6,7 @@ public sealed class CreateWebhookValidator : AbstractValidator<CreateWebhookComm
 {
     public CreateWebhookValidator()
     {
-        RuleFor(x => x.EventType).IsInEnum();
+        RuleFor(x => x.EventTypeEnum).IsInEnum();
         RuleFor(x => x.Uri).NotEmpty()
                            .Must(CheckUri)
                            .WithMessage("Provided Uri must be a valid HTTP or HTTPS");
